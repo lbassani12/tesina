@@ -1,0 +1,206 @@
+\documentclass[12pt]{article}
+\usepackage[utf8x]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{url}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{float} % here for H placement parameter
+
+\title{Propuesta de Tesina}
+
+\begin{document}
+
+\maketitle
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=4in]{LOGO-UNR-NEGRO.png}
+\end{figure}
+
+\textbf{Postulate:} Lucio Bassani.
+
+\textbf{Director:} Aleajandro Sartorio.
+
+
+
+\section{Situación del Postulante}
+El postulante aprobó todas las materias. Se encuentra trabajando con una carga semanal de 40 horas.
+
+\section{Título}
+Una infraestructura técnica y procedimental para el análisis de noticias de portales digitales a través de inteligencia artificial generativa.
+
+% Previo: Análisis de Datos, Redes Sociales y Generación de Contenido por IA en Campañas Políticas
+% Ale: Una infraestructura técnica y procedimental para el análisis de noticias de portales digitales a través de inteligencia artifical generativa
+
+
+\section{Motivación y Objetivo General}
+
+% - Referencia sobre lo que hay que escribir - Explique el problema o situaci´on de referencia en el que se desarrolla la propuesta o los nterrogantes en el campo disciplinario a los que la propuesta se dirige. Desarrolle la importancia e impacto de los objetivos y el conocimiento que se generar´a. En esta secci´on no es necesario  escribir las tareas espec´ıficas que se realizar´an (para eso, ver Objetivos espec´ıficos).
+
+
+En el contexto de la elección presidencial de 2023 en la República Argentina, se enfrenta un desafío crucial: la influencia de los medios de comunicación tradicionales en la definición de la agenda pública y, en contraposición, el creciente impacto de las redes sociales en la formación de la opinión pública. Desde la publicación del influyente artículo ``La función de establecer la agenda de los medios de comunicación de masas'' \cite{mccombs:1972}, se ha reconocido el papel fundamental de los medios de comunicación en la configuración de la percepción pública. En la última década, la irrupción de las redes sociales, primero con la blogosfera y posteriormente con los sitios de redes sociales, ha alterado este panorama.
+
+% Ale - ok 
+
+El desarrollo y consolidación de las mediciones y obtención de indicadores referido a noticias publicadas en medios digitales se fue consolidando en los últimos tiempos. Para este propósito se utilizan técnicas de análisis y \textbf{procesamiento de lenguaje natural} (NLP, por sus siglas en inglés de ``Natural Language Processing''); \textbf{ciencia de datos} para la identificación de entidades, relaciones e indicadores claves (KPI, por sus siglas en inglés de ``Key Performance Indicator''); \textbf{clasificación} mediantes redes neuronales, etc. 
+
+Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de los servicios de inteligencia artificial generativa (IAG de ahora en adelante) en un proceso original, creado para este trabajo, para organizar el análisis de noticias y representación de los resultados. Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los prompts de la IAG a utilizar: 
+
+    \begin{enumerate}
+        \item los datos empíricos de las noticias con el agregado de información de contexto. Por ejemplo:  tipo de portal, georeferencia, importancia de la noticia, ubicación y tamaño en la portada, longitud, peso, etc.;
+        \item los objetivos requeridos para el análisis. Por ejemplo: objetivos esperados, alcance de los objetivos, paradigma de análisis, referencias a tener en cuenta, etc.;
+        \item el tipo de salida o representación del análisis. Por ejemplo: narrativa, tablas, gráficos, imágenes, algoritmos en lenguajes de programación, etc.
+    \end{enumerate}
+
+%Mismo comentario?
+% Ale propone sacar esto -  En esta tesina se plantea un desafío crítico: la necesidad de acceder y analizar información proveniente de portales digitales. Se tendrá en cuenta la posibilidad de captar la mayor cantidad posible de variedad de portales, permitiendo una clasificación según la influencia que pueda tener en los resultados de los análisis. 
+% Ale - reemplazar párrafo: En esta tesina se plantea un desafío crítico: la necesidad de acceder y analizar información proveniente de portales digitales. Se tendrá en cuenta la posibilidad de capatar la mayor cantidad posible de variedad de portales, permitiendo una clasificación según la influencia que pueda tener en los resultados de los análisis.
+
+% Ale propone sacar este párrafo completo - El objetivo fundamental de esta tesina es diseñar y automatizar un proceso que facilite la obtención y el procesamiento de noticias vinculadas a la elección presidencial, seguido de la generación de información susceptible de análisis mediante técnicas de procesamiento de lenguaje natural (NLP) y análisis de datos. 
+% Dentro de nuestra propuesta se incluye la creación de una herramienta que permitirá la personalización de "prompts" para inteligencias artificiales generativas, simplificando así la generación de contenido específico basado en los datos recopilados.
+
+Teniendo en cuenta las necesidades e hipótesis de solución se define un objetivo para este trabajo de la siguiente manera: 
+
+\begin{quote}
+        \textbf{Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
+        }
+\end{quote}
+
+El cumplimiento de los objetivos planteados en esta propuesta de tesis tendría los siguientes beneficios:
+
+
+\begin{enumerate}
+    \item \textbf{Capacidad de adaptabilidad al contexto:} La automatización del análisis de noticias digitales, a través de un proceso gestionado por una herramienta,  permitiría a los usuarios ahorrar tiempo y recursos al realizar esta tarea de forma manual. 
+
+    \item \textbf{Mejora en la adaptación a contexto y variedad en los resultados:} La IAG es una tecnología que ha demostrado ser capaz de generar resultados según información de contexto, permitiendo una alta flexibilidad para la adaptación de los resultados según diferentes escenarios, alcance y dominio de aplicación. 
+
+    \item \textbf{Ampliación del alcance del análisis:} El uso de IAG permitiría ampliar el alcance del análisis de noticias digitales. Esto se debe a que las IAG pueden procesar grandes cantidades de datos de forma rápida y eficiente. Por lo tanto, sería posible analizar un mayor número de noticias y extraer información más detallada.
+
+\end{enumerate}
+
+
+\section{Fundamentos y estado de conocimiento sobre el tema}
+
+% Ale deja estas indicaciones: 
+% Podemos ir organizando el estado del arter de forma de contar cuales son los trabajos que reflexionan o hacen aportes tecnológicos sobre los conceptos y piezas que nosotros vamos a necesitar para esta tesis. 
+%To measure is one way of performing an analysis. “What gets counted counts”, claim Klein and
+%
+
+
+El estudio de la influencia de los medios de comunicación en la opinión pública ha sido un campo de investigación activo durante décadas, en el que se han desarrollado diferentes tipos de tecnologías, metodologías y métricas para medir este fenómeno. Entre las tecnologías más utilizadas se encuentran los sondeos de opinión, los análisis de contenido y las técnicas de neurociencia. Un ejemplo concreto de cómo se han utilizado estas herramientas es el estudio de la influencia de la cobertura mediática de los debates electorales en las preferencias de los votantes. 
+
+% Ale - Se puede poner estas referencias:
+%Groseclose, T., & Milyo, J. (2005). A measure of media bias. Quarterly Journal of Economics, 120(4), 1191-1237.
+%Iyengar, S., & Kinder, D. R. (1987). News that matters: Television and American opinion. Chicago, IL: University of Chicago Press.
+%Price, V., & Tewksbury, D. (1997). News values and public opinion: A new look at agenda-setting. Communication Research, 24(5), 577-594.
+
+
+% ver todas estas referencias para citarlas acá y a lo largo de esta sección: https://scholar.google.com/scholar?hl=es&as_sdt=0%2C5&q=El+estudio+de+la+influencia+de+los+medios+de+comunicaci%C3%B3n+en+la+opini%C3%B3n+p%C3%BAblica+&btnG=
+
+Como punto de partida de estudio y construcción, se tomarán en cuenta referencias de trabajos de investigación de análisis de noticias con influencia en la opinión pública. Lippmann (1922) (cited in McCombs (2004) p. 3), around the same time as Ortega y Gasset, used, for example, Plato’s Allegory of the Cave: “how indirectly we know the environment in which nevertheless we live, but that whatever we believe to be a true picture, we treat as if it were the environment itself”
+
+As Luhman (2000, p. 1) puts it 14 “Whatever we know about our society, or indeed
+about the world in which we live, we know through the mass media.”
+
+En cuestiones de análisis de datos a través de mediciones se pueden mencionar los siguientes trabajos: 
+% Todo Lucio:  Sacar información de la página 22 de la tesis "el color de la corrupción" 
+
+
+La tesis doctoral de Pablo Rey-Mazón (2023), ``Color of Corruption. Visual evidence of agenda-setting in a complex mass media ecosystem'' \cite{mazon:2023}, constituye un avance significativo en el estudio de la influencia de los medios de comunicación en la opinión pública. En particular, la tesis presenta una herramienta y una metodología novedosas para medir el proceso de agenda-setting en un ecosistema mediático complejo.
+
+La herramienta, denominada "Color of Corruption", consiste en una base de datos de imágenes de noticias sobre corrupción. La base de datos está etiquetada con una serie de atributos, como el tono emocional, el enfoque narrativo y la presencia de actores específicos. La metodología, denominada "Visual Agenda-Setting Analysis", utiliza la herramienta "Color of Corruption" para analizar la cobertura mediática de los escándalos de corrupción. La tesis de Rey-Mazón es relevante para la presente investigación, ya que presenta una herramienta y una metodología de trabajo con características similares a la que se pretende construir en este trabajo. 
+
+Otras de las temáticas de estudio que se propone tiene que ver con el uso de algoritmos de inteligencia artificial generativa a través de los servicios basados en modelos de similares a:  
+
+
+\begin{itemize}
+    \item LaMDA (Language Model for Dialogue Applications): modelo de lenguaje generativo de Google AI que se puede utilizar para crear nuevas noticias, traducir idiomas, escribir diferentes tipos de contenido creativo, y responder a preguntas de forma informativa.
+    \item Pathways Language Model (PaLM): modelo de lenguaje generativo de Google AI que se puede utilizar para una variedad de tareas, incluyendo la traducción automática, la comprensión del lenguaje natural, y la generación de texto.
+    \item Confident Adaptive Language Modeling (CALM): modelo de lenguaje generativo de Google AI que se puede utilizar para generar texto nuevo de forma más precisa y confiable.
+    \item DALL-E 2: modelo de generación de imágenes de OpenAI que se puede utilizar para crear imágenes a partir de texto, lo que puede ser útil para ilustrar noticias periodísticas.
+    \item GPT-3, GPT-J, GPT-Neo, GPT-NeoX: son modelos de lenguaje generativo de OpenAI que se puede utilizar para generar nuevos textos, lo que puede ser útil para crear nuevas noticias o traducir idiomas.
+    \item Meena: modelo de lenguaje generativo de Google AI que se puede utilizar para generar conversaciones de chat realistas.
+    \item Bard: modelo de lenguaje generativo de Google AI que se puede utilizar para generar diferentes formatos de texto creativo, como poemas, código, guiones, piezas musicales, correo electrónico, cartas, etc.
+    \item GPT-4: modelo de lenguaje generativo de OpenAI que aún está en desarrollo, pero se espera que sea aún más avanzado que los modelos anteriores. 
+\end{itemize}
+
+También será necesario contar con información de base que permita el diseño e implementación de procesos tomando como referencia antecedentes de construcción de flujos de trabajos guiados por estándares. Este tipo de construcciones son tareas complejas que requiere la participación de expertos en diferentes áreas. 
+Para su construcción, se utilizará material de estudio que brinden bases sólida de información y conocimiento sobre las mejores prácticas y metodologías para la construcción de procesos.
+
+Una referencia relevante en este campo es el trabajo de Prades et al. (2013), que define una metodología para el diseño e implementación de modelos de procesos de negocio en BPMN, de acuerdo con el estándar ANSI/ISA-95. Este trabajo proporciona una guía detallada para la construcción de procesos en entornos de fabricación.
+
+Además de la información de base, es necesario contar con aplicaciones de procesos que incorporen servicios de inteligencia artificial generativa. La IA generativa puede utilizarse para automatizar tareas, mejorar la toma de decisiones y detectar oportunidades de mejora.
+
+Un ejemplo de aplicación de IA generativa en procesos es el trabajo de Bertagnolio et al. (2023), que utiliza un modelo de aprendizaje automático para generar códigos de ruido de turbinas eólicas. Este modelo se utiliza para comparar y verificar diferentes códigos de ruido.
+
+
+\begin{enumerate}
+\item \textbf{Influencia de las Redes Sociales en la Política}: Se ha investigado extensamente cómo las redes sociales influyen en la percepción pública, la participación ciudadana y la toma de decisiones políticas. Estudios han demostrado el impacto de plataformas como Twitter y Facebook en la difusión de información política y la formación de opiniones.
+
+\item \textbf{Análisis de Sentimiento y Temas}: Las técnicas de análisis de sentimiento se han utilizado para evaluar la actitud del público hacia candidatos y temas políticos en las redes sociales. Esto permite comprender cómo las conversaciones en línea pueden influir en las estrategias de campaña y la percepción pública.
+
+\item \textbf{Generación de Contenido por IA}: La generación de contenido por medio de IA, incluyendo el uso de modelos de lenguaje generativo como GPT-3, ha abierto nuevas posibilidades para crear mensajes y discursos políticos personalizados. Esto es relevante tanto para la comunicación de campaña como para la interacción en redes sociales.
+
+\item \textbf{Modelado de Procesos Tecnológicos}: La aplicación de procesos tecnológicos, como el modelado de flujos de trabajo (BPMN), para automatizar la recopilación y análisis de datos en campañas políticas ha ganado atención. Estos procesos pueden optimizar la toma de decisiones y la asignación de recursos en tiempo real.
+
+\item \textbf{Casos de Estudio y Aplicaciones Prácticas}: Investigaciones previas han analizado elecciones específicas y campañas políticas para demostrar la eficacia de enfoques tecnológicos y de análisis de datos en la mejora de estrategias de comunicación y toma de decisiones.
+\end{enumerate}
+
+En resumen, la intersección entre análisis de datos, redes sociales, generación de contenido por IA y campañas políticas es un campo de investigación en crecimiento que tiene el potencial de transformar la manera en que se conciben y ejecutan las estrategias políticas. La comprensión de estos fundamentos y la exploración del estado del conocimiento existente proporcionará una base sólida para esta investigación.
+
+\section{Objetivos específicos}
+
+Para lograrlo se plantean los siguientes objetivos específicos: 
+
+\begin{itemize}
+    \item Desarrollar una aplicación informática que permita la gestión del proceso integral de extracción y transformación de datos, análisis y muestra de resultados.
+    \item Diseñar e implementar, en la aplicación informática, un proceso que organice las tareas y procedimientos de las etapas de recolección de datos, análisis y visualización. 
+    \item Diseñar e implementar los procedimientos de acceso a los servicios de IAG guiado por "prompts".
+\end{itemize}
+
+\section{Metodología y Plan de Trabajo}
+
+Se prevé asignar un período de estudio diario de 2 a 3 horas para el desarrollo de la tesina. A continuación, se detallará de manera más exhaustiva cómo se ejecutarán los aspectos mencionados en la sección previa:
+
+\begin{enumerate}
+    \item El proceso se iniciará con la revisión de la literatura pertinente: papers y publicaciones.
+    \item Se desarrolla la aplicación para extracción, transformación y guardado de datos en el software de gestión Odoo.
+    \item Diseño de proceso organizativo de tareas de las etapas de recolección, análisis y visualización de datos como procesos de negocio en BPMN.
+    \item Selección de modelo de lenguaje generativo para utilización futura en la implementación.
+    \item Diseño de interfaces para acceder al modelo seleccionado.
+    \item Implementación de interfaz para personalización del prompt a usar en el modelo.
+    \item Recopilación de datos y generación de conclusiones.
+    \item Escritura de informe.
+\end{enumerate}
+
+\subsection{Cronograma de trabajo}
+
+La tabla a continuación establece los tiempos estimados que se asignarán a las tareas especificada.
+Se estima un tiempo de 6 meses para la concreción del proyecto completo.
+
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{|l|r|} \hline 
+         Actividad& Tiempo\\ \hline 
+         1& 2 semanas\\ \hline 
+         2& 4 semanas\\ \hline 
+         3& 2 semanas\\ \hline 
+         4& 1 semana\\ \hline 
+         5& 3 Semanas\\ \hline 
+         6& 4 Semanas\\ \hline 
+         7& 2 semanas\\ \hline 
+         8& 6 semanas\\ \hline
+    \end{tabular}
+    \label{tab:my_label}
+\end{table}
+
+\bibliographystyle{plain} % We choose the "plain" reference style
+\bibliography{refs} % Entries are in the refs.bib file
+\end{document}

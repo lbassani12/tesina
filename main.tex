@@ -11,6 +11,7 @@
 \usepackage{listings}
 \usepackage{xcolor}
 \usepackage{float} % here for H placement parameter
+\usepackage{tabularx}
 
 \title{Propuesta de Tesina}
 
@@ -26,7 +27,7 @@
 
 \textbf{Postulate:} Lucio Bassani.
 
-\textbf{Director:} Aleajandro Sartorio.
+\textbf{Director:} Alejandro Sartorio.
 
 % agrego comentario para commitear y ver el sync
 
@@ -55,9 +56,9 @@ El desarrollo y consolidación de las mediciones y obtención de indicadores ref
 Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de los servicios de inteligencia artificial generativa (IAG de ahora en adelante) en un proceso original, creado para este trabajo, para organizar el análisis de noticias y representación de los resultados. Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los prompts de la IAG a utilizar: 
 
     \begin{enumerate}
-        \item los datos empíricos de las noticias con el agregado de información de contexto. Por ejemplo:  tipo de portal, georeferencia, importancia de la noticia, ubicación y tamaño en la portada, longitud, peso, etc.;
-        \item los objetivos requeridos para el análisis. Por ejemplo: objetivos esperados, alcance de los objetivos, paradigma de análisis, referencias a tener en cuenta, etc.;
-        \item el tipo de salida o representación del análisis. Por ejemplo: narrativa, tablas, gráficos, imágenes, algoritmos en lenguajes de programación, etc.
+        \item los datos empíricos de las noticias con el agregado de información de contexto. P. ej.:  tipo de portal, georeferencia, importancia de la noticia, ubicación, etc.
+        \item los objetivos requeridos para el análisis. P. ej.: alcance, paradigma de análisis, referencias a tener en cuenta, etc.
+        \item el tipo de salida o representación del análisis. P. ej.: narrativa, tablas, gráficos, etc.
     \end{enumerate}
 
 %Mismo comentario?
@@ -78,16 +79,20 @@ El cumplimiento de los objetivos planteados en esta propuesta de tesis tendría 
 
 
 \begin{enumerate}
-    \item \textbf{Capacidad de adaptabilidad al contexto:} La automatización del análisis de noticias digitales, a través de un proceso gestionado por una herramienta,  permitiría a los usuarios ahorrar tiempo y recursos al realizar esta tarea de forma manual. 
+    \item \textbf{Aumento de la eficiencia del análisis:} La automatización del análisis permitiría a los usuarios ahorrar tiempo y recursos. 
 
-    \item \textbf{Mejora en la adaptación a contexto y variedad en los resultados:} La IAG es una tecnología que ha demostrado ser capaz de generar resultados según información de contexto, permitiendo una alta flexibilidad para la adaptación de los resultados según diferentes escenarios, alcance y dominio de aplicación. 
+    \item \textbf{Capacidad de adaptabilidad al contexto:} La IAG es una tecnología que ha demostrado ser capaz de generar resultados según información de contexto, permitiendo una alta flexibilidad de los resultados según diferentes escenarios, alcance y dominio de aplicación. 
 
-    \item \textbf{Ampliación del alcance del análisis:} El uso de IAG permitiría ampliar el alcance del análisis de noticias digitales. Esto se debe a que las IAG pueden procesar grandes cantidades de datos de forma rápida y eficiente. Por lo tanto, sería posible analizar un mayor número de noticias y extraer información más detallada.
+    \item \textbf{Ampliación del alcance del análisis:} Dado que las IAG pueden procesar grandes cantidades de datos de forma rápida y eficiente sería posible analizar un mayor número de noticias.
 
 \end{enumerate}
 
 
 \section{Fundamentos y estado de conocimiento sobre el tema}
+
+ \begin{quote}
+     ``Todo lo que sabemos acerca de nuestra sociedad, o más aún, acerca del mundo en el que vivimos, lo conocemos a través de los medios de comunicación masiva.''  Luhman (2000, p. 1) \cite{luhmann2000}
+ \end{quote}
 
 % Ale deja estas indicaciones: 
 % Podemos ir organizando el estado del arter de forma de contar cuales son los trabajos que reflexionan o hacen aportes tecnológicos sobre los conceptos y piezas que nosotros vamos a necesitar para esta tesis. 
@@ -105,18 +110,13 @@ El estudio de la influencia de los medios de comunicación en la opinión públi
 
 % ver todas estas referencias para citarlas acá y a lo largo de esta sección: https://scholar.google.com/scholar?hl=es&as_sdt=0%2C5&q=El+estudio+de+la+influencia+de+los+medios+de+comunicaci%C3%B3n+en+la+opini%C3%B3n+p%C3%BAblica+&btnG=
 
-Como punto de partida de estudio y construcción, se tomarán en cuenta referencias de trabajos de investigación de análisis de noticias con influencia en la opinión pública. Lippmann (1922) (cited in McCombs (2004) p. 3), around the same time as Ortega y Gasset, used, for example, Plato’s Allegory of the Cave: “how indirectly we know the environment in which nevertheless we live, but that whatever we believe to be a true picture, we treat as if it were the environment itself”
-
-As Luhman (2000, p. 1) puts it 14 “Whatever we know about our society, or indeed
-about the world in which we live, we know through the mass media.”
-
 En cuestiones de análisis de datos a través de mediciones en portales de noticias online se pueden mencionar los siguientes trabajos:
 
-La tesis doctoral de Pablo Rey-Mazón (2023), ``Color of Corruption. Visual evidence of agenda-setting in a complex mass media ecosystem'' \cite{mazon:2023}, constituye un avance significativo en el estudio de la influencia de los medios de comunicación en la opinión pública. En particular, la tesis presenta varias herramienta y una metodología novedosas para medir el proceso de agenda-setting en un ecosistema mediático complejo.
+La tesis doctoral de Pablo Rey-Mazón (2023), ``Color of Corruption'' \cite{mazon:2023} presenta varias herramientas y una metodología novedosas para medir el proceso de agenda-setting en un ecosistema mediático complejo.
 
-Según Rey-Mazón la metodología tradicional de análisis de contenido se basa en la suposición de que el contenido ya está completo y estático para su estudio. Este método presenta desafíos ya que no toman en cuenta el flujo constante de noticias y su posible influencia en cómo los lectores reciben la información. En este contexto, Rey-Mazón presenta el software Homepagex que sigue la posición de los elementos de noticias en la página de inicio durante varios días, lo que permite obtener una imagen completa de los flujos y ciclos de noticias en los sitios web. Este software combina la construcción de una base de datos (mediante el rastreo web de las páginas de inicio cada hora) con el análisis de contenido automatizado, lo que ofrece una posible forma de abordar el análisis de datos en el estudio actual.
+Según Rey-Mazón la metodología tradicional de análisis de contenido se basa en la suposición de que el contenido ya está completo y estático para su estudio. Este método presenta desafíos ya que no toman en cuenta el flujo constante de noticias y su posible influencia en cómo los lectores reciben la información. En este contexto, Rey-Mazón presenta el software \textbf{Homepagex} que sigue la posición de los elementos de noticias en la página de inicio durante varios días, lo que permite obtener una imagen completa de los flujos y ciclos de noticias en los sitios web. Este software combina la construcción de una base de datos (mediante el rastreo web de las páginas de inicio cada hora) con el análisis de contenido automatizado, lo que ofrece una posible forma de abordar el análisis de datos en el estudio actual.
 
-Otra herramienta planteada, denominada ``Color of Corruption'', consiste en una base de datos de imágenes de noticias sobre corrupción. La base de datos está etiquetada con una serie de atributos, como el tono emocional, el enfoque narrativo y la presencia de actores específicos. La metodología, denominada ``Visual Agenda-Setting Analysis'', utiliza la herramienta ``Color of Corruption'' para analizar la cobertura mediática de los escándalos de corrupción. La tesis de Rey-Mazón es relevante para la presente investigación, ya que presenta una herramienta y una metodología de trabajo con características similares a la que se pretende construir en este trabajo. 
+Otra herramienta planteada, denominada ``Color of Corruption'', consiste en una base de datos de imágenes de noticias sobre corrupción. La base de datos está etiquetada con una serie de atributos, como el tono emocional, el enfoque narrativo y la presencia de actores específicos. La metodología, denominada ``Visual Agenda-Setting Analysis'', utiliza esta herramienta para analizar la cobertura mediática de los escándalos de corrupción. La tesis de Rey-Mazón es relevante para la presente investigación, ya que presenta una herramienta y una metodología de trabajo con características similares a la que se pretende construir en este trabajo. 
 
 % Todo Lucio:  Sacar información de la página 22 de la tesis "el color de la corrupción" 
 
@@ -127,8 +127,6 @@ Otras de las temáticas de estudio que se propone tiene que ver con el uso de al
 
 \begin{itemize}
     \item LaMDA (Language Model for Dialogue Applications): modelo de lenguaje generativo de Google AI que se puede utilizar para crear nuevas noticias, traducir idiomas, escribir diferentes tipos de contenido creativo, y responder a preguntas de forma informativa.
-    \item Pathways Language Model (PaLM): modelo de lenguaje generativo de Google AI que se puede utilizar para una variedad de tareas, incluyendo la traducción automática, la comprensión del lenguaje natural, y la generación de texto.
-    \item Confident Adaptive Language Modeling (CALM): modelo de lenguaje generativo de Google AI que se puede utilizar para generar texto nuevo de forma más precisa y confiable.
     \item DALL-E 2: modelo de generación de imágenes de OpenAI que se puede utilizar para crear imágenes a partir de texto, lo que puede ser útil para ilustrar noticias periodísticas.
     \item GPT-3, GPT-J, GPT-Neo, GPT-NeoX: son modelos de lenguaje generativo de OpenAI que se puede utilizar para generar nuevos textos, lo que puede ser útil para crear nuevas noticias o traducir idiomas.
     \item Meena: modelo de lenguaje generativo de Google AI que se puede utilizar para generar conversaciones de chat realistas.
@@ -137,13 +135,10 @@ Otras de las temáticas de estudio que se propone tiene que ver con el uso de al
 \end{itemize}
 
 También será necesario contar con información de base que permita el diseño e implementación de procesos tomando como referencia antecedentes de construcción de flujos de trabajos guiados por estándares. Este tipo de construcciones son tareas complejas que requiere la participación de expertos en diferentes áreas. 
-Para su construcción, se utilizará material de estudio que brinden bases sólida de información y conocimiento sobre las mejores prácticas y metodologías para la construcción de procesos.
 
 Una referencia relevante en este campo es el trabajo de Prades et al. (2013) \cite{PRADES2013115}, que define una metodología para el diseño e implementación de modelos de procesos de negocio en BPMN, de acuerdo con el estándar ANSI/ISA-95. Este trabajo proporciona una guía detallada para la construcción de procesos en entornos de fabricación.
 
-Además de la información de base, es necesario contar con aplicaciones de procesos que incorporen servicios de inteligencia artificial generativa. La IA generativa puede utilizarse para automatizar tareas, mejorar la toma de decisiones y detectar oportunidades de mejora.
-
-Un ejemplo de aplicación de IA generativa en procesos es el trabajo de Bertagnolio et al. (2023) \cite{bertagnolio2023}, que utiliza un modelo de aprendizaje automático para generar códigos de ruido de turbinas eólicas. Este modelo se utiliza para comparar y verificar diferentes códigos de ruido.
+Además de la información de base, es necesario contar con aplicaciones de procesos que incorporen servicios de inteligencia artificial generativa. Un ejemplo de la aplicación de IAGs en procesos es el trabajo de Bertagnolio et al. (2023) \cite{bertagnolio2023}, que utiliza un modelo de aprendizaje automático para generar códigos de ruido de turbinas eólicas. Este modelo se utiliza para comparar y verificar diferentes códigos de ruido.
 
 
 \begin{enumerate}
@@ -207,11 +202,14 @@ La metodología propuesta para llevar adelante el trabajo de tesina se basa en u
 
 La revisión periódica es una actividad esencial para garantizar la calidad del trabajo y el cumplimiento de los objetivos definidos. En esta revisión se evaluarán los siguientes aspectos:
 
-- Avances y evolución del material de estudio: Se comprobará que el material de estudio está actualizado y que cubre los aspectos necesarios para el desarrollo de la tesis.
+- Se comprobará que el material de estudio está actualizado y que cubre los aspectos necesarios para el desarrollo de la tesis.
 
-- Productos consolidados: Se revisarán los productos consolidados, como documentos, prototipos o software, para garantizar su calidad y funcionalidad.
+- Se revisarán los productos consolidados, como documentos, prototipos o software, para garantizar su calidad y funcionalidad.
 
-- Alineación a un plan director de trabajos: Se comprobará que el trabajo está alineado con el plan director de trabajos consensuado con la dirección.
+- Se comprobará que el trabajo está alineado con el plan director de trabajos consensuado con la dirección.
+
+
+\vspace{1cm}
 
 Se prevé asignar un período de estudio diario de 2 a 3 horas para el desarrollo de la tesina. A continuación, se detallará de manera más exhaustiva cómo se ejecutarán los aspectos mencionados en la sección previa:
 
@@ -221,7 +219,7 @@ Se prevé asignar un período de estudio diario de 2 a 3 horas para el desarroll
     \item Diseño de proceso organizativo de tareas de las etapas de recolección, análisis y visualización de datos como procesos de negocio en BPMN.
     \item Selección de modelo de inteligencia artificial generativa y los servicios de accesos para su implementación.
     \item Diseño de interfaces para acceder al modelo seleccionado.
-    \item Implementación de interfaz y experiencias de usuarios para la gestión de  "prompt" a usar en el modelo.
+    \item Implementación de interfaz y experiencias de usuarios para la gestión de ``prompt'' a usar en el modelo.
     \item Recopilación de datos y generación de conclusiones.
     \item Escritura de informe.
 \end{enumerate}
@@ -233,21 +231,34 @@ La tabla a continuación establece los tiempos estimados que se asignarán a las
 Se estima un tiempo de 6 meses para la concreción del proyecto completo.
 
 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{|l|r|} \hline 
-         Actividad& Tiempo\\ \hline 
-         1& 2 semanas\\ \hline 
-         2& 4 semanas\\ \hline 
-         3& 2 semanas\\ \hline 
-         4& 1 semana\\ \hline 
-         5& 3 Semanas\\ \hline 
-         6& 4 Semanas\\ \hline 
-         7& 2 semanas\\ \hline 
-         8& 6 semanas\\ \hline
-    \end{tabular}
-    \label{tab:my_label}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+\textbf{Tareas} & \textbf{Entrega} & \multicolumn{16}{c|}{\textbf{Semanas}} \\
+\hline
+ 1 & Papers categorizados & x & x & & & & & & & & & & & & & &\\
+\hline
+ 2 & Aplicación de scrapeo & & & x & x & x & x & & & & & & & & & & \\
+\hline
+ 3 & Gráfico de diseño & & & & & x & x & & & & & & & & & & \\
+\hline
+ 4 & Modelo seleccionado & & & & & & & x & & & & & & & & & \\
+\hline
+ 5 & Guia de interfaces & & & & & & &x & x & & & & & & & &\\
+\hline
+ 6 & Aplicación de prompt & & & & & & & & &x &x &x &x &x & & & \\
+\hline
+ 7 & Capitulo final & & & & & & & & & & & & x&x & & & \\
+\hline
+ 8 & Informe & & & & & & & & & & & & &x &x &x & x \\
+\hline
+\end{tabular}
 \end{table}
+
+
+
 
 \bibliographystyle{plain} % We choose the "plain" reference style
 \bibliography{refs} % Entries are in the refs.bib file

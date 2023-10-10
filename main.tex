@@ -46,14 +46,19 @@ Una infraestructura técnica y procedimental para el análisis de noticias de po
 
 % - Referencia sobre lo que hay que escribir - Explique el problema o situaci´on de referencia en el que se desarrolla la propuesta o los nterrogantes en el campo disciplinario a los que la propuesta se dirige. Desarrolle la importancia e impacto de los objetivos y el conocimiento que se generar´a. En esta secci´on no es necesario  escribir las tareas espec´ıficas que se realizar´an (para eso, ver Objetivos espec´ıficos).
 
+El panorama informativo actual se caracteriza por la proliferación de portales digitales, que ofrecen una amplia variedad de noticias en línea. Este aumento en la cantidad de noticias ha dificultado el seguimiento y el análisis de las noticias, lo que ha limitado la capacidad de los investigadores y los profesionales de la información para comprender el impacto de las noticias en la sociedad.
 
-En el contexto de la elección presidencial de 2023 en la República Argentina, se enfrenta un desafío crucial: la influencia de los medios de comunicación tradicionales en la definición de la agenda pública y, en contraposición, el creciente impacto de las redes sociales en la formación de la opinión pública. Desde la publicación del influyente artículo ``La función de establecer la agenda de los medios de comunicación de masas'' \cite{mccombs:1972}, se ha reconocido el papel fundamental de los medios de comunicación en la configuración de la percepción pública. En la última década, la irrupción de las redes sociales, primero con la blogosfera y posteriormente con los sitios de redes sociales, ha alterado este panorama.
+Para superar este desafío, se necesitan instrumentos de análisis de textos más sofisticados que permitan identificar correlaciones entre noticias, acoplamiento y cohesión de los términos, conceptos y significantes. Estos instrumentos permitirían a los investigadores estudiar el impacto de las noticias en la opinión pública, la formación de la agenda mediática y la difusión de la información.
+
+
+Una de las áreas de aplicación más relevantes de estos estudios se centra en la influencia de los medios de comunicación tradicionales en la configuración de la agenda pública, así como en el creciente impacto de las redes sociales en la formación de la opinión pública. Desde la publicación del influyente artículo "La función de establecer la agenda de los medios de comunicación de masas" (McCombs, 1972)\cite{mccombs:1972}, se ha reconocido el papel fundamental de los medios de comunicación en la configuración de la percepción pública. No obstante, en la última década, la irrupción de las redes sociales, primero con la blogosfera y posteriormente con los sitios de redes sociales, ha alterado significativamente este panorama.
 
 % Ale - ok 
 
-El desarrollo y consolidación de las mediciones y obtención de indicadores referido a noticias publicadas en medios digitales se fue consolidando en los últimos tiempos. Para este propósito se utilizan técnicas de análisis y \textbf{procesamiento de lenguaje natural} (NLP, por sus siglas en inglés de ``Natural Language Processing''); \textbf{ciencia de datos} para la identificación de entidades, relaciones e indicadores claves (KPI, por sus siglas en inglés de ``Key Performance Indicator''); \textbf{clasificación} mediantes redes neuronales, etc. 
+El desarrollo y consolidación de las mediciones y obtención de indicadores referido a noticias publicadas en medios digitales se fue consolidando en los últimos tiempos. Para este propósito se utilizan técnicas de análisis y \textbf{procesamiento de lenguaje natural} (NLP, por sus siglas en inglés de "Natural Language Processing"); \textbf{ciencia de datos} para la identificación de entidades, relaciones e indicadores claves (KPI, por sus siglas en inglés de ``Key Performance Indicator''); \textbf{clasificación} mediantes redes neuronales, etc. 
 
-Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de los servicios de inteligencia artificial generativa (IAG de ahora en adelante) en un proceso original, creado para este trabajo, para organizar el análisis de noticias y representación de los resultados. Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los prompts de la IAG a utilizar: 
+Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de los servicios de inteligencia artificial generativa (IAG de ahora en adelante) en un proceso original, combinadas con técnicas de ciencias de datos y análisis de texto para organizar el análisis de noticias y representación de los resultados.
+Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los "prompts" de la IAG a utilizar: 
 
     \begin{enumerate}
         \item los datos empíricos de las noticias con el agregado de información de contexto. P. ej.:  tipo de portal, georeferencia, importancia de la noticia, ubicación, etc.
@@ -68,7 +73,7 @@ Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de
 % Ale propone sacar este párrafo completo - El objetivo fundamental de esta tesina es diseñar y automatizar un proceso que facilite la obtención y el procesamiento de noticias vinculadas a la elección presidencial, seguido de la generación de información susceptible de análisis mediante técnicas de procesamiento de lenguaje natural (NLP) y análisis de datos. 
 % Dentro de nuestra propuesta se incluye la creación de una herramienta que permitirá la personalización de "prompts" para inteligencias artificiales generativas, simplificando así la generación de contenido específico basado en los datos recopilados.
 
-Teniendo en cuenta las necesidades e hipótesis de solución se define un objetivo para este trabajo de la siguiente manera: 
+Teniendo en cuenta las necesidades e hipótesis de solución se define un objetivo general para este trabajo de la siguiente manera: 
 
 \begin{quote}
         \textbf{Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
@@ -234,7 +239,7 @@ Se estima un tiempo de 6 meses para la concreción del proyecto completo.
 
 \begin{table}[h]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|l|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 \hline
 \textbf{Tareas} & \textbf{Entrega} & \multicolumn{16}{c|}{\textbf{Semanas}} \\
 \hline

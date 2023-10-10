@@ -1,5 +1,5 @@
 \documentclass[11pt]{letter}
-
+\usepackage{graphicx}
 \usepackage[spanish]{babel}
 \selectlanguage{spanish}
 \usepackage[T1]{fontenc}
@@ -7,7 +7,7 @@
 
 \usepackage{blindtext}
 \name{}
-\signature{Alejandro Sartorio}
+%\signature{Alejandro Sartorio}
 \date{Rosario, 9 de octubre de 2023} 
 
 \begin{document}
@@ -26,9 +26,14 @@
 
 \hspace{5cm} En tal sentido, estoy de acuerdo con su contenido conceptual y criterios metodológicos.
 
-
 \closing{Atentamente,}
+\begin{figure}
+    \centering
+    \includegraphics[width=0.5\linewidth]{Firma.jpeg}
+    \label{fig:enter-label}
+\end{figure}
 
+\hspace{1cm}  Alejandro Sartorio
 
 \end{letter}
 \end{document}

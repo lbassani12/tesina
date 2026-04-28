@@ -1,0 +1,101 @@
+{
+  // -------------------------------------------------------------
+  // LaTeX Workshop: build con latexmk -> lualatex (configurado en .latexmkrc)
+  // -------------------------------------------------------------
+  "latex-workshop.latex.recipe.default": "latexmk (lualatex)",
+  "latex-workshop.latex.recipes": [
+    {
+      "name": "latexmk (lualatex)",
+      "tools": ["latexmk-lualatex"]
+    },
+    {
+      "name": "lualatex × 2 + bibtex + makeindex",
+      "tools": ["lualatex", "bibtex", "makeindex", "lualatex", "lualatex"]
+    }
+  ],
+  "latex-workshop.latex.tools": [
+    {
+      "name": "latexmk-lualatex",
+      "command": "latexmk",
+      "args": [
+        "-lualatex",
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "-halt-on-error",
+        "%DOC%"
+      ],
+      "env": {}
+    },
+    {
+      "name": "lualatex",
+      "command": "lualatex",
+      "args": [
+        "-synctex=1",
+        "-interaction=nonstopmode",
+        "-file-line-error",
+        "%DOC%"
+      ]
+    },
+    {
+      "name": "bibtex",
+      "command": "bibtex",
+      "args": ["%DOCFILE%"]
+    },
+    {
+      "name": "makeindex",
+      "command": "makeindex",
+      "args": ["%DOCFILE%.idx"]
+    }
+  ],
+
+  // Build automático al guardar
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "latex-workshop.latex.clean.fileTypes": [
+    "*.aux", "*.bbl", "*.blg", "*.idx", "*.ind", "*.lof", "*.lot",
+    "*.out", "*.toc", "*.acn", "*.acr", "*.alg", "*.glg", "*.glo",
+    "*.gls", "*.fls", "*.log", "*.fdb_latexmk", "*.snm", "*.nav",
+    "*.synctex.gz", "*.run.xml", "*.bcf"
+  ],
+
+  // Preview: usa el visor interno de LaTeX Workshop (tab al lado)
+  "latex-workshop.view.pdf.viewer": "tab",
+  "latex-workshop.synctex.afterBuild.enabled": true,
+
+  // -------------------------------------------------------------
+  // LTeX (corrección gramatical) – idioma por defecto: español de Argentina
+  // -------------------------------------------------------------
+  "ltex.language": "es-AR",
+  "ltex.enabled": ["latex", "bibtex", "markdown"],
+  "ltex.latex.commands": {
+    "\\cite{}": "dummy",
+    "\\citep{}": "dummy",
+    "\\citet{}": "dummy",
+    "\\ref{}": "dummy",
+    "\\eqref{}": "dummy",
+    "\\label{}": "ignore",
+    "\\index{}": "ignore"
+  },
+
+  // -------------------------------------------------------------
+  // Code Spell Checker en español (complementa LTeX para typos rápidos)
+  // -------------------------------------------------------------
+  "cSpell.language": "en,es",
+
+  // -------------------------------------------------------------
+  // Editor
+  // -------------------------------------------------------------
+  "[latex]": {
+    "editor.wordWrap": "on",
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.tabSize": 2
+  },
+  "[bibtex]": {
+    "editor.tabSize": 2
+  },
+  "files.associations": {
+    "*.tex": "latex",
+    "*.bib": "bibtex"
+  }
+}

@@ -1,0 +1,49 @@
+# --- LaTeX build artifacts ---
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.brf
+*.fdb_latexmk
+*.fls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.nav
+*.out
+*.run.xml
+*.snm
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.xdv
+*.dvi
+*.ps
+
+# Latexmk
+*.fdb_latexmk
+
+# pdfx
+*.xmpdata-bak
+
+# Hyperref
+*.upa
+*.upb
+
+# Output dir si usás latexmk con -outdir=build
+build/
+out/
+
+# --- Editor / OS ---
+.vscode/*.log
+.DS_Store
+Thumbs.db
+
+# WSL/NTFS metadata
+*:Zone.Identifier
+
+# --- Cursor / Cursor Server ---
+.cursor/cache/

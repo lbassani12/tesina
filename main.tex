@@ -1,0 +1,441 @@
+\documentclass[12pt]{article}
+
+% --- Motor: LuaLaTeX (UTF-8 nativo). Si compilás con pdflatex, descomentar el bloque inputenc. ---
+\usepackage{iftex}
+\ifLuaTeX
+  \usepackage{fontspec}            % UTF-8 nativo + fuentes del sistema
+\else
+  \usepackage[utf8]{inputenc}      % fallback para pdflatex (utf8x está deprecado)
+  \usepackage[T1]{fontenc}
+\fi
+
+\usepackage[spanish,es-tabla,es-noindentfirst]{babel}
+\usepackage{csquotes}
+\usepackage{url}
+\usepackage{lipsum}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{listings}
+\usepackage{float} % here for H placement parameter
+\usepackage{tabularx}
+\usepackage[hidelinks]{hyperref}
+\usepackage{imakeidx}               % imakeidx después de hyperref para enlaces en el índice
+
+\makeindex
+
+\title{\textbf{Una infraestructura técnica y procedimental para el análisis de noticias de portales digitales a través de inteligencia artificial generativa}\\
+\large Tesina de grado
+}
+
+\begin{document}
+\author{}
+\date{}
+
+\maketitle
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=5in]{LOGO-UNR-NEGRO.png}
+\end{figure}
+
+
+\begin{huge}
+\begin{center}
+\textit{Autor:} Lucio Bassani\\
+\textit{Director:} Alejandro Sartorio
+\end{center}
+\end{huge}
+
+\newpage
+
+\tableofcontents
+\printindex
+
+
+% agrego comentario para commitear y ver el sync
+
+
+\section{Introducción}
+\subsection{Motivación}
+El panorama informativo actual se caracteriza por la proliferación de portales digitales, que ofrecen una amplia variedad de noticias en línea. Hoy día, vivimos en un contexto de sociedades hipermediatizadas (Carlón, 2020)\cite{carlon:2020}, en donde el acceso y análisis de los discursos mediatizados a través de Internet presenta dos limitaciones fundamentales que deben ser sorteadas tanto por investigadores sociales, profesionales de la información como por gestores públicos para determinar y comprender su impacto en la sociedad.
+
+\begin{enumerate}
+\item La presencia de atributos sustanciales de los discursos (como metadatos descriptivos o técnicos) que residen en la 'infraestructura subyacente' (Couldry y Hepp, 2017)\cite{couldry:2017}, siendo inaccesibles al 'ojo desnudo', es decir, mediante la observación directa.
+
+\item La magnitud de los paquetes textuales y el volumen de los datos y metadatos asociados demandan análisis pormenorizados para generar conocimiento relevante, una tarea abrumadora sin las herramientas adecuadas.
+\end{enumerate}
+
+Esta necesidad se inscribe en un contexto más amplio dentro de las ciencias sociales y humanas, marcado por lo que se ha denominado el 'giro computacional' (Berry, 2011)\cite{berry:2011}. Este giro exige la incorporación de herramientas, técnicas y métodos que permitan enriquecer y sofisticar los procedimientos de análisis a través de su computarización (Meunier, 2022)\cite{meunier:2022}. La relevancia de este enfoque se extiende también a sectores de gestión gubernamental, donde la información actualizada proveniente de las conversaciones públicas es crucial para la toma de decisiones y el diseño de políticas públicas.
+
+
+Para superar este desafío, se necesitan instrumentos de análisis de texto más sofisticados que permitan identificar correlaciones entre noticias, acoplamiento y cohesión de los términos, conceptos y significantes. Estos instrumentos proporcionarán a los investigadores un sólido respaldo tecnológico para automatizar y optimizar sus protocolos de estudio, incluyendo la formación de la agenda mediática y la difusión de información de manera más eficiente.
+
+
+Una de las áreas de aplicación más relevantes de estos estudios se centra en la influencia de los medios de comunicación tradicionales en la configuración de la agenda pública, así como en el creciente impacto de las redes sociales como caja de resonancia de noticias y su llegada a públicos segmentados. Desde la publicación del influyente artículo ``La función de establecer la agenda de los medios de comunicación de masas" (McCombs, 1972)\cite{mccombs:1972}, se ha reconocido el papel fundamental de los medios de comunicación en la configuración de la percepción pública. No obstante, en la última década, la irrupción de las redes sociales, primero con la blogosfera y posteriormente con los sitios de aquellas, ha alterado significativamente este panorama.
+
+El desarrollo de las mediciones y la obtención de indicadores referidos a noticias publicadas en medios digitales se fue consolidando en los últimos tiempos. Para este propósito se utilizan técnicas de análisis y \textbf{procesamiento de lenguaje natural} (NLP, por sus siglas en inglés de ``Natural Language Processing"); \textbf{la minería de texto} (Tan, 1999\cite{tan:1999}; Hotho, Nürnberger y Paaß, 2005\cite{hotho:2005}); \textbf{ciencia de datos} para la identificación de entidades, relaciones e indicadores claves (KPI, por sus siglas en inglés de ``Key Performance Indicator''); \textbf{clasificación mediante redes neuronales}, etc. Estas herramientas aunque útiles para ciertas tareas, han demostrado limitaciones importantes para capturar la complejidad de los 'funcionamientos discursivos' que son esenciales para el análisis social (Gindin y Busso, 2018)\cite{gindin:2018}. Estas limitaciones incluyen dificultades para gestionar el contexto completo, mantener la atención en partes relevantes del texto, identificar relaciones complejas entre conceptos y adecuar la representación a tareas de análisis específicas, problemas que a menudo surgían con algoritmos previos a las generaciones actuales de inteligencia artificial generativa (en adelante, IAG) basadas en arquitectura transformer (Vaswani et al., 2017)\cite{vaswani:2017}
+
+Por lo tanto, es necesario desarrollar nuevas estrategias de análisis que superen estas restricciones, permitiendo acceder al nivel de los funcionamientos discursivos complejos y aplicando categorías y operaciones propias de diversas disciplinas científicas sociales.
+
+Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de los servicios de  IAG en un proceso original, combinados con técnicas de ciencias de datos y análisis de texto para organizar el análisis de noticias y representación de los resultados. La IAG se presenta como una tecnología prometedora, capaz de generar texto similar al humano y de capturar y reproducir relaciones complejas entre unidades lingüísticas, además de poder proveer cierto nivel de explicaciones sobre el significado de los patrones identificados en los textos analizados. Su aplicabilidad, calidad y confiabilidad se garantizará a través de un framework que involucre la supervisión, configuración, análisis y ecualizaciones por parte de expertos del dominio en diversas áreas de la investigación social.
+
+
+Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los "prompts" de la IAG a utilizar: 
+
+    \begin{enumerate}
+        \item Los datos empíricos de las noticias con el agregado de información de contexto. Ejemplo:  tipo de portal, georeferencia, importancia de la noticia, ubicación, etc.
+        \item Los objetivos requeridos para el análisis. Ejemplo: alcance, paradigma de análisis, referencias a tener en cuenta, etc.
+        \item El tipo de salida o representación del análisis. Ejemplo: narrativa, tablas, gráficos, etc.
+    \end{enumerate}
+\subsection{Objetivos}
+Teniendo en cuenta las necesidades e hipótesis de solución se define un objetivo general para este trabajo de la siguiente manera: 
+
+\begin{quote}
+        \textbf{Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
+        }
+\end{quote}
+
+Para la concreción del objetivo general propuesto se plantean los siguientes objetivos específicos. 
+
+    \begin{quote}
+    \begin{itemize}
+        \item [OE1:] \textbf{Desarrollar una aplicación informática que permita gestionar el proceso integral de extracción y transformación de datos, análisis y muestra de resultados.}
+    \end{itemize}
+    \end{quote}
+
+        \vspace{0.3 cm}
+
+        El alcance de este objetivo es crear un módulo específico que pueda ser integrado en la suite del framework denominado \textit{Odoo  fundation} \footnote{https://www.odoo.com/es\_ES} en su versión comunitaria de código abierto.
+        El módulo contará con servicios de gestión para los valores de parametrización de los algoritmos que intervienen en el proceso que se implementa. El usuario final podrá cargar, a través de formularios, la información necesaria para el acceso a los portales de noticias, las reglas de búsquedas de información y criterios sobre la aplicación de procedimientos. Se desarrollarán integraciones con otros módulos de la suite de Odoo que permitan la visualización de la información de resultados en tableros, informes y reportes adecuados para el propósito de aplicación.
+
+        \vspace{0.3 cm}
+
+        \begin{quote}
+            \begin{itemize}
+                \item [OE2:] \textbf{Diseñar e implementar, en la aplicación informática, un proceso que organice las tareas y procedimientos de las etapas de recolección de datos, análisis y visualización.} 
+             \end{itemize}
+        \end{quote}
+
+        \vspace{0.3 cm}
+
+        En este objetivo específico, se pretende organizar y automatizar la hoja de ruta necesaria para satisfacer a los expertos del dominio y usuarios finales de la tecnología. Las tareas que se deben ejecutar forman parte de un proceso que debe ser diseñado e implementado tecnológicamente.
+
+        
+        \vspace{0.3 cm}
+
+        \begin{quote}
+            \begin{itemize}
+                    \item [OE3:] \textbf{Diseñar e implementar los procedimientos de acceso a los servicios de IAG guiado por "prompts".}
+            \end{itemize}
+        \end{quote}
+
+        \vspace{0.3 cm}
+
+        Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \cite{land2002brief}
+\subsection{Marco Formal y Trabajo Previo }
+Según Luhman (2000, p. 1) \cite{luhmann2000}: ``\textit{Todo lo que sabemos acerca de nuestra sociedad, o más aún, acerca del mundo en el que vivimos, lo conocemos a través de los medios de comunicación masiva.}''. Es por esto que el estudio de la influencia de los medios de comunicación en la opinión pública ha sido un campo de investigación activo durante décadas, en el que se han desarrollado diferentes tipos de tecnologías, metodologías y métricas para medir este fenómeno. Entre las tecnologías más utilizadas se encuentran los sondeos de opinión, los análisis de contenido y las técnicas de neurociencia. Un ejemplo concreto de como se han utilizado estas herramientas es el estudio de la influencia de la cobertura mediática de los debates electorales en las preferencias de los votantes. 
+
+En cuestiones de análisis de datos a través de mediciones en portales de noticias online se puede mencionar el trabajo de tesis doctoral de Pablo Rey-Mazón (2023), ``Color of Corruption'' \cite{mazon:2023} el cual presenta varias herramientas y una metodología novedosas para medir el proceso de \textit{agenda-setting} en un ecosistema mediático complejo.
+
+Según Rey-Mazón la metodología tradicional de análisis de contenido se basa en el supuesto de que el contenido ya está completo y estático para su estudio. Este método presenta desafíos, ya que no toma en cuenta el flujo constante de noticias y su posible influencia en cómo los lectores reciben la información. En este contexto, Rey-Mazón presenta el software \textbf{Homepagex} que sigue la posición de los elementos de noticias en la página de inicio durante varios días, lo que permite obtener una imagen completa de los flujos y ciclos de noticias en los sitios web. Este software combina la construcción de una base de datos -mediante el rastreo web de las páginas de inicio a cada hora- con el análisis de contenido automatizado, lo que ofrece una posible forma de abordar el análisis de datos en el estudio actual.
+
+Otra herramienta planteada, denominada \textbf{Color of Corruption}, consiste en una base de datos de imágenes de noticias sobre corrupción. La base de datos está etiquetada con una serie de atributos, como el tono emocional, el enfoque narrativo y la presencia de actores específicos. La metodología, denominada \textit{``Visual Agenda-Setting Analysis''}, utiliza esta herramienta para analizar la cobertura mediática de los escándalos de corrupción. La tesis de Rey-Mazón es relevante para la presente investigación, ya que presenta una herramienta y una metodología de trabajo con características similares a la que se pretende construir en este trabajo. 
+
+Otras de las temáticas de estudio que se propone, se relaciona con el uso de algoritmos de inteligencia artificial generativa a través de los servicios basados en modelos similares a:  
+
+
+\begin{itemize}
+    \item LaMDA (Language Model for Dialogue Applications): modelo de lenguaje generativo de Google AI que se puede utilizar para crear nuevas noticias, traducir idiomas, escribir diferentes tipos de contenido creativo, y responder a preguntas de forma informativa.
+    \item DALL-E 2: modelo de generación de imágenes de OpenAI que se puede utilizar para crear imágenes a partir de texto, lo que puede ser útil para ilustrar noticias periodísticas.
+    \item GPT-3, GPT-J, GPT-Neo, GPT-NeoX: son modelos de lenguaje generativo de OpenAI que se puede utilizar para generar nuevos textos, lo que puede ser útil para crear nuevas noticias o traducir idiomas.
+    \item Meena: modelo de lenguaje generativo de Google AI que se puede utilizar para generar conversaciones de chat realistas.
+    \item Bard: modelo de lenguaje generativo de Google AI que se puede utilizar para generar diferentes formatos de texto creativo, como poemas, código, guiones, piezas musicales, correo electrónico, cartas, etc.
+    \item GPT-4: modelo de lenguaje generativo de OpenAI que aún está en desarrollo, pero se espera que sea aun más avanzado que los modelos anteriores. 
+\end{itemize}
+
+También será necesario contar con información de base que permita el diseño e implementación de procesos tomando como referencia antecedentes de construcción de flujos de trabajos guiados por estándares. Este tipo de construcciones son tareas complejas que requieren la participación de expertos provenientes de diferentes áreas. 
+
+Una referencia relevante en este campo es el trabajo de Prades et al. (2013) \cite{PRADES2013115}, que define una metodología para el diseño e implementación de modelos de procesos de negocio en BPMN, de acuerdo con el estándar ANSI/ISA-95. Este trabajo proporciona una guía detallada para la construcción de procesos en entornos de fabricación.
+
+Además de la información de base, es necesario contar con aplicaciones de procesos que incorporen servicios de inteligencia artificial generativa. Un ejemplo de la aplicación de IAGs en procesos es el trabajo de Bertagnolio et al. (2023) \cite{bertagnolio2023}, que utiliza un modelo de aprendizaje automático para generar códigos de ruido de turbinas eólicas. Este modelo se utiliza para comparar y verificar diferentes códigos de ruido.
+
+
+\begin{enumerate}
+\item \textbf{Influencia de las Redes Sociales en la política}: se ha investigado extensamente cómo las redes sociales influyen en la percepción pública, la participación ciudadana y la toma de decisiones políticas. Estudios han demostrado el impacto de plataformas como Twitter y Facebook en la difusión de información política y la formación de opiniones.
+
+\item \textbf{Análisis de sentimiento y temas}: las técnicas de análisis de sentimiento se han utilizado para evaluar la actitud del público hacia candidatos y temas políticos en las redes sociales. Esto permite comprender cómo las conversaciones en línea pueden influir en las estrategias de campaña y la percepción pública.
+
+\item \textbf{Generación de Contenido por IA}: la generación de contenido por medio de IA, incluyendo el uso de modelos de lenguaje generativo como GPT-3, ha abierto nuevas posibilidades para crear mensajes y discursos políticos personalizados. Esto es relevante tanto para la comunicación de campaña como para la interacción en redes sociales.
+
+\item \textbf{Modelado de procesos tecnológicos}: la aplicación de procesos tecnológicos, como el modelado de flujos de trabajo (BPMN), para automatizar la recopilación y análisis de datos en campañas políticas ha ganado atención. Estos procesos pueden optimizar la toma de decisiones y la asignación de recursos en tiempo real.
+
+\item \textbf{Casos de estudio y aplicaciones prácticas}: investigaciones previas han analizado elecciones específicas y campañas políticas para demostrar la eficacia de enfoques tecnológicos y de análisis de datos en la mejora de estrategias de comunicación y toma de decisiones.
+\end{enumerate}
+
+
+\section{Aplicación de Scrapping}
+
+\section{Mapa de procesos}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=5.4in]{procesoBPMN.png}
+\end{figure}
+
+\noindent\fbox{%
+    \parbox{\textwidth}{%
+      \textbf{Objetivo:} Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
+    
+      
+      \textbf{Alcance:} Desarrollar un framework que permita recopilar requerimientos de expertos (01), recopilar datos del mundo real utilizando técnicas de \textit{scrapping} (02), definir el contexto del análisis mediante el uso de \textit{prompt engineering} (03), obtener la salida de la IAG (04), realizar una visualización previa de los resultados (05), refinar la salida a través de la retroalimentación del análisis, ajustando y mejorando el contexto de manera iterativa; adaptándose progresivamente a las necesidades del experto a cargo (06), y presentar los resultados obtenidos (07).
+
+      
+      
+      \textbf{Entrada:} Datos empíricos de las noticias junto con información de contexto, requerimientos de análisis y tipo de salida deseada.
+
+      
+      \textbf{Salida:} Resultados producidos por la IAG, que pueden ser en forma de narrativas, tablas, gráficos u otras representaciones visuales, dependiendo de los objetivos requeridos.
+    }%
+}
+
+\vspace{0.5cm}
+
+De los procesos antes mencionados, a continuación se describen los procesos de soporte Nro. 02 -\textbf{Scrapping}, 03 - \textbf{Definición de Contexto} y 04- \textbf{Procesamiento IAG}.
+
+\newpage
+\subsection{Scrapping}
+\begin{figure}[h]
+\centering
+\includegraphics[height=4in]{Diagrama 02-Scrapping.png}
+\end{figure}
+
+\noindent\fbox{%
+    \parbox{\textwidth}{%
+        \textbf{Objetivo:} Recolectar datos relevantes de resultados electorales, encuestas y percepción de la gente en portales digitales regionales. Además, se busca automatizar este proceso para hacerlo más eficiente y facilitar el análisis posterior de los datos extraídos.
+        
+        \textbf{Alcance:} Selección de los portales digitales regionales más pertinentes para la obtención de datos. Por otro lado, se diseñarán formularios que permitan al experto especificar variables clave, como el rango de fechas y el tipo de elección (provincial o nacional).
+        
+        \textbf{Entrada:} Portales digitales regionales relevantes y variables claves como el rango de fechas y el tipo de elección.
+        
+        \textbf{Salida:} Datos procesados y transformados utilizando técnicas de NPL embedding, que permitirán su representación en forma numérica. Además, se aplicarán técnicas de encoding para almacenar los datos en un formato adecuado, teniendo en cuenta su posterior análisis y la implementación de algoritmos de inteligencia artificial.
+    }%
+}
+
+\textbf{Inicio}
+
+\textbf{01. Selección de portales de interés}
+
+Actor: Experto de dominio.
+
+Actividad: Seleccionar los portales que serán scrappeados por la herramienta. Esta elección se basa en criterios de idoneidad, credibilidad, número de visitas de usuarios y región geográfica específica. El experto evaluará cuidadosamente cada portal para determinar su relevancia y confiabilidad en cuanto a los datos que se desean obtener. Esta selección se basa en el conocimiento y experiencia del experto en el dominio específico y busca garantizar que los portales elegidos aporten información valiosa y representativa para el análisis posterior del proceso de Scrapping.
+
+\vspace{0.5cm}
+
+\textbf{02. Selección de métricas competentes}
+
+Actor: Experto de dominio.
+
+Actividad: Acotar la información que será recopilada por la aplicación de Scrapping. Esto implica seleccionar las métricas y datos relevantes que se guardarán durante el proceso de extracción. Además de las palabras clave y los títulos importantes, el experto puede considerar la inclusión de otros elementos, como:
+
+Categorías de información específicas relacionadas con los resultados electorales, encuestas o percepciones de la gente.
+Rango de fechas a recorrer para obtener datos históricos o analizar tendencias a lo largo del tiempo.
+Variables demográficas o geográficas relevantes para segmentar y comprender mejor los datos recolectados.
+Otros criterios específicos basados en el objetivo y alcance de la investigación.
+El experto debe tener en cuenta que la selección de métricas competentes es fundamental para garantizar la calidad y relevancia de los datos extraídos durante el proceso de Scrapping.
+\vspace{0.5cm}
+
+\textbf{03. Proceso de scrapp}
+
+Actor: Aplicación de Scrapping.
+
+Actividad: Recorrer los portales seleccionados y guardar la información relevante. Utiliza técnicas automatizadas para navegar por las páginas web, identificar los datos definidos previamente y extraerlos. La información se almacena en un formato adecuado para su posterior procesamiento y análisis.
+\vspace{0.5cm}
+
+\textbf{04. NPL Embedding}
+
+Actor: Aplicación de Scrapping.
+
+Actividad: La aplicación utilizará técnicas de NPL (Natural Language Processing) Embedding para transformar los datos de texto recolectados en representaciones numéricas de alta dimensionalidad. Esto implica asignar un vector numérico a cada palabra o frase, capturando su significado y contexto semántico. El objetivo es organizar y estructurar de manera que las palabras similares se encuentren en un espacio vectorial cercano,  permitiendo un análisis más eficiente y preciso en etapas posteriores del proceso. El NPL Embedding ayuda a la aplicación a comprender y procesar el texto de manera más sofisticada, facilitando la identificación de patrones, temas o tendencias en los datos extraídos.
+\vspace{0.5cm}
+
+\textbf{05. Embedding Personalizado}
+
+Actor: Experto de dominio.
+
+Actividad: Acotar o mejorar el embedding clásico aplicado a la data estructurada, de manera que pueda ser procesada de manera más efectiva por una inteligencia artificial generativa. El experto puede ajustar parámetros, aplicar técnicas avanzadas de embedding o incluso desarrollar nuevos enfoques para adaptar el embedding al contexto específico de la investigación.
+Puede involucrar la definición de reglas adicionales, ajustes finos en los pesos asignados a ciertos elementos o la inclusión de información adicional que sea relevante para el análisis. Este subproceso puede ser realizado de forma manual por el experto o, en algunos casos, ser apoyado por herramientas de automatización desarrolladas específicamente para este propósito.
+
+El objetivo de este subproceso es optimizar el embedding de manera personalizada y adaptada al dominio de estudio, lo que puede conducir a una mejora significativa en la calidad y precisión de los resultados generados por la inteligencia artificial generativa.
+\vspace{0.5cm}
+
+\textbf{06. Encoding}
+
+Actor: Aplicación de Clustering.
+
+Actividad: Convertir la información recopilada en un formato adecuado para la clusterización. El encoding consiste en representar los datos de manera numérica para poder aplicar algoritmos de clusterización y agruparlos en categorías o conjuntos similares. Esto implica asignar un valor numérico a cada dato o característica relevante que se utilizará en el proceso de agrupación.
+El proceso de encoding puede involucrar técnicas como la codificación one-hot, donde cada valor posible se convierte en una columna binaria independiente, o la codificación ordinal, donde se asignan valores numéricos a las categorías en función de un orden específico. El objetivo es proporcionar una representación numérica que capture las características y relaciones relevantes de los datos para facilitar su agrupación y análisis.
+
+
+
+
+\newpage
+\subsection{ Definición de Contexto}
+\begin{figure}[h]
+\centering
+\includegraphics[height=5.1in]{Diagrama 03-Contexto.png}
+\end{figure}
+
+\noindent\fbox{%
+    \parbox{\textwidth}{%
+        \textbf{Objetivo:} Generar el prompt completo que se le va a dar como entrada a la IAG a partir de la integración entre los templates creados de antemano y la intervención del experto de dominio. Este último podrá ajustar variables de entrada y definir el formato de salida esperado para el análisis.
+        
+        \textbf{Alcance:} Todas las interfaces gráficas necesarias para la toma de datos de los expertos
+        
+        \textbf{Entrada:} Requerimientos blandos de expertos de dominio y datos empíricos de las noticias
+        
+        \textbf{Salida:} Prompt completo para la IAG
+    }%
+}
+
+\newpage
+
+\textbf{Inicio}
+
+\textbf{01. Creación de Prompt Templates}
+
+Actor: Implementador de la aplicación.
+
+Actividad: Proporcionar una interfaz gráfica que habilite la selección de prompt templates para el experto de dominio. La elección de seleccionar un template en lugar de crear un prompt desde cero se realizó con el objetivo de evitar el "Síndrome de la Página en Blanco", que es el efecto en el que los usuarios, al encontrarse frente a una página en blanco, no saben por dónde comenzar \cite{mccombs:1972}.
+
+Los templates van a utilizar una lista de instrucciones básicas con características que queremos que todos cumplan basándonos en investigaciones previas de como crear un prompt adecuado \cite{mccombs:1972}\cite{prompt-eng:2024}. Ej:
+
+\begin{itemize}
+        \item Los prompts deben ser concisos, claros y fáciles de entender. Se debe evitar el lenguaje complejo y la información innecesaria.
+        \item Usar verbos de acción como Actuar, Analizar, Clasificar, Describir, Extraer, Generar, Parsear, Resumir, etc.
+        \item Uso de Instrucciones (qué hacer) en lugar de Restricciones (qué evitar).
+        \item Proporcionar ejemplos de interacciones deseadas en los prompts (One-shot y Few-shot): El one-shot prompting proporciona un solo ejemplo, mientras que el few-shot prompting proporciona múltiples ejemplos. Múltiples ejemplos en few-shot prompting aumentan la probabilidad de que el modelo siga el patrón. Los ejemplos incluidos deben ser relevantes para la tarea, diversos, de alta calidad y bien escritos. Incluir casos extremos (edge cases).
+        \item Escribir prompts que se asemejen (en cierta medida) a código fuente.
+    \end{itemize}
+
+La personalización de \textit{prompts} dentro del sistema propuesto no solo se basa en las combinaciones de ajustes que el experto pueda introducir, sino también en la comprensión de las distintas técnicas de \textit{prompting} que permiten optimizar el comportamiento del modelo. En este sentido, los \textit{templates} pueden variar tanto en los resultados esperados como en su estructura, dependiendo del tipo de información que procesen —por ejemplo, texto, imágenes, o una combinación de ambos— y del modelo utilizado (como ChatGPT para texto o DALL·E 2 para imágenes).
+
+Una forma efectiva de categorizar y configurar estos \textit{templates} es mediante la aplicación de estrategias de \textit{prompting} diferenciadas. Distinguir entre estos tipos proporciona un marco conceptual claro para diseñar \textit{prompts} con intención y eficacia\cite{prompt-eng:2024}:
+
+\begin{itemize}
+    \item \textbf{System Prompting:} Establece el contexto general y el propósito de la tarea. Sirve para definir las capacidades fundamentales del modelo y cómo debe comportarse en términos estructurales. Por ejemplo, se puede usar para solicitar que las respuestas sigan un formato específico, como una estructura en JSON o una tabla.
+    
+    \item \textbf{Contextual Prompting:} Proporciona información específica o de fondo que es relevante para la tarea. Este tipo de \textit{prompting} ayuda al modelo a interpretar correctamente la situación, como cuando se incluyen directamente en el \textit{prompt} datos empíricos provenientes de noticias, investigaciones u otras fuentes confiables.
+    
+    \item \textbf{Role Prompting:} Asigna una identidad o rol al modelo, moldeando el estilo y tono de la salida. Aunque es menos central para tareas de análisis objetivo, puede ser útil cuando se requiere una narrativa con un enfoque determinado, como la voz de un periodista, un analista político o un divulgador científico.
+\end{itemize}
+
+Así, la construcción de \textit{prompts} eficaces no solo depende del contenido a procesar o del modelo empleado, sino también del diseño intencional del contexto comunicativo. Integrar estos enfoques permite al experto desarrollar \textit{templates} más robustos, flexibles y alineados con los objetivos analíticos del sistema, favoreciendo un mayor control sobre la salida generada por los modelos de lenguaje.
+
+Agregaremos a la interfaz gráfica una forma intuitiva de seleccionar las distintas configuraciones mencionadas.
+
+\vspace{0.5cm}
+
+\textbf{02. Implementación UI de formularios para fine tuning}
+
+Actor: Implementador de la aplicación.
+
+Actividad: Proporcionar una interfaz gráfica que habilite el ajuste de las variables libres que no quedaron definidas en los templates anteriores.
+
+\vspace{0.5cm}
+
+\textbf{03. Selección de template}
+
+Actor: Experto de dominio.
+
+Actividad: Seleccionar un template inicial para el análisis.
+
+\vspace{0.5cm}
+
+\textbf{04. Customización de variables de contexto}
+
+Actor: Experto de dominio.
+
+Actividad: Configuración de las variables necesarias para el \textit{template} seleccionado. En este paso, el experto podrá usar una batería de herramientas de interfaz gráfica para personalizar su contexto, por ejemplo: fechas desde-hasta de publicaciones, palabras clave, combinación de conceptos, etc.
+
+Además de estos filtros contextuales iniciales, esta etapa también incluye la configuración de parámetros clave que afectan el comportamiento del modelo de lenguaje.\cite{prompt-eng:2024}
+\begin{itemize}
+    \item \textbf{Temperature:} Controla el grado de aleatoriedad en la generación de texto. Un valor más bajo (cercano a 0) hace que el modelo sea más determinístico y predecible, lo que resulta útil para tareas fácticas o consistentes, como el análisis de noticias. Valores más altos incrementan la diversidad de la salida, lo cual puede ser útil en tareas creativas. Esta variable ya ha sido contemplada en la tabla del proceso de \textit{scraping}, y forma parte de la definición operativa del contexto para la Inteligencia Artificial Generativa (IAG).
+    
+    \item \textbf{Top-K y Top-P:} Son técnicas que restringen la predicción del siguiente token a un subconjunto de tokens con mayor probabilidad. \textit{Top-K} limita la elección a los K tokens más probables, mientras que \textit{Top-P} (también conocido como \textit{nucleus sampling}) considera los tokens cuya probabilidad acumulada alcanza un umbral P. Ambos parámetros permiten modular la aleatoriedad y control de la generación.
+    
+    \item \textbf{Output Length:} Define la cantidad máxima de tokens a generar por parte del modelo. Cuantos más tokens se generen, mayor será el cómputo requerido, lo que impacta en el tiempo de respuesta y los recursos utilizados. Esta longitud puede controlarse directamente en el sistema o bien incluirse como una instrucción dentro del \textit{prompt}. La tesis ya hace referencia al ``Token Limit'' dentro de las tablas de ejemplo de \textit{prompts}.
+    
+    \item \textbf{Uso de variables:} Para aumentar la reutilización y adaptabilidad de los \textit{templates}, es recomendable incorporar variables dinámicas en los \textit{prompts}. Estas permiten insertar datos contextuales (como fechas, actores, ubicaciones o temas) sin necesidad de reescribir el \textit{prompt} completo cada vez. Esta estrategia, también mencionada previamente en la tesis, optimiza el proceso de personalización y facilita la integración del sistema en flujos de trabajo automatizados.
+\end{itemize}
+
+\vspace{0.5cm}
+
+\textbf{05. Ingreso de texto libre}
+
+Actor: Experto de dominio.
+
+Actividad: El experto podrá ingresar libremente aclaraciones o ejemplos que querrá incluir en el prompt para dejar en claro cual es su idea de análisis. Con el fin de guiar de manera efectiva el proceso de generación, resulta útil incluir ejemplos o escenarios específicos en los prompts. Estos ejemplos pueden ilustrar los tipos de interacciones o respuestas deseadas que la IAG debería generar. Al incorporarlos la IAG puede aprender y emular el comportamiento deseado. 
+
+En un estudio previo todos los participantes mostraron una fuerte preferencia por la instrucción directa en lugar de proporcionar ejemplos en línea, y cuando se les animó a dar ejemplos, la mayoría de los participantes lo hicieron y señalaron su efectividad en la mejora de resultados \cite{mccombs:1972}.
+
+
+\vspace{0.5cm}
+
+\textbf{06. Procesamiento}
+
+Actor: Módulo de Odoo.
+
+Actividad: Estructurizar el prompt que sera entregado a la IAG utilizando las entradas del experto y los datos empíricos de las noticias. Se espera la salida de una string formateada en algún lenguaje de marcado que sea interpretado por la IAG.
+
+\newpage
+\subsection{Procesamiento IAG}
+
+\begin{figure}[h]
+\centering
+\includegraphics[height=3.5in]{Diagrama 04-IAG.png}
+\end{figure}
+
+\textbf{01. Procesamiento IAG}
+
+Actor: Aplicación de Inteligencia Artificial Generativa.
+
+Actividad: Utilizando los datos previamente descriptos, el prompt adecuadamente construido y una conexión estable con la API del modelo generativo seleccionado, se ejecuta la petición correspondiente. El objetivo principal de esta actividad es generar resultados creativos y originales a partir de la inteligencia artificial generativa.
+
+\vspace{0.5cm}
+
+\textbf{02. Decoder}
+
+Actor: Aplicación de Decodificación.
+
+Actividad: Preparar la información generada por la IAG para su posterior reutilización en otros contextos o plantillas.
+
+\vspace{0.5cm}
+
+\textbf{03. Normalización}
+
+Actor: Investigador o analista de datos.
+
+Actividad: Realizar un raconto final de todo el camino recorrido durante el proceso, desde los datos iniciales hasta la generación de la salida del modelo generativo. El objetivo de esta actividad es realizar una normalización de los datos y resultados obtenidos para poder realizar comparaciones, evaluaciones y análisis posteriores de manera coherente y sistemática.
+
+La normalización implica varias tareas, como:
+
+\begin{itemize}
+    \item Documentación detallada: documentar todo el proceso en un informe o documento, donde se especifican todas las etapas, herramientas utilizadas, parámetros, ajustes y cualquier otro detalle relevante. Esta documentación sirve como referencia para futuros análisis y también permite una mayor transparencia y reproducibilidad del proceso.
+    \item Organización de los datos: organizar datos recopilados, los parámetros utilizados, el prompt generado y cualquier otra información relevante en una estructura coherente y accesible. Esto facilita la revisión y comparación de los datos en etapas posteriores.
+    \item Comparación con variables: al definirse variables específicas, el investigador realiza una comparación de la salida generada por el modelo con estas variables. Esto permite evaluar qué tan bien se ajusta la salida a las expectativas y criterios establecidos, y también identificar posibles desviaciones o inconsistencias.
+    \item Análisis de resultados: analizar en función de los criterios y objetivos deseados. Esto puede incluir la evaluación de la coherencia del texto generado, la calidad de las respuestas, la relevancia semántica o cualquier otro aspecto específico relacionado con el proyecto de investigación.
+
+\end{itemize}
+
+\newpage
+
+\section{Conclusiones y Trabajo a Futuro}
+
+
+
+
+\bibliographystyle{unsrt} % We choose the "plain" reference style
+\bibliography{refs} % Entries are in the refs.bib file
+\end{document}

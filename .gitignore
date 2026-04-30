@@ -37,6 +37,9 @@
 build/
 out/
 
+# Cache de luaotfload (TEXMFVAR/CACHE/CONFIG redirigidos en .latexmkrc)
+.cache/
+
 # --- Editor / OS ---
 .vscode/*.log
 .DS_Store

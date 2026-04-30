@@ -1,6 +1,18 @@
 # Build config para latexmk (Tesina Bassani)
 # Uso: `latexmk` para compilar, `latexmk -c` para limpiar auxiliares, `latexmk -C` para borrar también el PDF.
 
+# Cache local de luaotfload (evita "no writeable cache path" cuando $HOME no es escribible).
+# Estos dirs son ignorados por git (ver .gitignore).
+use Cwd;
+my $repo_root = getcwd();
+$ENV{'TEXMFVAR'}    = "$repo_root/.cache/texmf-var";
+$ENV{'TEXMFCACHE'}  = "$repo_root/.cache/texmf-cache";
+$ENV{'TEXMFCONFIG'} = "$repo_root/.cache/texmf-config";
+mkdir "$repo_root/.cache"             unless -d "$repo_root/.cache";
+mkdir $ENV{'TEXMFVAR'}                unless -d $ENV{'TEXMFVAR'};
+mkdir $ENV{'TEXMFCACHE'}              unless -d $ENV{'TEXMFCACHE'};
+mkdir $ENV{'TEXMFCONFIG'}             unless -d $ENV{'TEXMFCONFIG'};
+
 # Motor: LuaLaTeX (UTF-8 nativo, mejor para español)
 $pdf_mode = 4;   # 1=pdflatex, 4=lualatex, 5=xelatex
 

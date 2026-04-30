@@ -64,6 +64,19 @@
   "latex-workshop.synctex.afterBuild.enabled": true,
 
   // -------------------------------------------------------------
+  // Formateador: latexindent (incluido en texlive-full)
+  // Atajo: Shift+Alt+F  /  o "format on save" si lo activás abajo.
+  // -------------------------------------------------------------
+  "latex-workshop.formatting.latex": "latexindent",
+  "latex-workshop.formatting.latexindent.path": "latexindent",
+  "latex-workshop.formatting.latexindent.args": [
+    "-c",
+    "%DIR%/",
+    "%TMPFILE%",
+    "-y=defaultIndent: '  ',onlyOneBackUp: 1"
+  ],
+
+  // -------------------------------------------------------------
   // LTeX (corrección gramatical) – idioma por defecto: español de Argentina
   // -------------------------------------------------------------
   "ltex.language": "es-AR",

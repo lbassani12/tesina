@@ -36,6 +36,7 @@
 # Output dir si usás latexmk con -outdir=build
 build/
 out/
+tmp/
 
 # Cache de luaotfload (TEXMFVAR/CACHE/CONFIG redirigidos en .latexmkrc)
 .cache/
@@ -50,3 +51,6 @@ Thumbs.db
 
 # --- Cursor / Cursor Server ---
 .cursor/cache/
+
+# --- Contexto privado para asistentes (Claude, Cursor, etc.) ---
+CLAUDE.md

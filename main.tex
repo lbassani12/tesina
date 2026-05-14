@@ -83,7 +83,7 @@ Por lo tanto, es necesario desarrollar nuevas estrategias de análisis que super
 Siguiendo con estos lineamientos, se plantea la hipótesis de la utilización de los servicios de  IAG en un proceso original, combinados con técnicas de ciencias de datos y análisis de texto para organizar el análisis de noticias y representación de los resultados. La IAG se presenta como una tecnología prometedora, capaz de generar texto similar al humano y de capturar y reproducir relaciones complejas entre unidades lingüísticas, además de poder proveer cierto nivel de explicaciones sobre el significado de los patrones identificados en los textos analizados. Su aplicabilidad, calidad y confiabilidad se garantizará a través de un framework que involucre la supervisión, configuración, análisis y ecualizaciones por parte de expertos del dominio en diversas áreas de la investigación social.
 
 
-Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los "prompts" de la IAG a utilizar:
+Para su implementación se utilizarán los siguientes datos de entrada para la construcción de los ``prompts'' de la IAG a utilizar:
 
 \begin{enumerate}
   \item Los datos empíricos de las noticias con el agregado de información de contexto. Ejemplo:  tipo de portal, georeferencia, importancia de la noticia, ubicación, etc.
@@ -128,16 +128,18 @@ En este objetivo específico, se pretende organizar y automatizar la hoja de rut
 
 \begin{quote}
   \begin{itemize}
-    \item [OE3:] \textbf{Diseñar e implementar los procedimientos de acceso a los servicios de IAG guiado por "prompts".}
+    \item [OE3:] \textbf{Diseñar e implementar los procedimientos de acceso a los servicios de IAG guiado por ``prompts''.}
   \end{itemize}
 \end{quote}
 
 \vspace{0.3 cm}
 
-Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \cite{land2002brief}
+Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \citep{land2002brief}
 
 \section{Revisión Sistemática de la Literatura}
+\label{cap:rsl}
 \subsection{Introducción y Preguntas de la Revisión}
+\label{sec:rsl-intro}
 La presente revisión de la literatura aborda el estado del arte en la intersección de las ciencias sociales, computacionales y la IAG. En el contexto de un ecosistema mediático caracterizado por la hipermediatización y la proliferación de datos, los métodos tradicionales de análisis de contenido enfrentan desafíos sin precedentes. Este capítulo explora las bases teóricas y técnicas necesarias para fundamentar una infraestructura que automatice el análisis de noticias realizando una Revisión Sistemática de la Literatura (RSL). Esta revisión tiene como propósito analizar el estado del arte y orientar la investigación en torno a las siguientes preguntas (Preguntas de Investigación):
 \begin{itemize}
   \item [PR1:] ¿Cuáles son las limitaciones de las técnicas tradicionales de Procesamiento de Lenguaje Natural (NLP) frente a la complejidad del análisis discursivo en medios digitales?
@@ -146,9 +148,10 @@ La presente revisión de la literatura aborda el estado del arte en la intersecc
 \end{itemize}
 
 \subsection{Metodología de Búsqueda y Selección}
+\label{sec:rsl-metodologia}
 Para garantizar la solidez científica de la revisión, se estableció una estrategia de búsqueda bibliográfica inspirada en las directrices del protocolo PRISMA. La exploración se centró en identificar estudios que combinaran análisis de noticias, web scraping, embeddings y modelos de lenguaje extenso (LLM).
 
-La recolección de información se llevó a cabo utilizando cadenas de búsqueda específicas en los motores y bases de datos académicas principales: Google Scholar y ArXiv. Se aplicaron criterios de inclusión priorizando artículos, tesis y actas de conferencias publicados en los últimos años, escritos en español o inglés, que presentaran detalles técnicos sobre la implementación de arquitecturas para el procesamiento de texto. Se excluyeron trabajos puramente teóricos sin un componente de software sustancial o que estuvieran basados en tecnologías obsoletas. Tras un proceso de filtrado inicial por título y resumen, se evaluaron los textos completos para determinar su elegibilidad. A continuación, se presenta el cuadro metodológico de la selección de literatura:
+La recolección de información se llevó a cabo utilizando cadenas de búsqueda específicas en los motores y bases de datos académicas principales: Google Scholar y ArXiv. Se aplicaron criterios de inclusión priorizando artículos, tesis y actas de conferencias publicados en los últimos años, escritos en español o inglés, que presentaran detalles técnicos sobre la implementación de arquitecturas para el procesamiento de texto. Se excluyeron trabajos puramente teóricos sin un componente de software sustancial o que estuvieran basados en tecnologías obsoletas. Tras un proceso de filtrado inicial por título y resumen, se evaluaron los textos completos para determinar su elegibilidad. El cuadro metodológico de la selección de literatura se presenta en la Figura~\ref{fig:prisma}.
 
 \begin{figure}[H]
   \centering
@@ -160,7 +163,8 @@ La recolección de información se llevó a cabo utilizando cadenas de búsqueda
 \noindent\small\textit{Nota: las referencias de marco teórico (Vaswani et al., 2017; McCombs, 1972; Luhmann, 2000; entre otras) fueron incorporadas directamente como antecedentes conceptuales, fuera del proceso de búsqueda sistemática PRISMA.}\normalsize
 \newpage
 
-\subsection{Marco Formal y Trabajo Previo }
+\subsection{Marco Formal y Trabajo Previo}
+\label{sec:rsl-marco}
 Según \citet[p.~1]{luhmann2000}: ``\textit{Todo lo que sabemos acerca de nuestra sociedad, o más aún, acerca del mundo en el que vivimos, lo conocemos a través de los medios de comunicación masiva.}''. Es por esto que el estudio de la influencia de los medios de comunicación en la opinión pública ha sido un campo de investigación activo durante décadas, en el que se han desarrollado diferentes tipos de tecnologías, metodologías y métricas para medir este fenómeno. Entre las tecnologías más utilizadas se encuentran los sondeos de opinión, los análisis de contenido y las técnicas de neurociencia. Un ejemplo concreto de como se han utilizado estas herramientas es el estudio de la influencia de la cobertura mediática de los debates electorales en las preferencias de los votantes.
 
 En cuestiones de análisis de datos a través de mediciones en portales de noticias online se puede mencionar el trabajo de tesis doctoral de Pablo Rey-Mazón, ``Color of Corruption'' \citep{mazon:2023} el cual presenta varias herramientas y una metodología novedosas para medir el proceso de \textit{agenda-setting} en un ecosistema mediático complejo.
@@ -176,31 +180,36 @@ A su vez, esta investigación se apoya en los recientes avances algorítmicos. L
   \item Modelos multimodales: Como DALL-E 2, útiles para complementar representaciones visuales del discurso
 \end{itemize}
 
-Para integrar estas tecnologías de IA en una infraestructura utilizable, es necesario orquestarlas mediante estándares de procesos de negocio. Trabajos como el de \citet{PRADES2013115} establecen metodologías para implementar flujos de trabajo en BPMN, de acuerdo con el estándar ANSI/ISA-95. Mientras que investigaciones recientes, como la de \cite{bertagnolio2023}, ya demuestran la viabilidad de incorporar modelos generativos (IAG) dentro de estos mapas de procesos tecnológicos y automatizados.
+Para integrar estas tecnologías de IA en una infraestructura utilizable, es necesario orquestarlas mediante estándares de procesos de negocio. Trabajos como el de \citet{PRADES2013115} establecen metodologías para implementar flujos de trabajo en BPMN, de acuerdo con el estándar ANSI/ISA-95. Mientras que investigaciones recientes, como la de \citet{bertagnolio2023}, ya demuestran la viabilidad de incorporar modelos generativos (IAG) dentro de estos mapas de procesos tecnológicos y automatizados.
 
 
 \subsection{Estado del Arte: Análisis de la Literatura}
-La revisión se organiza en tres ejes temáticos: las limitaciones de las técnicas de procesamiento de lenguaje natural (NLP) clásicas, la evolución de la teoría del \textit{agenda-setting} en entornos digitales, y las arquitecturas de software emergentes basadas en modelos de lenguaje extenso (LLMs). Finalmente, se conectan estos hallazgos con las preguntas de investigación de esta tesis.
+\label{sec:rsl-estado-arte}
+La revisión se organiza en tres ejes temáticos: las limitaciones de las técnicas de procesamiento de lenguaje natural (NLP) clásicas, la evolución de la teoría del \textit{agenda-setting} en entornos digitales, y las arquitecturas de software emergentes basadas en modelos de lenguaje extenso (LLMs). Finalmente, se conectan estos hallazgos con las preguntas de investigación de esta tesina.
 
 \subsubsection{Limitaciones del Procesamiento de Lenguaje Natural (NLP) Tradicional}
+\label{sec:rsl-nlp}
 El análisis de grandes volúmenes de noticias ha dependido históricamente de técnicas de NLP centradas en la detección de palabras clave y análisis de sentimiento superficial. Sin embargo, autores como \citet{milbauer2023} sostienen que estas técnicas fallan al capturar el \textit{sensemaking} cross-documental, es decir, la capacidad de contrastar y sintetizar perspectivas contradictorias presentes en múltiples artículos. Mientras que el NLP tradicional trata los documentos como entidades aisladas, la necesidad actual de investigadores sociales exige interfaces que evalúen el apoyo o contradicción de la evidencia en tiempo real \citep{milbauer2023}.
 
 Por otro lado, \citet{pavlyshenko2024} evalúa el uso de modelos GPT frente a métodos estadísticos tradicionales, concluyendo que, aunque la IAG ofrece una capacidad interpretativa superior para el análisis cualitativo, aún presenta incertidumbres significativas en la cuantificación de datos. Esta postura contrasta con enfoques puramente algorítmicos al sugerir que la IAG no reemplaza al NLP estadístico, sino que requiere de marcos complementarios (como la regresión bayesiana) para interpretar los sesgos inherentes en las salidas generadas \citep{pavlyshenko2024}.
 
 \subsubsection{Impacto de los Medios y la Teoría del Agenda-Setting en la Era Digital}
+\label{sec:rsl-agenda}
 La capacidad de los portales digitales para encuadrar la realidad social sigue siendo un pilar de las ciencias sociales. \citet{haider2025} proponen un framework para detectar el sesgo mediático a escala, subrayando que la selección y el encuadre (\textit{framing}) pueden medirse sistemáticamente mediante pipelines de scraping integrados con LLMs. Este enfoque permite una vigilancia continua de la responsabilidad mediática, algo que los métodos manuales de codificación no podían alcanzar por limitaciones de escala \citep{haider2025}.
 
 Complementariamente, el estudio de \citet{sundar2025} sobre la difusión del miedo hacia la inteligencia artificial evidencia cómo la cobertura mediática amplifica sentimientos públicos. Al emplear una combinación de aprendizaje automático y LLMs, los autores logran trazar dinámicas emocionales en el corpus noticioso, demostrando que la infraestructura técnica es capaz de revelar no solo qué temas están en la agenda, sino qué emociones colectivas se están propagando a través de ella \citep{sundar2025}.
 
 \subsection{Arquitecturas de Software Basadas en Inteligencia Artificial Generativa}
-La implementación de infraestructuras técnicas ha evolucionado hacia sistemas modulares y agentes autónomos. \citet{behbahanian} describe el sistema \textit{GlimzAI}, que utiliza flujos de trabajo "agentic" y \textit{embeddings} de Sentence-BERT para la deduplicación semántica. Este enfoque es fundamental para el análisis de noticias, ya que permite gestionar la redundancia informativa de múltiples portales.
+\label{sec:rsl-arquitecturas}
+La implementación de infraestructuras técnicas ha evolucionado hacia sistemas modulares y agentes autónomos. \citet{behbahanian} describe el sistema \textit{GlimzAI}, que utiliza flujos de trabajo ``agentic'' y \textit{embeddings} de Sentence-BERT para la deduplicación semántica. Este enfoque es fundamental para el análisis de noticias, ya que permite gestionar la redundancia informativa de múltiples portales.
 
 Asimismo, \citet{neupane2025} demuestra la eficacia de combinar un backend de scraping basado en Node.js con modelos como GPT-4o para orquestar pipelines que van desde la extracción y clustering semántico hasta la publicación automatizada de contenido \citep{neupane2025}.
 
 \subsubsection{Síntesis Crítica y Brechas en la Investigación}
+\label{sec:rsl-brechas}
 Al contrastar las fuentes, se observa una convergencia clara en el uso de \textit{embeddings} para la representación semántica del contenido y pipelines modulares de extracción, procesamiento y publicación \citep{neupane2025, behbahanian}. No obstante, surgen divergencias en cuanto a la prioridad: mientras algunos autores se enfocan en la eficiencia de la entrega de contenidos \citep{behbahanian}, otros priorizan la verificabilidad y la explicabilidad del rastro documental \citep{milbauer2023}.
 
-Se han identificado las siguientes brechas que el framework propuesto en esta tesis busca llenar:
+Se han identificado las siguientes brechas que el framework propuesto en esta tesina busca llenar:
 \begin{itemize}
   \item \textbf{Escalabilidad y consistencia de anotaciones:} Aunque se busca medir la selección y el encuadre (agenda-setting), falta un estándar interoperable de etiquetas (tópico, tono, tipo de cobertura, tal como lo describe \citet{haider2025}) y formas de evaluar su fiabilidad cross-plataforma.
   \item \textbf{Robustez del Scraping:} La mayoría de los prototipos documentados no abordan estrategias de mantenimiento ante cambios estructurales en portales dinámicos \citep{haider2025}.
@@ -213,6 +222,7 @@ Se han identificado las siguientes brechas que el framework propuesto en esta te
 
 
 \subsubsection{Conclusión}
+\label{sec:rsl-conclusion}
 La literatura analizada valida la viabilidad de una infraestructura que combine web scraping, vectorización mediante \textit{embeddings} y \textit{prompt engineering}. Sin embargo, la transición de prototipos genéricos a herramientas institucionalizadas para la investigación social requiere superar obstáculos estructurales. La revisión ha evidenciado que los sistemas actuales carecen de mecanismos robustos para garantizar la trazabilidad de las fuentes, la medición de la incertidumbre en las inferencias del modelo y la tolerancia a fallos en la extracción de datos.
 
 En consecuencia, las metodologías tradicionales deben evolucionar hacia procesos computarizados auditables. Esta tesina se apoya en los hallazgos de esta revisión para proponer una infraestructura técnica y procedimental que no solo automatice la recolección, sino que garantice el rigor científico necesario para analizar el \textit{agenda-setting} digital, mitigando las limitaciones interpretativas y de gobernanza ética presentes en el estado del arte.
@@ -350,9 +360,9 @@ El proceso de encoding puede involucrar técnicas como la codificación one-hot,
 
 Actor: Implementador de la aplicación.
 
-Actividad: Proporcionar una interfaz gráfica que habilite la selección de prompt templates para el experto de dominio. La elección de seleccionar un template en lugar de crear un prompt desde cero se realizó con el objetivo de evitar el "Síndrome de la Página en Blanco", que es el efecto en el que los usuarios, al encontrarse frente a una página en blanco, no saben por dónde comenzar \cite{mccombs:1972}.
+Actividad: Proporcionar una interfaz gráfica que habilite la selección de prompt templates para el experto de dominio. La elección de seleccionar un template en lugar de crear un prompt desde cero se realizó con el objetivo de evitar el ``Síndrome de la Página en Blanco'' (\textit{Blank Page Syndrome}), el efecto en el que los usuarios, al encontrarse frente a una página en blanco, no saben por dónde comenzar \citep{johnyprompt}.
 
-Los templates van a utilizar una lista de instrucciones básicas con características que queremos que todos cumplan basándonos en investigaciones previas de como crear un prompt adecuado \cite{mccombs:1972}\cite{prompt-eng:2024}. Ej:
+Los templates van a utilizar una lista de instrucciones básicas con características que queremos que todos cumplan basándonos en investigaciones previas sobre cómo crear un prompt adecuado \citep{johnyprompt, prompt-eng:2024}. Ej:
 
 \begin{itemize}
   \item Los prompts deben ser concisos, claros y fáciles de entender. Se debe evitar el lenguaje complejo y la información innecesaria.
@@ -364,7 +374,7 @@ Los templates van a utilizar una lista de instrucciones básicas con caracterís
 
 La personalización de \textit{prompts} dentro del sistema propuesto no solo se basa en las combinaciones de ajustes que el experto pueda introducir, sino también en la comprensión de las distintas técnicas de \textit{prompting} que permiten optimizar el comportamiento del modelo. En este sentido, los \textit{templates} pueden variar tanto en los resultados esperados como en su estructura, dependiendo del tipo de información que procesen —por ejemplo, texto, imágenes, o una combinación de ambos— y del modelo utilizado (como ChatGPT para texto o DALL·E 2 para imágenes).
 
-Una forma efectiva de categorizar y configurar estos \textit{templates} es mediante la aplicación de estrategias de \textit{prompting} diferenciadas. Distinguir entre estos tipos proporciona un marco conceptual claro para diseñar \textit{prompts} con intención y eficacia\cite{prompt-eng:2024}:
+Una forma efectiva de categorizar y configurar estos \textit{templates} es mediante la aplicación de estrategias de \textit{prompting} diferenciadas. Distinguir entre estos tipos proporciona un marco conceptual claro para diseñar \textit{prompts} con intención y eficacia \citep{prompt-eng:2024}:
 
 \begin{itemize}
   \item \textbf{System Prompting:} Establece el contexto general y el propósito de la tarea. Sirve para definir las capacidades fundamentales del modelo y cómo debe comportarse en términos estructurales. Por ejemplo, se puede usar para solicitar que las respuestas sigan un formato específico, como una estructura en JSON o una tabla.
@@ -402,7 +412,7 @@ Actor: Experto de dominio.
 
 Actividad: Configuración de las variables necesarias para el \textit{template} seleccionado. En este paso, el experto podrá usar una batería de herramientas de interfaz gráfica para personalizar su contexto, por ejemplo: fechas desde-hasta de publicaciones, palabras clave, combinación de conceptos, etc.
 
-Además de estos filtros contextuales iniciales, esta etapa también incluye la configuración de parámetros clave que afectan el comportamiento del modelo de lenguaje.\cite{prompt-eng:2024}
+Además de estos filtros contextuales iniciales, esta etapa también incluye la configuración de parámetros clave que afectan el comportamiento del modelo de lenguaje \citep{prompt-eng:2024}.
 \begin{itemize}
   \item \textbf{Temperature:} Controla el grado de aleatoriedad en la generación de texto. Un valor más bajo (cercano a 0) hace que el modelo sea más determinístico y predecible, lo que resulta útil para tareas fácticas o consistentes, como el análisis de noticias. Valores más altos incrementan la diversidad de la salida, lo cual puede ser útil en tareas creativas. Esta variable ya ha sido contemplada en la tabla del proceso de \textit{scraping}, y forma parte de la definición operativa del contexto para la Inteligencia Artificial Generativa (IAG).
 
@@ -410,7 +420,7 @@ Además de estos filtros contextuales iniciales, esta etapa también incluye la 
 
   \item \textbf{Output Length:} Define la cantidad máxima de tokens a generar por parte del modelo. Cuantos más tokens se generen, mayor será el cómputo requerido, lo que impacta en el tiempo de respuesta y los recursos utilizados. Esta longitud puede controlarse directamente en el sistema o bien incluirse como una instrucción dentro del \textit{prompt}. La tesis ya hace referencia al ``Token Limit'' dentro de las tablas de ejemplo de \textit{prompts}.
 
-  \item \textbf{Uso de variables:} Para aumentar la reutilización y adaptabilidad de los \textit{templates}, es recomendable incorporar variables dinámicas en los \textit{prompts}. Estas permiten insertar datos contextuales (como fechas, actores, ubicaciones o temas) sin necesidad de reescribir el \textit{prompt} completo cada vez. Esta estrategia, también mencionada previamente en la tesis, optimiza el proceso de personalización y facilita la integración del sistema en flujos de trabajo automatizados.
+  \item \textbf{Uso de variables:} Para aumentar la reutilización y adaptabilidad de los \textit{templates}, es recomendable incorporar variables dinámicas en los \textit{prompts}. Estas permiten insertar datos contextuales (como fechas, actores, ubicaciones o temas) sin necesidad de reescribir el \textit{prompt} completo cada vez. Esta estrategia, también mencionada previamente en la tesina, optimiza el proceso de personalización y facilita la integración del sistema en flujos de trabajo automatizados.
 \end{itemize}
 
 \vspace{0.5cm}
@@ -421,7 +431,7 @@ Actor: Experto de dominio.
 
 Actividad: El experto podrá ingresar libremente aclaraciones o ejemplos que querrá incluir en el prompt para dejar en claro cual es su idea de análisis. Con el fin de guiar de manera efectiva el proceso de generación, resulta útil incluir ejemplos o escenarios específicos en los prompts. Estos ejemplos pueden ilustrar los tipos de interacciones o respuestas deseadas que la IAG debería generar. Al incorporarlos la IAG puede aprender y emular el comportamiento deseado.
 
-En un estudio previo todos los participantes mostraron una fuerte preferencia por la instrucción directa en lugar de proporcionar ejemplos en línea, y cuando se les animó a dar ejemplos, la mayoría de los participantes lo hicieron y señalaron su efectividad en la mejora de resultados \cite{mccombs:1972}.
+En un estudio previo todos los participantes mostraron una fuerte preferencia por la instrucción directa en lugar de proporcionar ejemplos en línea, y cuando se les animó a dar ejemplos, la mayoría de los participantes lo hicieron y señalaron su efectividad en la mejora de resultados \citep{johnyprompt}.
 
 
 \vspace{0.5cm}

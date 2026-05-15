@@ -1,4 +1,4 @@
-\documentclass[12pt]{article}
+\documentclass[12pt]{report}
 
 % --- Motor: LuaLaTeX (UTF-8 nativo). Si compilás con pdflatex, descomentar el bloque inputenc. ---
 \usepackage{iftex}
@@ -21,6 +21,7 @@
 \usepackage{listings}
 \usepackage{float} % here for H placement parameter
 \usepackage{tabularx}
+\usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
 \usepackage{imakeidx}               % imakeidx después de hyperref para enlaces en el índice
 
@@ -31,25 +32,51 @@
 }
 
 \begin{document}
-\author{}
-\date{}
 
-\maketitle
-
-\begin{figure}[h]
+\begin{titlepage}
   \centering
-  \includegraphics[width=5in]{LOGO-UNR-NEGRO.png}
-\end{figure}
 
+  % Cabecera institucional
+  {\large\textsc{Universidad Nacional de Rosario}\par}
+  {\large\textsc{Facultad de Ciencias Exactas, Ingeniería y Agrimensura}\par}
+  {\large Licenciatura en Ciencias de la Computación\par}
 
-\begin{huge}
-  \begin{center}
-    \textit{Autor:} Lucio Bassani\\
-    \textit{Director:} Alejandro Sartorio
-  \end{center}
-\end{huge}
+  \vspace{1cm}
 
-\newpage
+  % Logo
+  \includegraphics[width=0.35\textwidth]{LOGO-UNR-NEGRO.png}
+
+  \vspace{1cm}
+
+  % Título
+  {\huge\bfseries
+    Una infraestructura técnica y procedimental para el análisis de noticias de portales digitales a través de inteligencia artificial generativa\par}
+
+  \vspace{0.5cm}
+
+  {\Large\itshape Tesina de grado\par}
+
+  \vspace{1cm}
+
+  % Propósito del trabajo
+  {\large
+    Trabajo presentado para optar al título de\\
+    Licenciado en Ciencias de la Computación\par}
+
+  \vfill
+
+  % Autor y director
+  \begin{tabular}{rl}
+    \textbf{Autor:}    & Lucio Bassani      \\
+    \textbf{Director:} & Alejandro Sartorio \\
+  \end{tabular}
+
+  \vspace{1cm}
+
+  % Lugar y fecha
+  {\large Rosario, 2026\par}
+
+\end{titlepage}
 
 \tableofcontents
 \printindex
@@ -58,17 +85,17 @@
 % agrego comentario para commitear y ver el sync
 
 
-\section{Introducción}
-\subsection{Motivación}
+\chapter{Introducción}
+\section{Motivación}
 El panorama informativo actual se caracteriza por la proliferación de portales digitales, que ofrecen una amplia variedad de noticias en línea. Hoy día, vivimos en un contexto de sociedades hipermediatizadas \citep{carlon:2020}, en donde el acceso y análisis de los discursos mediatizados a través de Internet presenta dos limitaciones fundamentales que deben ser sorteadas tanto por investigadores sociales, profesionales de la información como por gestores públicos para determinar y comprender su impacto en la sociedad.
 
 \begin{enumerate}
-  \item La presencia de atributos sustanciales de los discursos (como metadatos descriptivos o técnicos) que residen en la 'infraestructura subyacente' \citep{couldry:2017}, siendo inaccesibles al 'ojo desnudo', es decir, mediante la observación directa.
+  \item La presencia de atributos sustanciales de los discursos (como metadatos descriptivos o técnicos) que residen en la ``infraestructura subyacente'' \citep{couldry:2017}, siendo inaccesibles al ``ojo desnudo'', es decir, mediante la observación directa.
 
   \item La magnitud de los paquetes textuales y el volumen de los datos y metadatos asociados demandan análisis pormenorizados para generar conocimiento relevante, una tarea abrumadora sin las herramientas adecuadas.
 \end{enumerate}
 
-Esta necesidad se inscribe en un contexto más amplio dentro de las ciencias sociales y humanas, marcado por lo que se ha denominado el 'giro computacional' \citep{berry:2011}. Este giro exige la incorporación de herramientas, técnicas y métodos que permitan enriquecer y sofisticar los procedimientos de análisis a través de su computarización \citep{meunier:2022}. La relevancia de este enfoque se extiende también a sectores de gestión gubernamental, donde la información actualizada proveniente de las conversaciones públicas es crucial para la toma de decisiones y el diseño de políticas públicas.
+Esta necesidad se inscribe en un contexto más amplio dentro de las ciencias sociales y humanas, marcado por lo que se ha denominado el ``giro computacional'' \citep{berry:2011}. Este giro exige la incorporación de herramientas, técnicas y métodos que permitan enriquecer y sofisticar los procedimientos de análisis a través de su computarización \citep{meunier:2022}. La relevancia de este enfoque se extiende también a sectores de gestión gubernamental, donde la información actualizada proveniente de las conversaciones públicas es crucial para la toma de decisiones y el diseño de políticas públicas.
 
 
 Para superar este desafío, se necesitan instrumentos de análisis de texto más sofisticados que permitan identificar correlaciones entre noticias, acoplamiento y cohesión de los términos, conceptos y significantes. Estos instrumentos proporcionarán a los investigadores un sólido respaldo tecnológico para automatizar y optimizar sus protocolos de estudio, incluyendo la formación de la agenda mediática y la difusión de información de manera más eficiente.
@@ -76,7 +103,7 @@ Para superar este desafío, se necesitan instrumentos de análisis de texto más
 
 Una de las áreas de aplicación más relevantes de estos estudios se centra en la influencia de los medios de comunicación tradicionales en la configuración de la agenda pública, así como en el creciente impacto de las redes sociales como caja de resonancia de noticias y su llegada a públicos segmentados. Desde la publicación del influyente artículo ``La función de establecer la agenda de los medios de comunicación de masas'' \citep{mccombs:1972}, se ha reconocido el papel fundamental de los medios de comunicación en la configuración de la percepción pública. No obstante, en la última década, la irrupción de las redes sociales, primero con la blogosfera y posteriormente con los sitios de aquellas, ha alterado significativamente este panorama.
 
-El desarrollo de las mediciones y la obtención de indicadores referidos a noticias publicadas en medios digitales se fue consolidando en los últimos tiempos. Para este propósito se utilizan técnicas de análisis y \textbf{procesamiento de lenguaje natural} (NLP, por sus siglas en inglés de ``Natural Language Processing"); \textbf{la minería de texto} \citep{tan:1999, hotho:2005}; \textbf{ciencia de datos} para la identificación de entidades, relaciones e indicadores claves (KPI, por sus siglas en inglés de ``Key Performance Indicator''); \textbf{clasificación mediante redes neuronales}, etc. Estas herramientas aunque útiles para ciertas tareas, han demostrado limitaciones importantes para capturar la complejidad de los 'funcionamientos discursivos' que son esenciales para el análisis social \citep{gindin:2018}. Estas limitaciones incluyen dificultades para gestionar el contexto completo, mantener la atención en partes relevantes del texto, identificar relaciones complejas entre conceptos y adecuar la representación a tareas de análisis específicas, problemas que a menudo surgían con algoritmos previos a las generaciones actuales de inteligencia artificial generativa (en adelante, IAG) basadas en arquitectura transformer \citep{vaswani:2017}
+El desarrollo de las mediciones y la obtención de indicadores referidos a noticias publicadas en medios digitales se fue consolidando en los últimos tiempos. Para este propósito se utilizan técnicas de análisis y \textbf{procesamiento de lenguaje natural} (NLP, por sus siglas en inglés de ``Natural Language Processing"); \textbf{la minería de texto} \citep{tan:1999, hotho:2005}; \textbf{ciencia de datos} para la identificación de entidades, relaciones e indicadores claves (KPI, por sus siglas en inglés de ``Key Performance Indicator''); \textbf{clasificación mediante redes neuronales}, etc. Estas herramientas aunque útiles para ciertas tareas, han demostrado limitaciones importantes para capturar la complejidad de los ``funcionamientos discursivos'' que son esenciales para el análisis social \citep{gindin:2018}. Estas limitaciones incluyen dificultades para gestionar el contexto completo, mantener la atención en partes relevantes del texto, identificar relaciones complejas entre conceptos y adecuar la representación a tareas de análisis específicas, problemas que a menudo surgían con algoritmos previos a las generaciones actuales de inteligencia artificial generativa (en adelante, IAG) basadas en arquitectura transformer \citep{vaswani:2017}.
 
 Por lo tanto, es necesario desarrollar nuevas estrategias de análisis que superen estas restricciones, permitiendo acceder al nivel de los funcionamientos discursivos complejos y aplicando categorías y operaciones propias de diversas disciplinas científicas sociales.
 
@@ -90,7 +117,7 @@ Para su implementación se utilizarán los siguientes datos de entrada para la c
   \item Los objetivos requeridos para el análisis. Ejemplo: alcance, paradigma de análisis, referencias a tener en cuenta, etc.
   \item El tipo de salida o representación del análisis. Ejemplo: narrativa, tablas, gráficos, etc.
 \end{enumerate}
-\subsection{Objetivos}
+\section{Objetivos}
 Teniendo en cuenta las necesidades e hipótesis de solución se define un objetivo general para este trabajo de la siguiente manera:
 
 \begin{quote}
@@ -108,7 +135,7 @@ Para la concreción del objetivo general propuesto se plantean los siguientes ob
 
 \vspace{0.3 cm}
 
-El alcance de este objetivo es crear un módulo específico que pueda ser integrado en la suite del framework denominado \textit{Odoo  fundation} \footnote{https://www.odoo.com/es\_ES} en su versión comunitaria de código abierto.
+El alcance de este objetivo es crear un módulo específico que pueda ser integrado en la suite del framework denominado \textit{Odoo Foundation}\footnote{\url{https://www.odoo.com/es_ES}} en su versión comunitaria de código abierto.
 El módulo contará con servicios de gestión para los valores de parametrización de los algoritmos que intervienen en el proceso que se implementa. El usuario final podrá cargar, a través de formularios, la información necesaria para el acceso a los portales de noticias, las reglas de búsquedas de información y criterios sobre la aplicación de procedimientos. Se desarrollarán integraciones con otros módulos de la suite de Odoo que permitan la visualización de la información de resultados en tableros, informes y reportes adecuados para el propósito de aplicación.
 
 \vspace{0.3 cm}
@@ -134,13 +161,39 @@ En este objetivo específico, se pretende organizar y automatizar la hoja de rut
 
 \vspace{0.3 cm}
 
-Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \citep{land2002brief}
+Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \citep{land2002brief}.
+
+\chapter{Análisis bibliográfico?}
+\label{cap:rsl}
+
+En el contexto de un ecosistema mediático caracterizado por la hipermediatización y la proliferación de datos, los métodos tradicionales de análisis de contenido enfrentan desafíos sin precedentes. Este capítulo aborda las bases teóricas y técnicas necesarias para fundamentar una infraestructura que automatice el análisis de noticias digitales. Se presenta primero el marco teórico que define el campo conceptual; luego se documenta la revisión sistemática de la literatura (RSL) que guió la selección de fuentes, junto con las preguntas de investigación, la metodología empleada y los estudios incluidos; finalmente se analiza el estado del arte en tres ejes temáticos, se sintetizan las brechas detectadas y se cierra con las implicancias para esta tesina.
+
+\section{Marco Teórico}
+\label{sec:rsl-marco}
+
+Según \citet[p.~1]{luhmann2000}: ``\textit{Todo lo que sabemos acerca de nuestra sociedad, o más aún, acerca del mundo en el que vivimos, lo conocemos a través de los medios de comunicación masiva.}''\footnote{Las traducciones de citas originalmente en otros idiomas son propias del autor, salvo indicación contraria.} Esta afirmación no es una observación trivial sobre el flujo de información: \citet{luhmann2000} sostiene que los medios masivos constituyen un sistema social funcionalmente diferenciado que \textit{produce} la realidad social en lugar de meramente reflejarla. Si lo que conocemos sobre el mundo nos llega mediado por instituciones cuyo criterio de selección obedece a su propia lógica operativa, entonces el estudio de esa mediación se vuelve política y científicamente ineludible.
+
+La forma más influyente en que se ha estudiado empíricamente este fenómeno es la teoría del \textit{agenda-setting}. \citet{mccombs:1972} formularon la hipótesis de que ``\textit{los medios masivos establecen la agenda de cada campaña política, influyendo en la prominencia de las actitudes hacia los temas políticos}''. Recuperando una observación previa de Cohen, los autores sintetizaron este efecto en una fórmula que se volvió canónica: la prensa ``\textit{puede no ser exitosa la mayor parte del tiempo en decirle a la gente qué pensar, pero es asombrosamente exitosa en decirle a sus lectores sobre qué pensar}''. El estudio empírico de \citet{mccombs:1972} sobre la elección presidencial estadounidense de 1968 en Chapel Hill encontró correlaciones cercanas a la unidad entre el énfasis temático de los medios y los temas que los votantes consideraban importantes, estableciendo así el primer nivel de la agenda-setting: la transferencia de prominencia (\textit{salience}) desde la agenda mediática hacia la agenda pública.
+
+Dos décadas más tarde, \citet{mccombs:1997} extendieron la teoría al notar que los objetos sobre los que los medios construyen agenda --candidatos, temas, eventos-- poseen \textit{atributos}, tanto sustantivos como afectivos. Así, ``\textit{el primer nivel de la agenda-setting es la transmisión de la prominencia de los objetos; el segundo nivel de la agenda-setting es la transmisión de la prominencia de los atributos}'' \citep[p.~704]{mccombs:1997}. Esta extensión vincula la agenda-setting con el concepto de \textit{framing} desarrollado por Entman: enmarcar es seleccionar qué atributos de un objeto se vuelven prominentes en un texto comunicativo. La famosa fórmula de Cohen se reescribe en consecuencia: los medios no solo nos dicen ``\textit{sobre qué pensar, sino que también nos dicen cómo pensar al respecto}'' \citep[p.~716]{mccombs:1997}. Este segundo nivel sustenta los estudios contemporáneos que miden computacionalmente el sesgo y el sentimiento en la cobertura mediática, analizados más adelante en la Sección~\ref{sec:rsl-estado-arte}.
+
+El paisaje en el que opera la agenda-setting cambió radicalmente desde McCombs y Shaw. \citet{couldry:2017} caracterizan la situación contemporánea como \textit{deep mediatization}, un régimen marcado por tres procesos simultáneos: la \textit{datafication} (cada encuentro mediado deja un rastro de datos), la fragmentación profunda de las audiencias y la incorporación de plataformas y algoritmos a la construcción misma del acontecimiento mediático. En palabras de los autores, ``\textit{las construcciones algorítmicas de la realidad pasan a formar parte de la construcción de los eventos mediáticos}'' \citep[p.~3]{couldry:2017}, transformación que obliga a analizar los procesos mediáticos contemplando el rol de datos y algoritmos. En sintonía con esta caracterización, \citet{carlon:2020} sitúa el concepto de \textit{sociedad hipermediatizada} como el contexto general en el que esta tesina inscribe su objeto de estudio.
+
+Esta transformación del objeto exige una transformación correlativa de los métodos. \citet{berry:2011} identifica este desplazamiento como un \textit{computational turn}: la creciente dependencia de las ciencias sociales y humanidades respecto de técnicas computacionales para acceder a sus objetos. Berry advierte que las técnicas computacionales ``\textit{no son meramente un instrumento empuñado por los métodos tradicionales; más bien, tienen efectos profundos sobre todos los aspectos de las disciplinas}'' \citep[p.~13]{berry:2011}: introducen nuevos modos de análisis --como el \textit{distant reading} de Moretti recuperado por \citet{berry:2011}, según el cual los corpus literarios masivos no pueden comprenderse sumando lecturas individuales sino tratándolos como sistemas colectivos-- y reconfiguran las preguntas que las disciplinas pueden formular. \citet{meunier:2022} extiende esta línea hacia la semiótica computacional, ofreciendo un sustrato teórico complementario para la articulación entre código, signos y significado.
+
+El giro computacional aplicado al análisis del lenguaje natural cuenta con un punto de inflexión técnico preciso: la arquitectura \textit{Transformer} propuesta por \citet{vaswani:2017}. A diferencia de las redes recurrentes y convolucionales previas, el Transformer se basa exclusivamente en mecanismos de \textit{self-attention}, entendidos como una función que relaciona distintas posiciones dentro de una secuencia para construir una representación contextual de la misma. La entrada y la salida del modelo se construyen sobre \textit{embeddings}: representaciones vectoriales aprendidas que codifican unidades lingüísticas en un espacio continuo de alta dimensionalidad. Sobre esta arquitectura se construyen los modelos generativos contemporáneos --LaMDA, GPT-3, GPT-4-- capaces de traducir, clasificar y generar respuestas analíticas complejas; así como los modelos multimodales --DALL-E 2 y sucesores-- útiles para complementar representaciones visuales del discurso.
+
+Estos desarrollos teóricos y técnicos encuentran un antecedente empírico relevante en el trabajo de tesis doctoral de Pablo Rey-Mazón, ``Color of Corruption'' \citep{mazon:2023}, que articula varias herramientas y una metodología novedosas para medir el proceso de \textit{agenda-setting} en un ecosistema mediático complejo. Según Rey-Mazón, la metodología tradicional de análisis de contenido se basa en el supuesto de que el contenido ya está completo y estático para su estudio, lo que ignora el flujo constante de noticias y su influencia sobre la recepción. En contraste, su software \textbf{Homepagex} rastrea la posición de los elementos noticiosos en las páginas de inicio durante varios días, permitiendo reconstruir los flujos y ciclos de noticias en los sitios web mediante el cruce entre una base de datos construida por scraping horario y análisis automatizado de contenido. La herramienta complementaria \textbf{Color of Corruption} consiste en una base de datos de imágenes de noticias sobre corrupción etiquetada por tono emocional, enfoque narrativo y presencia de actores específicos, soporte de la metodología denominada \textit{Visual Agenda-Setting Analysis}. La cercanía conceptual y metodológica del trabajo de Rey-Mazón con la propuesta de esta tesina lo vuelve una referencia central.
+
+Disponer de modelos generativos no alcanza, sin embargo, para construir una infraestructura utilizable: es necesario orquestar las tecnologías mediante estándares de procesos de negocio. Trabajos como el de \citet{PRADES2013115} establecen metodologías para implementar flujos de trabajo en BPMN de acuerdo con el estándar ANSI/ISA-95. Investigaciones recientes, como la de \citet{bertagnolio2023}, demuestran la viabilidad de incorporar modelos generativos dentro de mapas de procesos tecnológicos automatizados. La articulación entre marcos teóricos, instrumentos computacionales y orquestación procedimental que se propone en esta tesina se inscribe en esa misma línea.
 
 \section{Revisión Sistemática de la Literatura}
-\label{cap:rsl}
-\subsection{Introducción y Preguntas de la Revisión}
-\label{sec:rsl-intro}
-La presente revisión de la literatura aborda el estado del arte en la intersección de las ciencias sociales, computacionales y la IAG. En el contexto de un ecosistema mediático caracterizado por la hipermediatización y la proliferación de datos, los métodos tradicionales de análisis de contenido enfrentan desafíos sin precedentes. Este capítulo explora las bases teóricas y técnicas necesarias para fundamentar una infraestructura que automatice el análisis de noticias realizando una Revisión Sistemática de la Literatura (RSL). Esta revisión tiene como propósito analizar el estado del arte y orientar la investigación en torno a las siguientes preguntas (Preguntas de Investigación):
+\label{sec:rsl}
+Sobre la base del marco teórico anterior, se llevó a cabo una revisión sistemática de la literatura (RSL) orientada a identificar trabajos empíricos y de ingeniería que combinen análisis de noticias, web scraping, embeddings y modelos de lenguaje extenso. Esta sección presenta las preguntas que guiaron la revisión, la metodología de búsqueda y selección, y el conjunto final de estudios incluidos.
+
+\subsection{Preguntas de Investigación}
+\label{sec:rsl-pr}
+La revisión se orientó a responder las siguientes preguntas:
 \begin{itemize}
   \item [PR1:] ¿Cuáles son las limitaciones de las técnicas tradicionales de Procesamiento de Lenguaje Natural (NLP) frente a la complejidad del análisis discursivo en medios digitales?
   \item [PR2:] ¿Qué metodologías y herramientas informáticas se están utilizando para evaluar el agenda-setting y el impacto mediático en la actualidad?
@@ -149,63 +202,124 @@ La presente revisión de la literatura aborda el estado del arte en la intersecc
 
 \subsection{Metodología de Búsqueda y Selección}
 \label{sec:rsl-metodologia}
-Para garantizar la solidez científica de la revisión, se estableció una estrategia de búsqueda bibliográfica inspirada en las directrices del protocolo PRISMA. La exploración se centró en identificar estudios que combinaran análisis de noticias, web scraping, embeddings y modelos de lenguaje extenso (LLM).
 
-La recolección de información se llevó a cabo utilizando cadenas de búsqueda específicas en los motores y bases de datos académicas principales: Google Scholar y ArXiv. Se aplicaron criterios de inclusión priorizando artículos, tesis y actas de conferencias publicados en los últimos años, escritos en español o inglés, que presentaran detalles técnicos sobre la implementación de arquitecturas para el procesamiento de texto. Se excluyeron trabajos puramente teóricos sin un componente de software sustancial o que estuvieran basados en tecnologías obsoletas. Tras un proceso de filtrado inicial por título y resumen, se evaluaron los textos completos para determinar su elegibilidad. El cuadro metodológico de la selección de literatura se presenta en la Figura~\ref{fig:prisma}.
+La presente revisión se condujo siguiendo las directrices del protocolo PRISMA 2020 \citep{page2021prisma}, con el propósito de identificar estudios que combinaran análisis de noticias, web scraping, embeddings y modelos de lenguaje extenso (LLM).
+
+La recolección bibliográfica se ejecutó durante mayo de 2026 sobre seis bases de datos académicas: SciSpace (búsqueda básica), SciSpace con filtro de texto completo, SciSpace Library, biblioteca personal del autor, Google Scholar y ArXiv. La cadena de búsqueda exacta aplicada se detalla en la Figura~\ref{fig:prisma}. Los conteos por base de datos fueron: SciSpace (n=100), SciSpace texto completo (n=100), SciSpace Library (n=8), biblioteca personal (n=6), Google Scholar (n=20) y ArXiv (n=20), totalizando 254 registros identificados.
+
+Los \textbf{criterios de inclusión} aplicados fueron:
+
+\begin{itemize}
+  \item [CI1:] Artículos, tesis o actas de conferencias.
+  \item [CI2:] Publicados entre 2020 y 2025.
+  \item [CI3:] Escritos en español o inglés.
+  \item [CI4:] Presentan detalles técnicos sobre la arquitectura de software propuesta.
+  \item [CI5:] Combinan al menos dos de las áreas centrales de la revisión: web scraping, embeddings, LLMs/IAG, agenda mediática.
+\end{itemize}
+
+Complementariamente, los \textbf{criterios de exclusión} aplicados fueron:
+
+\begin{itemize}
+  \item [CE1:] Trabajos puramente teóricos sin componente de software.
+  \item [CE2:] Basados en tecnologías pre-transformer u obsoletas.
+  \item [CE3:] Metodología no replicable o sin descripción técnica suficiente.
+  \item [CE4:] Fuera del dominio de análisis de medios digitales o noticias.
+  \item [CE5:] Texto completo no disponible públicamente.
+\end{itemize}
+
+El proceso de selección se desarrolló en cuatro fases ejecutadas por el autor. Primero se eliminaron los duplicados entre bases (n=20), reduciendo el corpus a 234 registros. A continuación se realizó un cribado por título y resumen aplicando los criterios de inclusión, excluyendo 130 registros por baja relevancia y conservando 104. Sobre estos se buscó recuperar el texto completo, descartando 54 informes por no contar con acceso público al documento (CE5). Finalmente, los 50 informes recuperados fueron evaluados a texto completo aplicando los criterios de exclusión, descartando 41: 20 por estar fuera del tema principal (CE4), 12 por carecer de metodología replicable (CE3) y 9 por idioma no admitido (CI3 incumplido). El conjunto final quedó conformado por 9 estudios, presentados en la Sección~\ref{sec:rsl-estudios} y analizados en la Sección~\ref{sec:rsl-estado-arte}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{prisma_diagram.png}
-  \caption{Diagrama de selección bibliográfica según el protocolo PRISMA.}
+  \caption{Diagrama de selección bibliográfica según el protocolo PRISMA \citep{page2021prisma}.}
   \label{fig:prisma}
 \end{figure}
 
-\noindent\small\textit{Nota: las referencias de marco teórico (Vaswani et al., 2017; McCombs, 1972; Luhmann, 2000; entre otras) fueron incorporadas directamente como antecedentes conceptuales, fuera del proceso de búsqueda sistemática PRISMA.}\normalsize
-\newpage
+\subsection{Estudios Incluidos}
+\label{sec:rsl-estudios}
 
-\subsection{Marco Formal y Trabajo Previo}
-\label{sec:rsl-marco}
-Según \citet[p.~1]{luhmann2000}: ``\textit{Todo lo que sabemos acerca de nuestra sociedad, o más aún, acerca del mundo en el que vivimos, lo conocemos a través de los medios de comunicación masiva.}''. Es por esto que el estudio de la influencia de los medios de comunicación en la opinión pública ha sido un campo de investigación activo durante décadas, en el que se han desarrollado diferentes tipos de tecnologías, metodologías y métricas para medir este fenómeno. Entre las tecnologías más utilizadas se encuentran los sondeos de opinión, los análisis de contenido y las técnicas de neurociencia. Un ejemplo concreto de como se han utilizado estas herramientas es el estudio de la influencia de la cobertura mediática de los debates electorales en las preferencias de los votantes.
+El proceso de selección descrito en la sección anterior arrojó nueve estudios incluidos en la revisión, distribuidos en los tres ejes temáticos que estructuran el Estado del Arte (Sección~\ref{sec:rsl-estado-arte}). Las Tablas~\ref{tab:estudios-pr1}, \ref{tab:estudios-pr2} y \ref{tab:estudios-pr3} los sintetizan, anticipando el análisis detallado de cada subsección posterior.
 
-En cuestiones de análisis de datos a través de mediciones en portales de noticias online se puede mencionar el trabajo de tesis doctoral de Pablo Rey-Mazón, ``Color of Corruption'' \citep{mazon:2023} el cual presenta varias herramientas y una metodología novedosas para medir el proceso de \textit{agenda-setting} en un ecosistema mediático complejo.
+\begin{table}[H]
+  \centering
+  \caption{Estudios incluidos en el eje PR1}
+  \label{tab:estudios-pr1}
+  \footnotesize
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3cm} X X X@{}}
+    \toprule
+    \textbf{Estudio}        & \textbf{Stack técnico}                                            & \textbf{Aporte central}                                                                                                      & \textbf{Limitación}                                                 \\
+    \midrule
+    \citet{milbauer2023}    & NLP cross-document; interfaz interactiva (\textit{NewsSense})     & Evidencia el límite del NLP clásico para sintetizar perspectivas contradictorias y verificar sin referencias externas        & Foco en \textit{sensemaking} del lector; no escala a corpus masivos \\
+    \addlinespace
+    \citet{pavlyshenko2024} & RAG con GPT-4o + Google Search API; regresión bayesiana posterior & La IAG supera al NLP estadístico en análisis cualitativo, pero requiere modelado bayesiano para cuantificar la incertidumbre & Muestra acotada; caso único (elecciones US 2024)                    \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
-Según Rey-Mazón la metodología tradicional de análisis de contenido se basa en el supuesto de que el contenido ya está completo y estático para su estudio. Este método presenta desafíos, ya que no toma en cuenta el flujo constante de noticias y su posible influencia en cómo los lectores reciben la información. En este contexto, Rey-Mazón presenta el software \textbf{Homepagex} que sigue la posición de los elementos de noticias en la página de inicio durante varios días, lo que permite obtener una imagen completa de los flujos y ciclos de noticias en los sitios web. Este software combina la construcción de una base de datos -mediante el rastreo web de las páginas de inicio a cada hora- con el análisis de contenido automatizado, lo que ofrece una posible forma de abordar el análisis de datos en el estudio actual.
+\begin{table}[H]
+  \centering
+  \caption{Estudios incluidos en el eje PR2}
+  \label{tab:estudios-pr2}
+  \footnotesize
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3cm} X X X@{}}
+    \toprule
+    \textbf{Estudio}   & \textbf{Stack técnico}                                                                    & \textbf{Aporte central}                                                                & \textbf{Limitación}                                                   \\
+    \midrule
+    \citet{haider2025} & LLMs + scraping diario; anotación de tono, sesgo y tópicos (\textit{Media Bias Detector}) & Medición sistemática de selección y encuadre mediático a escala                        & Sistema en curso; falta estandarización cross-plataforma de etiquetas \\
+    \addlinespace
+    \citet{sundar2025} & ML + NLP + LLMs sobre corpus noticioso                                                    & Traza dinámicas emocionales (\textit{AI phobia}) propagadas por la cobertura mediática & Tema único; corpus específico                                         \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
-Otra herramienta planteada, denominada \textbf{Color of Corruption}, consiste en una base de datos de imágenes de noticias sobre corrupción. La base de datos está etiquetada con una serie de atributos, como el tono emocional, el enfoque narrativo y la presencia de actores específicos. La metodología, denominada \textit{``Visual Agenda-Setting Analysis''}, utiliza esta herramienta para analizar la cobertura mediática de los escándalos de corrupción. La tesis de Rey-Mazón es relevante para la presente investigación, ya que presenta una herramienta y una metodología de trabajo con características similares a la que se pretende construir en este trabajo.
+\begin{table}[H]
+  \centering
+  \caption{Estudios incluidos en el eje PR3}
+  \label{tab:estudios-pr3}
+  \footnotesize
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3cm} X X X@{}}
+    \toprule
+    \textbf{Estudio}           & \textbf{Stack técnico}                                                                                  & \textbf{Aporte central}                                                              & \textbf{Limitación}                                     \\
+    \midrule
+    \citet{behbahanian}        & Agentic workflows + GPT-4.1-mini + Sentence-BERT (\textit{GlimzAI})                                     & Deduplicación semántica y agregación end-to-end de noticias                          & Sin validación con usuarios; foco en distribución       \\
+    \addlinespace
+    \citet{neupane2025}        & Node.js + OpenAI embeddings + UMAP/HDBSCAN + GPT-4o                                                     & Clustering temático y generación automática de contenido para portales autónomos     & Sin validación con expertos                             \\
+    \addlinespace
+    \citet{ameer:2025}         & Scraping Python + base vectorial + Flask + DeepSeek fine-tuned + Convai 3D (\textit{NexGen MediaCraft}) & Broadcasting de noticias en tiempo real con presentador virtual                      & Foco en presentación; no aborda análisis interpretativo \\
+    \addlinespace
+    \citet{begum:2024}         & Flask + GoogleNews/Newspaper4k + GPT-3.5-turbo-16k + BERTweet + Gmail API                               & Reportes diarios personalizados con resumen en dos niveles y análisis de sentimiento & Foco en personalización individual                      \\
+    \addlinespace
+    \citet{somasundharam:2025} & LangChain + FAISS + \textit{embeddings} HF + LLaMA-3                                                    & RAG con trazabilidad de fuentes y baja latencia para consultas multi-URL             & Foco en performance; no aborda análisis interpretativo  \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
-A su vez, esta investigación se apoya en los recientes avances algorítmicos. Las arquitecturas actuales de Inteligencia Artificial Generativa utilizan modelos basados en transformadores, destacándose:
-
-\begin{itemize}
-  \item Modelos de texto (LLMs): Como LaMDA, Meena y Bard de Google, así como GPT-3, GPT-J y GPT-4 de OpenAI, capaces de traducir, clasificar y generar respuestas analíticas complejas
-  \item Modelos multimodales: Como DALL-E 2, útiles para complementar representaciones visuales del discurso
-\end{itemize}
-
-Para integrar estas tecnologías de IA en una infraestructura utilizable, es necesario orquestarlas mediante estándares de procesos de negocio. Trabajos como el de \citet{PRADES2013115} establecen metodologías para implementar flujos de trabajo en BPMN, de acuerdo con el estándar ANSI/ISA-95. Mientras que investigaciones recientes, como la de \citet{bertagnolio2023}, ya demuestran la viabilidad de incorporar modelos generativos (IAG) dentro de estos mapas de procesos tecnológicos y automatizados.
-
-
-\subsection{Estado del Arte: Análisis de la Literatura}
+\section{Estado del Arte}
 \label{sec:rsl-estado-arte}
-La revisión se organiza en tres ejes temáticos: las limitaciones de las técnicas de procesamiento de lenguaje natural (NLP) clásicas, la evolución de la teoría del \textit{agenda-setting} en entornos digitales, y las arquitecturas de software emergentes basadas en modelos de lenguaje extenso (LLMs). Finalmente, se conectan estos hallazgos con las preguntas de investigación de esta tesina.
+Sobre la base del Marco Teórico (Sección~\ref{sec:rsl-marco}), esta sección examina cómo los estudios incluidos abordan los problemas planteados por las preguntas de investigación de esta tesina. La revisión se organiza en tres ejes temáticos correspondientes a las tres PR: las limitaciones del procesamiento de lenguaje natural (NLP) tradicional frente al análisis discursivo en medios digitales (PR1); las aplicaciones computacionales del \textit{agenda-setting} y la medición de atributos mediáticos (PR2); y las arquitecturas de software emergentes que integran \textit{scraping}, \textit{embeddings} y modelos de lenguaje extenso en \textit{pipelines} reproducibles para sistematizar el procesamiento de noticias (PR3).
 
-\subsubsection{Limitaciones del Procesamiento de Lenguaje Natural (NLP) Tradicional}
+\subsection{Limitaciones del Procesamiento de Lenguaje Natural (NLP) Tradicional}
 \label{sec:rsl-nlp}
-El análisis de grandes volúmenes de noticias ha dependido históricamente de técnicas de NLP centradas en la detección de palabras clave y análisis de sentimiento superficial. Sin embargo, autores como \citet{milbauer2023} sostienen que estas técnicas fallan al capturar el \textit{sensemaking} cross-documental, es decir, la capacidad de contrastar y sintetizar perspectivas contradictorias presentes en múltiples artículos. Mientras que el NLP tradicional trata los documentos como entidades aisladas, la necesidad actual de investigadores sociales exige interfaces que evalúen el apoyo o contradicción de la evidencia en tiempo real \citep{milbauer2023}.
+Esta subsección aborda la PR1 examinando las limitaciones que las técnicas tradicionales de NLP enfrentan al analizar el discurso mediático contemporáneo. El análisis de grandes volúmenes de noticias ha dependido históricamente de técnicas de NLP centradas en la detección de palabras clave y análisis de sentimiento superficial. Sin embargo, autores como \citet{milbauer2023} sostienen que estas técnicas fallan al capturar el \textit{sensemaking} cross-documental, es decir, la capacidad de contrastar y sintetizar perspectivas contradictorias presentes en múltiples artículos. Mientras que el NLP tradicional trata los documentos como entidades aisladas, la necesidad actual de investigadores sociales exige interfaces que evalúen el apoyo o contradicción de la evidencia en tiempo real \citep{milbauer2023}.
 
 Por otro lado, \citet{pavlyshenko2024} evalúa el uso de modelos GPT frente a métodos estadísticos tradicionales, concluyendo que, aunque la IAG ofrece una capacidad interpretativa superior para el análisis cualitativo, aún presenta incertidumbres significativas en la cuantificación de datos. Esta postura contrasta con enfoques puramente algorítmicos al sugerir que la IAG no reemplaza al NLP estadístico, sino que requiere de marcos complementarios (como la regresión bayesiana) para interpretar los sesgos inherentes en las salidas generadas \citep{pavlyshenko2024}.
 
-\subsubsection{Impacto de los Medios y la Teoría del Agenda-Setting en la Era Digital}
+\subsection{Aplicaciones Computacionales del Agenda-Setting de Segundo Nivel}
 \label{sec:rsl-agenda}
-La capacidad de los portales digitales para encuadrar la realidad social sigue siendo un pilar de las ciencias sociales. \citet{haider2025} proponen un framework para detectar el sesgo mediático a escala, subrayando que la selección y el encuadre (\textit{framing}) pueden medirse sistemáticamente mediante pipelines de scraping integrados con LLMs. Este enfoque permite una vigilancia continua de la responsabilidad mediática, algo que los métodos manuales de codificación no podían alcanzar por limitaciones de escala \citep{haider2025}.
+Esta subsección aborda la PR2 examinando cómo trabajos recientes han operacionalizado computacionalmente el agenda-setting de segundo nivel propuesto por \citet{mccombs:1997}, particularmente en lo relativo a dos atributos centrales: el sesgo y el encuadre (\textit{framing}) por un lado, y el sentimiento por otro. \citet{haider2025} proponen un framework para detectar el sesgo mediático a escala, subrayando que la selección y el encuadre pueden medirse sistemáticamente mediante pipelines de scraping integrados con LLMs. Este enfoque permite una vigilancia continua de la responsabilidad mediática, algo que los métodos manuales de codificación no podían alcanzar por limitaciones de escala \citep{haider2025}.
 
 Complementariamente, el estudio de \citet{sundar2025} sobre la difusión del miedo hacia la inteligencia artificial evidencia cómo la cobertura mediática amplifica sentimientos públicos. Al emplear una combinación de aprendizaje automático y LLMs, los autores logran trazar dinámicas emocionales en el corpus noticioso, demostrando que la infraestructura técnica es capaz de revelar no solo qué temas están en la agenda, sino qué emociones colectivas se están propagando a través de ella \citep{sundar2025}.
 
-\subsection{Arquitecturas de Software Basadas en Inteligencia Artificial Generativa}
+\subsection{Arquitecturas de Software con IAG para el Procesamiento de Noticias}
 \label{sec:rsl-arquitecturas}
-La implementación de infraestructuras técnicas ha evolucionado hacia sistemas modulares y agentes autónomos. \citet{behbahanian} describe el sistema \textit{GlimzAI}, que utiliza flujos de trabajo ``agentic'' y \textit{embeddings} de Sentence-BERT para la deduplicación semántica. Este enfoque es fundamental para el análisis de noticias, ya que permite gestionar la redundancia informativa de múltiples portales.
+Esta subsección aborda la PR3 examinando las arquitecturas de software emergentes que integran \textit{web scraping}, \textit{embeddings} y modelos generativos en \textit{pipelines} reproducibles para sistematizar el procesamiento y análisis de noticias. La implementación de infraestructuras técnicas ha evolucionado hacia sistemas modulares y agentes autónomos. \citet{behbahanian} describe el sistema \textit{GlimzAI}, que utiliza flujos de trabajo ``agentic'' y \textit{embeddings} de Sentence-BERT para la deduplicación semántica. Este enfoque es fundamental para el análisis de noticias, ya que permite gestionar la redundancia informativa de múltiples portales.
 
 Asimismo, \citet{neupane2025} demuestra la eficacia de combinar un backend de scraping basado en Node.js con modelos como GPT-4o para orquestar pipelines que van desde la extracción y clustering semántico hasta la publicación automatizada de contenido \citep{neupane2025}.
 
-\subsubsection{Síntesis Crítica y Brechas en la Investigación}
+Variantes contemporáneas amplían este patrón arquitectónico en distintas direcciones. \citet{ameer:2025} propone \textit{NexGen MediaCraft}, un sistema que combina \textit{scraping} horario, base vectorial e inferencia con un modelo \textit{DeepSeek} ajustado para producir noticias en tiempo real entregadas mediante un presentador virtual 3D. \citet{begum:2024} integra GoogleNews y Newspaper4k para extracción, GPT-3.5-turbo-16k para resumen en dos niveles y BERTweet para análisis de sentimiento, distribuyendo reportes personalizados por correo electrónico. Por su parte, \citet{somasundharam:2025} aplica una arquitectura RAG con FAISS, \textit{embeddings} de Hugging Face y LLaMA-3 sobre LangChain, priorizando la trazabilidad de las fuentes y la baja latencia en respuestas a consultas multi-URL. En conjunto, estos trabajos confirman la consolidación de un patrón común --scraping, indexación vectorial e inferencia con LLMs-- pero exhiben divergencias significativas en sus objetivos finales (entrega multimedia, reporte personalizado, recuperación trazable) y en los criterios de evaluación aplicados.
+
+\section{Síntesis Crítica y Brechas en la Investigación}
 \label{sec:rsl-brechas}
 Al contrastar las fuentes, se observa una convergencia clara en el uso de \textit{embeddings} para la representación semántica del contenido y pipelines modulares de extracción, procesamiento y publicación \citep{neupane2025, behbahanian}. No obstante, surgen divergencias en cuanto a la prioridad: mientras algunos autores se enfocan en la eficiencia de la entrega de contenidos \citep{behbahanian}, otros priorizan la verificabilidad y la explicabilidad del rastro documental \citep{milbauer2023}.
 
@@ -220,17 +334,16 @@ Se han identificado las siguientes brechas que el framework propuesto en esta te
 
 \textbf{Propuesta de valor:} Ante estas brechas, un framework modular integrado proporcionará scraping resistente, indexación por embeddings, y control sobre la incertidumbre, mitigando los riesgos de la automatización ciega y aumentando la reproducibilidad y la trazabilidad para los investigadores.
 
-
-\subsubsection{Conclusión}
+\section{Conclusión del Capítulo}
 \label{sec:rsl-conclusion}
 La literatura analizada valida la viabilidad de una infraestructura que combine web scraping, vectorización mediante \textit{embeddings} y \textit{prompt engineering}. Sin embargo, la transición de prototipos genéricos a herramientas institucionalizadas para la investigación social requiere superar obstáculos estructurales. La revisión ha evidenciado que los sistemas actuales carecen de mecanismos robustos para garantizar la trazabilidad de las fuentes, la medición de la incertidumbre en las inferencias del modelo y la tolerancia a fallos en la extracción de datos.
 
 En consecuencia, las metodologías tradicionales deben evolucionar hacia procesos computarizados auditables. Esta tesina se apoya en los hallazgos de esta revisión para proponer una infraestructura técnica y procedimental que no solo automatice la recolección, sino que garantice el rigor científico necesario para analizar el \textit{agenda-setting} digital, mitigando las limitaciones interpretativas y de gobernanza ética presentes en el estado del arte.
 
 
-\section{Aplicación de Scrapping}
+\chapter{Aplicación de Scrapping}
 
-\section{Mapa de procesos}
+\chapter{Mapa de procesos}
 
 \begin{figure}[h]
   \centering
@@ -258,7 +371,7 @@ En consecuencia, las metodologías tradicionales deben evolucionar hacia proceso
 De los procesos antes mencionados, a continuación se describen los procesos de soporte Nro. 02 -\textbf{Scrapping}, 03 - \textbf{Definición de Contexto} y 04- \textbf{Procesamiento IAG}.
 
 \newpage
-\subsection{Scrapping}
+\section{Scrapping}
 \begin{figure}[h]
   \centering
   \includegraphics[height=4in]{Diagrama 02-Scrapping.png}
@@ -334,7 +447,7 @@ El proceso de encoding puede involucrar técnicas como la codificación one-hot,
 
 
 \newpage
-\subsection{ Definición de Contexto}
+\section{Definición de Contexto}
 \begin{figure}[h]
   \centering
   \includegraphics[height=5.1in]{Diagrama 03-Contexto.png}
@@ -443,7 +556,7 @@ Actor: Módulo de Odoo.
 Actividad: Estructurizar el prompt que sera entregado a la IAG utilizando las entradas del experto y los datos empíricos de las noticias. Se espera la salida de una string formateada en algún lenguaje de marcado que sea interpretado por la IAG.
 
 \newpage
-\subsection{Procesamiento IAG}
+\section{Procesamiento IAG}
 
 \begin{figure}[h]
   \centering
@@ -484,7 +597,7 @@ La normalización implica varias tareas, como:
 
 \newpage
 
-\section{Conclusiones y Trabajo a Futuro}
+\chapter{Conclusiones y Trabajo a Futuro}
 
 
 

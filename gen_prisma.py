@@ -14,7 +14,6 @@ TEAL    = '#2A7F7F'
 QBG     = '#EBF3FB'; QBD = '#2471A3'
 MBG     = '#F8F9FA'; MBD = '#999999'
 XBG     = '#FEF9E7'; XBD = '#CA8A04'; XTX = '#7D6608'
-GBG     = '#EEF8EE'; GBD = '#2E8B57'; GTX = '#1E6B3A'
 ARR     = '#444444'
 TXT     = '#1A1A1A'
 
@@ -51,41 +50,35 @@ PHASES = [
 
 EXCL = {
     1: {
-        'title': 'Excluidos  (n = 69)',
+        'title': 'Excluidos  (n = 150)',
         'lines': [
-            'CE1: Duplicados entre bases de datos',
-            'CE2: Sin software implementado',
-            'CE3: Tecnología pre-transformer u obsoleta',
-            'CE4: Texto completo no disponible',
-            'CE5: Fuera del dominio de medios digitales',
+            'Duplicados eliminados (n = 20)',
+            'Excluidos por baja relevancia',
+            'en título / resumen (n = 130)',
         ]
     },
     2: {
-        'title': 'Excluidos  (n = 21)',
+        'title': 'Excluidos  (n = 54)',
         'lines': [
-            'Sin arquitectura técnica detallada',
-            'Trabajos puramente teóricos',
-            'Resultados no reproducibles',
-            'Relevancia insuficiente para las',
-            'preguntas de investigación (PR1–PR3)',
+            'Informes no recuperados',
+            '(sin acceso al texto completo)',
         ]
-    }
+    },
+    3: {
+        'title': 'Excluidos  (n = 41)',
+        'lines': [
+            'Fuera del tema principal (n = 20)',
+            'Sin metodología replicable (n = 12)',
+            'Idioma no admitido (n = 9)',
+        ]
+    },
 }
 
 MAIN_INFO = [
-    (['Registros identificados mediante búsqueda', 'combinada  (Google Scholar · ArXiv)'], 'n = 104', TEAL),
-    (['Registros seleccionados tras lectura', 'de título y resumen'],                      'n = 35',  TEAL),
-    (['Artículos evaluados mediante', 'lectura de texto completo'],                        'n = 14',  TEAL),
-    (['Estudios incluidos en la síntesis', 'crítica del estado del arte'],                 'n = 7',   TEAL),
-]
-
-CI_BODY = [
-    'CI1: Artículos, tesis o actas de conferencias',
-    'CI2: Publicados entre 2020 y 2025',
-    'CI3: Escritos en español o inglés',
-    'CI4: Detalles técnicos de arquitectura de SW',
-    'CI5: Combinan ≥ 2: scraping, embeddings,',
-    '        LLMs/IAG, agenda mediática',
+    (['Registros identificados en 6 bases de', 'datos académicas'],                        'n = 254', TEAL),
+    (['Registros cribados tras lectura', 'de título y resumen'],                           'n = 104', TEAL),
+    (['Artículos evaluados mediante', 'lectura de texto completo'],                        'n = 50',  TEAL),
+    (['Estudios incluidos en la síntesis', 'crítica del estado del arte'],                 'n = 9',   TEAL),
 ]
 
 # ── Construcción SVG ─────────────────────────────────────
@@ -143,12 +136,6 @@ for idx, (py, ph, label_lines) in enumerate(PHASES):
         svg.append(t(ELX, py+38, edata['title'], 36, XTX, 'bold', anchor='start'))
         svg.append(tlines(ELX, py+80, edata['lines'], 28, TXT, lh=38, anchor='start'))
         svg.append(arr_h(MX+MW+6, EX-6, pmid))
-
-    # Criterios de Inclusión al lado de Identificación
-    if idx == 0:
-        svg.append(rect(EX, py, EW, ph, GBG, GBD, sw=1.8))
-        svg.append(t(ELX, py+38, 'Criterios de Inclusión', 36, GTX, 'bold', anchor='start'))
-        svg.append(tlines(ELX, py+80, CI_BODY, 30, TXT, lh=38, anchor='start'))
 
     # Flecha hacia la siguiente fase
     if idx < len(PHASES)-1:

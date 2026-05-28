@@ -86,6 +86,7 @@
 
 
 \chapter{Introducción}
+\label{cap:intro}
 \section{Motivación}
 El panorama informativo actual se caracteriza por la proliferación de portales digitales, que ofrecen una amplia variedad de noticias en línea. Hoy día, vivimos en un contexto de sociedades hipermediatizadas \citep{carlon:2020}, en donde el acceso y análisis de los discursos mediatizados a través de Internet presenta dos limitaciones fundamentales que deben ser sorteadas tanto por investigadores sociales, profesionales de la información como por gestores públicos para determinar y comprender su impacto en la sociedad.
 
@@ -239,58 +240,41 @@ El proceso de selección se desarrolló en cuatro fases ejecutadas por el autor.
 \subsection{Estudios Incluidos}
 \label{sec:rsl-estudios}
 
-El proceso de selección descrito en la sección anterior arrojó nueve estudios incluidos en la revisión, distribuidos en los tres ejes temáticos que estructuran el Estado del Arte (Sección~\ref{sec:rsl-estado-arte}). Las Tablas~\ref{tab:estudios-pr1}, \ref{tab:estudios-pr2} y \ref{tab:estudios-pr3} los sintetizan, anticipando el análisis detallado de cada subsección posterior.
+El proceso de selección descrito en la sección anterior arrojó nueve estudios incluidos en la revisión, distribuidos en los tres ejes temáticos que estructuran el Estado del Arte (Sección~\ref{sec:rsl-estado-arte}). La Tabla~\ref{tab:estudios-rsl} los sintetiza, anticipando el análisis detallado de cada subsección posterior. La columna ``Estudio'' incorpora entre paréntesis el sistema o stack distintivo de cada trabajo; los detalles técnicos completos se discuten en el Estado del Arte.
 
 \begin{table}[H]
   \centering
-  \caption{Estudios incluidos en el eje PR1}
-  \label{tab:estudios-pr1}
+  \caption{Estudios incluidos en la revisión sistemática, agrupados por pregunta de investigación.}
+  \label{tab:estudios-rsl}
   \footnotesize
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3cm} X X X@{}}
+  \setlength{\tabcolsep}{5pt}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm} X X@{}}
     \toprule
-    \textbf{Estudio}        & \textbf{Stack técnico}                                            & \textbf{Aporte central}                                                                                                      & \textbf{Limitación}                                                 \\
+    \textbf{Estudio}                                  & \textbf{Aporte central}                                                                                                      & \textbf{Limitación}                                                   \\
     \midrule
-    \citet{milbauer2023}    & NLP cross-document; interfaz interactiva (\textit{NewsSense})     & Evidencia el límite del NLP clásico para sintetizar perspectivas contradictorias y verificar sin referencias externas        & Foco en \textit{sensemaking} del lector; no escala a corpus masivos \\
-    \addlinespace
-    \citet{pavlyshenko2024} & RAG con GPT-4o + Google Search API; regresión bayesiana posterior & La IAG supera al NLP estadístico en análisis cualitativo, pero requiere modelado bayesiano para cuantificar la incertidumbre & Muestra acotada; caso único (elecciones US 2024)                    \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \caption{Estudios incluidos en el eje PR2}
-  \label{tab:estudios-pr2}
-  \footnotesize
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3cm} X X X@{}}
-    \toprule
-    \textbf{Estudio}   & \textbf{Stack técnico}                                                                    & \textbf{Aporte central}                                                                & \textbf{Limitación}                                                   \\
+    \multicolumn{3}{@{}l}{\textit{PR1 — Limitaciones del NLP tradicional frente al discurso mediático}}                                                                                                                                                      \\
     \midrule
-    \citet{haider2025} & LLMs + scraping diario; anotación de tono, sesgo y tópicos (\textit{Media Bias Detector}) & Medición sistemática de selección y encuadre mediático a escala                        & Sistema en curso; falta estandarización cross-plataforma de etiquetas \\
+    \citet{milbauer2023} (\textit{NewsSense})         & Evidencia el límite del NLP clásico para sintetizar perspectivas contradictorias y verificar sin referencias externas        & Foco en \textit{sensemaking} del lector; no escala a corpus masivos   \\
     \addlinespace
-    \citet{sundar2025} & ML + NLP + LLMs sobre corpus noticioso                                                    & Traza dinámicas emocionales (\textit{AI phobia}) propagadas por la cobertura mediática & Tema único; corpus específico                                         \\
-    \bottomrule
-  \end{tabularx}
-\end{table}
-
-\begin{table}[H]
-  \centering
-  \caption{Estudios incluidos en el eje PR3}
-  \label{tab:estudios-pr3}
-  \footnotesize
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3cm} X X X@{}}
-    \toprule
-    \textbf{Estudio}           & \textbf{Stack técnico}                                                                                  & \textbf{Aporte central}                                                              & \textbf{Limitación}                                     \\
+    \citet{pavlyshenko2024} (RAG GPT-4o + bayesiano)  & La IAG supera al NLP estadístico en análisis cualitativo, pero requiere modelado bayesiano para cuantificar la incertidumbre & Muestra acotada; caso único (elecciones US 2024)                      \\
     \midrule
-    \citet{behbahanian}        & Agentic workflows + GPT-4.1-mini + Sentence-BERT (\textit{GlimzAI})                                     & Deduplicación semántica y agregación end-to-end de noticias                          & Sin validación con usuarios; foco en distribución       \\
+    \multicolumn{3}{@{}l}{\textit{PR2 — Aplicaciones computacionales del \textit{agenda-setting} de segundo nivel}}                                                                                                                                          \\
+    \midrule
+    \citet{haider2025} (\textit{Media Bias Detector}) & Medición sistemática de selección y encuadre mediático a escala                                                              & Sistema en curso; falta estandarización cross-plataforma de etiquetas \\
     \addlinespace
-    \citet{neupane2025}        & Node.js + OpenAI embeddings + UMAP/HDBSCAN + GPT-4o                                                     & Clustering temático y generación automática de contenido para portales autónomos     & Sin validación con expertos                             \\
+    \citet{sundar2025} (ML + LLMs sobre corpus)       & Traza dinámicas emocionales (\textit{AI phobia}) propagadas por la cobertura mediática                                       & Tema único; corpus específico                                         \\
+    \midrule
+    \multicolumn{3}{@{}l}{\textit{PR3 — Arquitecturas de software con IAG para el procesamiento de noticias}}                                                                                                                                                \\
+    \midrule
+    \citet{behbahanian} (\textit{GlimzAI})            & Deduplicación semántica y agregación end-to-end de noticias                                                                  & Sin validación con usuarios; foco en distribución                     \\
     \addlinespace
-    \citet{ameer:2025}         & Scraping Python + base vectorial + Flask + DeepSeek fine-tuned + Convai 3D (\textit{NexGen MediaCraft}) & Broadcasting de noticias en tiempo real con presentador virtual                      & Foco en presentación; no aborda análisis interpretativo \\
+    \citet{neupane2025} (Node.js + GPT-4o)            & Clustering temático y generación automática de contenido para portales autónomos                                             & Sin validación con expertos                                           \\
     \addlinespace
-    \citet{begum:2024}         & Flask + GoogleNews/Newspaper4k + GPT-3.5-turbo-16k + BERTweet + Gmail API                               & Reportes diarios personalizados con resumen en dos niveles y análisis de sentimiento & Foco en personalización individual                      \\
+    \citet{ameer:2025} (\textit{NexGen MediaCraft})   & Broadcasting de noticias en tiempo real con presentador virtual                                                              & Foco en presentación; no aborda análisis interpretativo               \\
     \addlinespace
-    \citet{somasundharam:2025} & LangChain + FAISS + \textit{embeddings} HF + LLaMA-3                                                    & RAG con trazabilidad de fuentes y baja latencia para consultas multi-URL             & Foco en performance; no aborda análisis interpretativo  \\
+    \citet{begum:2024} (GPT-3.5 + BERTweet)           & Reportes diarios personalizados con resumen en dos niveles y análisis de sentimiento                                         & Foco en personalización individual                                    \\
+    \addlinespace
+    \citet{somasundharam:2025} (LangChain + LLaMA-3)  & RAG con trazabilidad de fuentes y baja latencia para consultas multi-URL                                                     & Foco en performance; no aborda análisis interpretativo                \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -336,9 +320,15 @@ Se han identificado las siguientes brechas que el framework propuesto en esta te
 
 \section{Conclusión del Capítulo}
 \label{sec:rsl-conclusion}
-La literatura analizada valida la viabilidad de una infraestructura que combine web scraping, vectorización mediante \textit{embeddings} y \textit{prompt engineering}. Sin embargo, la transición de prototipos genéricos a herramientas institucionalizadas para la investigación social requiere superar obstáculos estructurales. La revisión ha evidenciado que los sistemas actuales carecen de mecanismos robustos para garantizar la trazabilidad de las fuentes, la medición de la incertidumbre en las inferencias del modelo y la tolerancia a fallos en la extracción de datos.
+La revisión sistemática presentada en este capítulo permite delimitar con precisión el punto de partida de esta tesina, tanto en lo que la literatura ya ha consolidado como en lo que aún permanece sin resolver.
 
-En consecuencia, las metodologías tradicionales deben evolucionar hacia procesos computarizados auditables. Esta tesina se apoya en los hallazgos de esta revisión para proponer una infraestructura técnica y procedimental que no solo automatice la recolección, sino que garantice el rigor científico necesario para analizar el \textit{agenda-setting} digital, mitigando las limitaciones interpretativas y de gobernanza ética presentes en el estado del arte.
+En el plano de lo consolidado, los nueve estudios analizados confirman que el patrón arquitectónico que combina \textit{web scraping}, indexación mediante \textit{embeddings} e inferencia con modelos de lenguaje extenso es técnicamente viable y reproducible en distintos dominios de aplicación \citep{behbahanian, neupane2025, somasundharam:2025}. Asimismo, queda establecido que la inteligencia artificial generativa supera al NLP estadístico tradicional en tareas interpretativas \citep{milbauer2023, pavlyshenko2024} y que es posible operacionalizar computacionalmente el \textit{agenda-setting} de segundo nivel a escala \citep{haider2025, sundar2025}. Esta base no constituye, por lo tanto, un riesgo a explorar en este trabajo, sino el suelo técnico sobre el que se construye.
+
+En el plano de lo no resuelto, la Síntesis Crítica (Sección~\ref{sec:rsl-brechas}) identificó cinco brechas que los sistemas existentes no abordan de manera integral: la ausencia de estándares interoperables para anotar tópico, tono y encuadre de forma comparable entre plataformas; la fragilidad del \textit{scraping} ante cambios estructurales de los portales; la falta de trazabilidad documental entre la evidencia extraída y las afirmaciones generadas por los modelos; la escasa calibración de la incertidumbre en los \textit{scores} de análisis; y la carencia de procedimientos de gobernanza editorial \textit{human-in-the-loop}. Estas brechas configuran el espacio problemático específico desde el cual arranca esta tesina.
+
+A partir de ese punto de partida, los tres objetivos específicos definidos en el Capítulo~\ref{cap:intro} responden a brechas concretas detectadas en la revisión. El OE1 (módulo Odoo) institucionaliza el flujo extracción-análisis-visualización como aplicación gestionable y auditable, atendiendo a las carencias de gobernanza y trazabilidad. El OE2 (mapa de procesos) formaliza la hoja de ruta procedimental que dota de reproducibilidad y robustez a las etapas de recolección y análisis. El OE3 (procedimientos de acceso a IAG mediante \textit{prompt engineering} bajo arquitectura Tubos y Filtros) busca consistencia de anotaciones y trazabilidad de inferencias en la capa generativa. En conjunto, el framework propuesto no aspira a reemplazar el patrón arquitectónico consolidado por la literatura, sino a completarlo en las dimensiones procedimentales y de rigor científico que los prototipos relevados aún no resuelven.
+
+El capítulo siguiente desarrolla la primera capa de esta propuesta: la aplicación de \textit{scraping} que materializa el componente de extracción del framework.
 
 
 \chapter{Aplicación de Scrapping}

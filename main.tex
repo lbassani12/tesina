@@ -393,8 +393,23 @@ Por último, el \textit{cierre composicional} del estilo ---el hecho de que un s
 \section{El framework como sistema de Tubos y Filtros}
 \label{sec:arq-caracterizacion}
 
+Esta sección caracteriza el framework propuesto como un sistema de Tubos y Filtros, aplicando para ello el esquema descriptivo canónico documentado por \citet{cristia:2025}. Las subsecciones que siguen presentan, en este orden, la vista de conjunto del sistema, los filtros que lo componen, los tubos que los conectan, las especializaciones del estilo que se adoptan en el diseño, las deformaciones canónicas aplicables, la verificación de los invariantes esenciales sobre el diseño resultante y un análisis de las ventajas y limitaciones de la elección.
+
 \subsection{Vista de conjunto y patrón estructural}
 \label{sec:arq-car-conjunto}
+
+El diagrama canónico de la Figura~\ref{fig:arq-pipeline} resume la configuración del sistema: un pipeline lineal de seis filtros que va desde la fuente ---el conjunto de portales digitales monitoreados--- hasta el sumidero, conformado por la capa de presentación de resultados. Los filtros se denominan Extracción, Enriquecimiento semántico, Composición de contexto, Invocación generativa, Decodificación y Normalización; cada uno encapsula una transformación específica sobre la representación de los datos que recibe y la entrega al siguiente filtro a través de un tubo dedicado. El tipo de dato transmitido por cada tubo se indica como etiqueta sobre la flecha correspondiente.
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{Diagrama-Arquitectura.png}
+  \caption{Diagrama canónico del framework propuesto. La fuente son los portales digitales de noticias y el sumidero es la capa de presentación de resultados. Las conexiones al entorno se representan con flecha discontinua, los tubos entre filtros con flecha continua.}
+  \label{fig:arq-pipeline}
+\end{figure}
+
+La configuración adopta la especialización de \textit{pipelines} ---en la que cada filtro tiene un único puerto de entrada y un único puerto de salida--- combinada con la especialización de \textit{tubos tipados}, en la que cada tubo declara el tipo de la representación que transporta. La justificación de estas elecciones se desarrolla en la Subsección~\ref{sec:arq-car-especializaciones}. La vista presentada corresponde a la configuración base del sistema, sin las deformaciones que se discuten más adelante; estas deformaciones, en caso de ser adoptadas, no alteran la estructura topológica del pipeline sino que agregan mecanismos complementarios de persistencia y de configuración.
+
+Tres observaciones sobre la configuración resultan oportunas antes de abordar el detalle de cada componente. En primer lugar, la topología es estrictamente acíclica: el flujo de datos avanza desde la fuente hacia el sumidero sin ramificaciones ni ciclos. La iteración del experto del dominio sobre los resultados ---fenómeno que tiene lugar entre ejecuciones sucesivas del sistema--- es propia del proceso de uso, no de la arquitectura interna del pipeline, y por lo tanto queda fuera del alcance de la presente caracterización. En segundo lugar, fuente y sumidero son componentes externos al framework: los portales digitales no pertenecen al sistema sino que constituyen su entorno de entrada, y la capa de presentación, encargada de la visualización y la generación de reportes, corresponde al entorno de consumo de los resultados. Esta delimitación es coherente con la convención del estilo, según la cual el sistema queda definido por la red de filtros y tubos y no por sus interlocutores externos. En tercer lugar, la separación en seis filtros no es la única configuración posible: la composicionalidad del estilo, presentada en la Subsección~\ref{sec:arq-estilo-componentes}, habilita la inclusión, eliminación o sustitución de etapas para acomodar variantes analíticas particulares. La caracterización aquí presentada corresponde al pipeline base que cubre el ciclo completo de análisis sin compromiso con ningún caso de estudio específico.
 
 \subsection{Componentes: los filtros del framework}
 \label{sec:arq-car-filtros}

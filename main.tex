@@ -162,7 +162,7 @@ En este objetivo específico, se pretende organizar y automatizar la hoja de rut
 
 \vspace{0.3 cm}
 
-Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \citep{land2002brief}.
+Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \citep{garlanshaw:1994, shawgarlan:1996}.
 
 \chapter{Análisis bibliográfico?}
 \label{cap:rsl}
@@ -240,7 +240,11 @@ El proceso de selección se desarrolló en cuatro fases ejecutadas por el autor.
 \subsection{Estudios Incluidos}
 \label{sec:rsl-estudios}
 
-El proceso de selección descrito en la sección anterior arrojó nueve estudios incluidos en la revisión, distribuidos en los tres ejes temáticos que estructuran el Estado del Arte (Sección~\ref{sec:rsl-estado-arte}). La Tabla~\ref{tab:estudios-rsl} los sintetiza, anticipando el análisis detallado de cada subsección posterior. La columna ``Estudio'' incorpora entre paréntesis el sistema o stack distintivo de cada trabajo; los detalles técnicos completos se discuten en el Estado del Arte.
+El proceso de selección descrito en la sección anterior arrojó nueve estudios incluidos en la revisión, distribuidos de manera desigual entre los tres ejes temáticos: dos trabajos abordan las limitaciones del NLP tradicional (PR1), dos las aplicaciones computacionales del \textit{agenda-setting} (PR2) y cinco las arquitecturas de software con IAG para el procesamiento de noticias (PR3). Este desbalance refleja la madurez relativa de cada línea: mientras que las dos primeras presentan estudios más bien fundacionales o de validación metodológica, la tercera concentra la mayor parte de la producción reciente, donde proliferan prototipos y sistemas aplicados que combinan extracción, vectorización e inferencia.
+
+Una lectura transversal del corpus revela un patrón arquitectónico recurrente: la mayoría de los trabajos articula una cadena de procesamiento que va de la ingesta de contenido --ya sea por \textit{scraping} directo o por consumo de APIs noticiosas-- a la representación semántica mediante \textit{embeddings} o esquemas RAG, y de allí a la inferencia con modelos de lenguaje extenso \citep{neupane2025, behbahanian, somasundharam:2025, ameer:2025}. Las variantes no afectan la estructura general sino los énfasis: algunos priorizan deduplicación y agregación \citep{behbahanian}, otros la entrega multimedia o personalizada \citep{ameer:2025, begum:2024}, y otros la trazabilidad de fuentes \citep{somasundharam:2025}. Esta convergencia técnica confirma que el patrón existe como herencia disponible, pero también vuelve más visibles las dimensiones que ningún estudio resuelve por completo.
+
+En particular, las limitaciones que reportan los propios autores conforman un mapa de zonas no cubiertas que se repiten a lo largo del corpus: la ausencia de validación con usuarios o expertos \citep{behbahanian, neupane2025}, el sacrificio de la profundidad interpretativa en favor de la distribución o la \textit{performance} \citep{ameer:2025, somasundharam:2025}, la dependencia de muestras acotadas o casos únicos \citep{pavlyshenko2024, sundar2025} y la falta de estandarización cross-plataforma \citep{haider2025}. La Tabla~\ref{tab:estudios-rsl} sintetiza este panorama agrupado por pregunta de investigación; la columna ``Estudio'' incorpora entre paréntesis el sistema o stack distintivo de cada trabajo.
 
 \begin{table}[H]
   \centering
@@ -281,7 +285,7 @@ El proceso de selección descrito en la sección anterior arrojó nueve estudios
 
 \section{Estado del Arte}
 \label{sec:rsl-estado-arte}
-Sobre la base del Marco Teórico (Sección~\ref{sec:rsl-marco}), esta sección examina cómo los estudios incluidos abordan los problemas planteados por las preguntas de investigación de esta tesina. La revisión se organiza en tres ejes temáticos correspondientes a las tres PR: las limitaciones del procesamiento de lenguaje natural (NLP) tradicional frente al análisis discursivo en medios digitales (PR1); las aplicaciones computacionales del \textit{agenda-setting} y la medición de atributos mediáticos (PR2); y las arquitecturas de software emergentes que integran \textit{scraping}, \textit{embeddings} y modelos de lenguaje extenso en \textit{pipelines} reproducibles para sistematizar el procesamiento de noticias (PR3).
+Sobre la base del Marco Teórico (Sección~\ref{sec:rsl-marco}), esta sección analiza estudio por estudio cómo el corpus incluido aborda cada una de las preguntas de investigación. Las subsecciones siguen el orden de las tres PR.
 
 \subsection{Limitaciones del Procesamiento de Lenguaje Natural (NLP) Tradicional}
 \label{sec:rsl-nlp}
@@ -331,9 +335,110 @@ A partir de ese punto de partida, los tres objetivos específicos definidos en e
 El capítulo siguiente desarrolla la primera capa de esta propuesta: la aplicación de \textit{scraping} que materializa el componente de extracción del framework.
 
 
-\chapter{Aplicación de Scrapping}
+\chapter{Arquitectura}
+\label{cap:arquitectura}
+
+Este capítulo presenta la arquitectura de la infraestructura propuesta. A diferencia del Capítulo~\ref{cap:procesos}, donde los procesos se describen de manera agnóstica a la implementación, aquí se aborda la dimensión técnica: las decisiones de estilo arquitectónico, los componentes que materializan cada capa del sistema y el stack tecnológico sobre el que se construye.
+
+La propuesta no se concibe en el vacío. Esta tesina se inscribe en una línea de investigación interdisciplinaria desarrollada por el Centro de Altos Estudios en Tecnología Informática (CAETI) de la Universidad Abierta Interamericana en articulación con el Centro de Investigaciones de Medios (CIM) de la Universidad Nacional de Rosario, en cuyo marco se ha venido construyendo una infraestructura técnica para la extracción y análisis de noticias de portales digitales mediante inteligencia artificial generativa. Esa infraestructura preexistente provee el sustrato sobre el cual esta tesina opera: una plataforma Odoo Community con módulos para la configuración y monitoreo de portales digitales, una herramienta de scraping basada en spiders parametrizables que combina librerías como BeautifulSoup, Selenium y Newspaper3k, y una capa inicial de procesamiento mediante \textit{retrieval-augmented generation} (RAG) y modelos de lenguaje de gran escala% TODO: citar [Raimondo Anselmino et al., Capítulo SIMPOSIO CIENCIAS SOCIALES COMPUTACIONALES 2024]
+.
+
+Sobre esa base, el aporte original de la presente tesina se concentra en tres artefactos técnicos. En primer lugar, un módulo \textit{addon} específico para Odoo que integra y unifica las capacidades necesarias para automatizar el ciclo completo de análisis, satisfaciendo el objetivo específico OE1. En segundo lugar, un panel de creación de \textit{templates} de \textit{prompt} que reifica como subsistema gestionado lo que en aplicaciones convencionales basadas en modelos de lenguaje suele resolverse de manera \textit{ad hoc}, habilitando la configuración, parametrización y reutilización de plantillas por parte de expertos del dominio. En tercer lugar, un pipeline de procesamiento orientado a inteligencia artificial generativa diseñado bajo el estilo arquitectónico de Tubos y Filtros \citep{garlanshaw:1994, shawgarlan:1996}, que organiza la transformación progresiva del input ---desde los datos empíricos extraídos hasta el resultado analítico final--- como una composición de filtros desacoplados con formatos de mensaje explícitos entre etapas, en línea con el objetivo específico OE3.
+
+La elección de Tubos y Filtros como estilo articulador del procesamiento generativo no es arbitraria. Refleja, por una parte, una tendencia documentada en la literatura sobre la integración de modelos generativos dentro de mapas de procesos tecnológicos automatizados \citep{bertagnolio2023}, donde la modularización del flujo se ha consolidado como condición para la mantenibilidad, la auditabilidad y la sustituibilidad de los componentes algorítmicos. Por otra parte, atiende de manera específica a brechas identificadas en la revisión sistemática del Capítulo~\ref{cap:rsl}, según se desarrolla en la Sección~\ref{sec:arq-estilo-justificacion}.
+
+El capítulo se organiza en cuatro secciones. La Sección~\ref{sec:arq-estilo} presenta el estilo de Tubos y Filtros: sus componentes, conectores, invariantes y modelo computacional, y justifica su elección como estilo articulador del procesamiento generativo de noticias. La Sección~\ref{sec:arq-caracterizacion} aplica ese estilo al caso concreto de la presente tesina, caracterizando el framework como un sistema de Tubos y Filtros cuya fuente son los portales digitales de noticias y cuyo sumidero es la capa de presentación de resultados, y siguiendo el esquema descriptivo del catálogo de \citet{cristia:2025}. La Sección~\ref{sec:arq-implementacion} describe la implementación concreta del framework como un módulo \textit{addon} de Odoo, distinguiendo la infraestructura preexistente del entorno institucional de los componentes desarrollados específicamente para esta tesina. Finalmente, la Sección~\ref{sec:arq-sintesis} sintetiza el capítulo y anticipa cómo los elementos arquitectónicos aquí descriptos se operativizan procesualmente en el Capítulo~\ref{cap:procesos}.
+
+\section{El estilo Tubos y Filtros}
+\label{sec:arq-estilo}
+
+\subsection{Componentes, conectores y patrón estructural}
+\label{sec:arq-estilo-componentes}
+
+El estilo de Tubos y Filtros define dos clases de elementos. Los \textit{filtros} son los componentes activos del sistema: unidades de procesamiento independientes que reciben datos por uno o más \textit{puertos} de entrada y producen datos sobre uno o más \textit{puertos} de salida \citep{cristia:2025}. Cada filtro encapsula una transformación local sobre el flujo que recibe, sin compartir estado con otros filtros y sin conocer su identidad. Los \textit{tubos} son los conectores: canales unidireccionales que transportan datos del puerto de salida de un filtro al puerto de entrada de otro, preservando el orden de los elementos transmitidos y sin modificar su contenido \citep{garlanshaw:1994, shawgarlan:1996}.
+
+La configuración estructural canónica del estilo se organiza como un grafo dirigido acíclico que va desde una o más \textit{fuentes} hasta uno o más \textit{sumideros}. Las fuentes son los componentes externos al sistema que alimentan datos al pipeline ---típicamente entradas estándar, archivos, dispositivos o servicios externos---; los sumideros son los componentes externos que reciben los datos emitidos por el sistema. El flujo de información se propaga progresivamente entre filtros adyacentes a través de los tubos, sin retroceso ni ciclos en su forma canónica \citep{cristia:2025}.
+
+Una propiedad estructural distintiva del estilo es su \textit{cierre composicional}: un sistema entero de Tubos y Filtros constituye en sí mismo un filtro, en la medida en que admite ser tratado como una unidad de procesamiento con sus propios puertos de entrada y salida \citep[p.~24]{cristia:2025}. Esta propiedad habilita el diseño jerárquico ---en el que un filtro puede a su vez descomponerse internamente en una subred de filtros--- y formaliza la noción de que el sistema completo es una composición funcional de los filtros que lo integran. La descripción detallada de los componentes específicos del framework propuesto, así como de las fuentes y sumideros concretos sobre los que opera, se presenta en la Sección~\ref{sec:arq-caracterizacion}.
+
+\subsection{Modelo computacional e invariantes}
+\label{sec:arq-estilo-invariantes}
+
+Cada filtro de un sistema de Tubos y Filtros opera de manera independiente: no comparte memoria con los demás filtros y procesa los datos disponibles en sus puertos de entrada sin coordinación explícita con el resto del sistema. La literatura distingue dos modalidades de filtros según cómo accedan al flujo entrante \citep{cristia:2025}. Los filtros \textit{activos} revisan periódicamente sus puertos de entrada en busca de datos disponibles y, cuando los detectan, los consumen y producen la salida correspondiente sobre sus puertos de salida; los filtros \textit{pasivos} exponen una interfaz que es invocada por los tubos para comunicarles o solicitarles datos. La elección entre una y otra modalidad responde a consideraciones de implementación ---asociadas, por ejemplo, al uso de hilos de ejecución, a la sincronización entre productores y consumidores y al manejo de buffers limitados--- y no altera la semántica del estilo.
+
+El estilo se define formalmente por cuatro \textit{invariantes esenciales} que cualquier diseño que se reclame como Tubos y Filtros debe verificar \citep[p.~23]{cristia:2025}:
+
+\begin{enumerate}
+  \item Ningún filtro conoce la identidad ni la existencia de los demás filtros del sistema.
+  \item Ningún filtro depende del estado interno de los demás filtros, ni puede observarlo o modificarlo.
+  \item La corrección de la salida producida por el sistema no depende del orden en que cada filtro realice sus cálculos individuales.
+  \item Los tubos transmiten los datos entre filtros sin alterar su contenido.
+\end{enumerate}
+
+Estas invariantes constituyen, en conjunto, una condición de \textit{independencia funcional} entre los componentes del sistema. Tres consecuencias arquitectónicas se desprenden directamente de ellas. En primer lugar, la \textit{sustituibilidad} de cada filtro: cualquier filtro puede ser reemplazado por otro que respete su interfaz de puertos y los tipos de datos transmitidos, sin necesidad de modificar el resto del sistema. En segundo lugar, la \textit{auditabilidad lineal} del flujo: las transformaciones que sufren los datos al atravesar el sistema pueden inspeccionarse filtro por filtro, sin reconstruir interacciones implícitas. En tercer lugar, la \textit{posibilidad de ejecución concurrente}: en la medida en que el orden de cómputo no incide sobre la corrección del resultado, los filtros pueden ejecutarse en paralelo o distribuirse entre máquinas distintas sin afectar la semántica del estilo. Conviene precisar que el invariante~3 refiere al orden de \textit{scheduling} interno con que cada filtro realiza sus cálculos individuales, no a las dependencias causales que la topología del pipeline establece entre ellos: un filtro no puede consumir datos que aún no fueron emitidos en el puerto al que está conectado, y esa restricción ---propia del grafo de tubos--- es una dependencia de flujo, no una dependencia de orden de cómputo en el sentido del invariante. La verificación de cómo se satisfacen estas condiciones en el diseño propuesto se aborda en la Subsección~\ref{sec:arq-car-verificacion}; el análisis de cuál de las propiedades arquitectónicas resulta más relevante para el caso de la presente tesina se discute en la Subsección~\ref{sec:arq-estilo-justificacion}.
+
+\subsection{Por qué Tubos y Filtros para el procesamiento generativo de noticias}
+\label{sec:arq-estilo-justificacion}
+
+La elección de un estilo arquitectónico para el procesamiento generativo de noticias debe responder a las necesidades específicas del problema, tal como se las delimitó en los capítulos previos. La revisión sistemática presentada en el Capítulo~\ref{cap:rsl} identificó cinco brechas que los sistemas existentes no abordan de manera integral; de ellas, dos caen dentro del alcance de las decisiones de estilo arquitectónico y orientan la elección que se adopta en esta tesina: la \textit{fragilidad del scraping} ante cambios estructurales de los portales, que demanda poder modificar o reemplazar la etapa de extracción sin reescribir el resto del sistema; y la \textit{falta de trazabilidad documental} entre la evidencia extraída y las afirmaciones generadas por los modelos, que exige que cada transformación de los datos resulte localizable e inspeccionable. Las restantes ---ausencia de estándares interoperables de anotación, escasa calibración de la incertidumbre y carencia de procedimientos de gobernanza editorial \textit{human-in-the-loop}--- exceden el ámbito de la decisión arquitectónica y se atienden en otros niveles de la propuesta: en el modelo de datos del módulo y en el mapa de procesos del Capítulo~\ref{cap:procesos}. A estas dos brechas se suman dos requisitos adicionales derivados del ecosistema tecnológico en el que la propuesta opera: la necesidad de poder sustituir los modelos generativos accesibles por API ante una evolución acelerada del mercado, y la necesidad de recombinar las etapas de procesamiento para acomodar distintos casos de estudio sin reescribir la infraestructura.
+
+El estilo de Tubos y Filtros se ajusta a este perfil de problema. El catálogo de \citet[p.~21]{cristia:2025} identifica entre los dominios canónicos de aplicación del estilo el procesamiento de cadenas, el procesamiento de señales y, en general, los sistemas cuyo flujo de información se conciba como una secuencia de transformaciones sobre un \textit{stream} de datos. El análisis automatizado de noticias mediante modelos generativos, en tanto procesamiento progresivo de texto que se inicia en la extracción y culmina en una representación analítica enriquecida, encuadra naturalmente en esta familia. \citet{garlanshaw:1994} mencionan, además, los sistemas de transformación de información y los entornos distribuidos como dominios donde el estilo ha resultado históricamente efectivo.
+
+La propiedad de \textit{sustituibilidad} de los filtros, derivada de las invariantes~1 y 2 del estilo, atiende de manera conjunta a la brecha de fragilidad del scraping y al requisito de sustitución de modelos generativos. En la medida en que ningún filtro conoce la identidad de los demás ni accede a su estado interno, la etapa de extracción puede actualizarse ---para adaptarse a un rediseño del portal monitoreado--- sin afectar a las etapas posteriores; del mismo modo, el filtro responsable de invocar al modelo generativo puede ser reemplazado por otro que utilice un proveedor distinto, o un modelo distinto del mismo proveedor, sin necesidad de reescribir el resto del pipeline. La misma propiedad habilita la sustitución del filtro de enriquecimiento semántico ---reemplazando, por ejemplo, una técnica de \textit{embedding} por otra--- sin alterar las etapas siguientes. Esta capacidad de evolución localizada resulta particularmente valiosa frente a infraestructuras cuyas dependencias externas evolucionan con frecuencia.
+
+La \textit{auditabilidad lineal} del flujo, segunda consecuencia derivada de las invariantes del estilo, responde directamente a la brecha de trazabilidad documental identificada en la revisión: la dificultad de reconstruir el camino que sigue la evidencia desde su extracción hasta las afirmaciones que el modelo generativo produce sobre ella. Cada transformación que los datos sufren al atravesar el sistema queda localizada en un filtro identificable, con una entrada y una salida definidas y sin interacciones implícitas mediadas por estados compartidos. Para una investigación que pretenda fundamentar afirmaciones sobre la cobertura mediática o el sesgo discursivo en términos verificables, esta propiedad no es accesoria: constituye una condición de posibilidad para la revisión metodológica y para la reproducibilidad del análisis. La separación explícita entre las etapas de extracción, enriquecimiento, composición de contexto e invocación generativa permite, además, distinguir las decisiones técnicas que afectan al corpus de aquellas que afectan a la interpretación, dimensión sobre la que el experto del dominio debe poder ejercer un control directo.
+
+Por último, el \textit{cierre composicional} del estilo ---el hecho de que un sistema de Tubos y Filtros sea en sí mismo un filtro--- y la modularidad consiguiente atienden al requisito de diversidad de los casos analíticos. La caracterización del problema como una composición funcional de filtros habilita la construcción de pipelines especializados para distintos casos de estudio, en los que las etapas de procesamiento pueden recombinarse, agregarse o suprimirse en función del objetivo concreto del experto del dominio, sin alterar las garantías estructurales del estilo. La adopción de Tubos y Filtros se inscribe, además, en una tendencia documentada por \citet{bertagnolio2023} sobre la integración de modelos generativos dentro de mapas de procesos tecnológicos automatizados.
+
+\section{El framework como sistema de Tubos y Filtros}
+\label{sec:arq-caracterizacion}
+
+\subsection{Vista de conjunto y patrón estructural}
+\label{sec:arq-car-conjunto}
+
+\subsection{Componentes: los filtros del framework}
+\label{sec:arq-car-filtros}
+
+\subsection{Conectores: tubos tipados}
+\label{sec:arq-car-tubos}
+
+\subsection{Especializaciones aplicadas: pipelines y tubos tipados}
+\label{sec:arq-car-especializaciones}
+
+\subsection{Deformación aplicada: repositorio común sobre PostgreSQL}
+\label{sec:arq-car-repositorio}
+
+\subsection{Sintonizadores?}
+\label{sec:arq-car-sintonizadores}
+
+\textit{Subsección pendiente de discusión con el director.} El catálogo de \citet{cristia:2025} documenta los \textit{sintonizadores} como una deformación canónica del estilo, mediante la cual un componente externo ---típicamente una interfaz gráfica--- invoca procedimientos de un filtro para alterar o ajustar su comportamiento sin participar del flujo de datos del sistema. La interacción del experto del dominio con el framework propuesto, a través del panel de creación de \textit{templates} y de los formularios de configuración de contexto, admite ser caracterizada bajo esta deformación. Queda abierto definir si conviene reificar dicha caracterización dentro de la descripción arquitectónica o, alternativamente, dejar la interacción del experto fuera del estilo de Tubos y Filtros y tratar al sistema como un pipeline puro cuya fuente son los portales digitales de noticias y cuyo sumidero es la capa de presentación de resultados.
+
+\subsection{Verificación de los invariantes esenciales}
+\label{sec:arq-car-verificacion}
+
+\subsection{Ventajas y limitaciones de la elección}
+\label{sec:arq-car-analisis}
+
+\section{Implementación: la solapa en Odoo}
+\label{sec:arq-implementacion}
+
+\subsection{Infraestructura preexistente del entorno CAETI/CIM}
+\label{sec:arq-impl-preexistente}
+
+\subsection{Stack tecnológico}
+\label{sec:arq-impl-stack}
+
+\subsection{Materialización: mapeo de filtros y tubos al módulo Odoo}
+\label{sec:arq-impl-materializacion}
+
+\section{Síntesis del capítulo}
+\label{sec:arq-sintesis}
 
 \chapter{Mapa de procesos}
+\label{cap:procesos}
+
+\section{Proceso general}
+\label{sec:proc-general}
 
 \begin{figure}[h]
   \centering
@@ -361,7 +466,12 @@ El capítulo siguiente desarrolla la primera capa de esta propuesta: la aplicaci
 De los procesos antes mencionados, a continuación se describen los procesos de soporte Nro. 02 -\textbf{Scrapping}, 03 - \textbf{Definición de Contexto} y 04- \textbf{Procesamiento IAG}.
 
 \newpage
+\section{Recopilación de requerimientos}
+\label{sec:proc-requerimientos}
+
+\newpage
 \section{Scrapping}
+\label{sec:proc-scrapping}
 \begin{figure}[h]
   \centering
   \includegraphics[height=4in]{Diagrama 02-Scrapping.png}
@@ -438,6 +548,7 @@ El proceso de encoding puede involucrar técnicas como la codificación one-hot,
 
 \newpage
 \section{Definición de Contexto}
+\label{sec:proc-contexto}
 \begin{figure}[h]
   \centering
   \includegraphics[height=5.1in]{Diagrama 03-Contexto.png}
@@ -547,6 +658,7 @@ Actividad: Estructurizar el prompt que sera entregado a la IAG utilizando las en
 
 \newpage
 \section{Procesamiento IAG}
+\label{sec:proc-iag}
 
 \begin{figure}[h]
   \centering
@@ -587,7 +699,44 @@ La normalización implica varias tareas, como:
 
 \newpage
 
+\section{Visualización previa}
+\label{sec:proc-visualizacion}
+
+\newpage
+\section{Refinamiento iterativo}
+\label{sec:proc-refinamiento}
+
+\newpage
+\section{Presentación de resultados}
+\label{sec:proc-presentacion}
+
+\newpage
+\section{Síntesis del capítulo}
+\label{sec:proc-sintesis}
+
+\chapter{Ejemplo de aplicación}
+\label{cap:ejemplo}
+
+\section{Selección del caso}
+\label{sec:ej-caso}
+
+\section{Configuración inicial}
+\label{sec:ej-configuracion}
+
+\section{Ejecución del scraping}
+\label{sec:ej-scraping}
+
+\section{Definición de contexto y template utilizado}
+\label{sec:ej-contexto}
+
+\section{Resultados del análisis generativo}
+\label{sec:ej-resultados}
+
+\section{Discusión}
+\label{sec:ej-discusion}
+
 \chapter{Conclusiones y Trabajo a Futuro}
+\label{cap:conclusiones}
 
 
 

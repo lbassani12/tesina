@@ -26,6 +26,9 @@
 # Latexmk
 *.fdb_latexmk
 
+# PDF intermedio del diagrama standalone (el PNG final sí se versiona)
+diagrama_arquitectura.pdf
+
 # pdfx
 *.xmpdata-bak
 

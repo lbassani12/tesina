@@ -1,0 +1,148 @@
+% =====================================================================
+%  Diagrama canónico del framework como sistema de Tubos y Filtros
+%  (Figura del Capítulo 3, Sección 3.2.1 de main.tex)
+%
+%  Source of truth del diagrama. Para regenerar el PNG que usa main.tex:
+%      lualatex diagrama_arquitectura.tex
+%      pdftoppm -png -singlefile -r 150 diagrama_arquitectura.pdf Diagrama-Arquitectura
+%
+%  El primer comando produce diagrama_arquitectura.pdf (ignorado por git);
+%  el segundo produce Diagrama-Arquitectura.png (versionado, referenciado
+%  por \includegraphics en main.tex).
+% =====================================================================
+\documentclass[tikz,border=14pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla,es-noindentfirst]{babel}
+\usetikzlibrary{shapes.geometric,positioning,arrows.meta,calc,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\small,
+  filtro/.style={draw, thick, rectangle, rounded corners=2pt,
+    minimum width=2.4cm, minimum height=1.6cm, align=center},
+  exterior/.style={draw, thick, cylinder, shape border rotate=90, aspect=0.25,
+    minimum width=2.5cm, minimum height=1.5cm, align=center, font=\small\itshape},
+  banda/.style={draw, thick, rectangle, rounded corners=3pt, align=center, fill=black!4},
+  repos/.style={draw, line width=2pt, rectangle, rounded corners=3pt, align=center, fill=black!4},
+  puerto/.style={fill=black, draw=black, rectangle, minimum size=5pt, inner sep=0pt},
+  pnum/.style={font=\scriptsize\bfseries},
+  tubo/.style={thick},
+  conexion/.style={thick, dash pattern=on 4pt off 3pt},
+  sint/.style={{Circle[length=2.2mm]}-{Latex[length=2.8mm,width=2.2mm]}, thick},
+  memoria/.style={{Latex[length=3.4mm,width=3mm]}-{Latex[length=3.4mm,width=3mm]}, line width=1.9pt},
+  sintbox/.style={draw, thick, rectangle, rounded corners=2pt, align=center,
+    font=\scriptsize, fill=black!3, minimum height=0.85cm, text width=2.9cm, inner sep=3pt},
+  compuesto/.style={draw, thick, dash pattern=on 3pt off 2pt, rounded corners=6pt},
+]
+
+% ---------- Filtros (banda media, y=4.5) ----------
+\node[filtro] (extr)  at (3,4.5)    {Extracción};
+\node[filtro] (enriq) at (6.2,4.5)  {Enriquecimiento\\semántico};
+\node[filtro] (comp)  at (9.4,4.5)  {Composición\\de contexto};
+\node[filtro] (invoc) at (12.6,4.5) {Invocación\\generativa};
+\node[filtro] (deco)  at (15.8,4.5) {Decodificación};
+\node[filtro] (norm)  at (19.0,4.5) {Normalización};
+
+% ---------- Fuente y sumidero (separados para que la conexión punteada respire) ----------
+\node[exterior] (portales) at (-1.1,4.5) {Portales\\digitales};
+\node[exterior] (presenta) at (23.1,4.5) {Capa de\\presentación\\\scriptsize(tableros, reportes)};
+
+% ---------- Puertos (cuadraditos en bordes O/E, y=4.5) ----------
+\foreach \f in {extr,enriq,comp,invoc,deco,norm}{
+  \node[puerto] (\f-in)  at (\f.west) {};
+  \node[puerto] (\f-out) at (\f.east) {};
+}
+
+% ---------- Numeración de puertos (arriba del tubo) ----------
+\node[pnum] at ($(extr-in)  +(-0.18,0.32)$) {1};
+\node[pnum] at ($(extr-out) +(0.18,0.32)$)  {2};
+\node[pnum] at ($(enriq-in) +(-0.18,0.32)$) {3};
+\node[pnum] at ($(enriq-out)+(0.18,0.32)$)  {4};
+\node[pnum] at ($(comp-in)  +(-0.18,0.32)$) {5};
+\node[pnum] at ($(comp-out) +(0.18,0.32)$)  {6};
+\node[pnum] at ($(invoc-in) +(-0.18,0.32)$) {7};
+\node[pnum] at ($(invoc-out)+(0.18,0.32)$)  {8};
+\node[pnum] at ($(deco-in)  +(-0.18,0.32)$) {9};
+\node[pnum] at ($(deco-out) +(0.18,0.32)$)  {10};
+\node[pnum] at ($(norm-in)  +(-0.18,0.32)$) {11};
+\node[pnum] at ($(norm-out) +(0.18,0.32)$)  {12};
+
+% ---------- Tubos tipados entre filtros (líneas sin flecha, unen puertos) ----------
+\draw[tubo] (extr-out)  -- (enriq-in);
+\draw[tubo] (enriq-out) -- (comp-in);
+\draw[tubo] (comp-out)  -- (invoc-in);
+\draw[tubo] (invoc-out) -- (deco-in);
+\draw[tubo] (deco-out)  -- (norm-in);
+
+% ---------- Conexiones al entorno (punteadas, sin flecha) ----------
+\draw[conexion] (portales.east) -- (extr-in);
+\draw[conexion] (norm-out) -- (presenta.west);
+
+% ---------- Sintonizadores modulares (uno por filtro que el experto configura) ----------
+% Cada sintonizador es la interfaz de configuración de su propio filtro; agruparlos
+% en una GUI única es decisión del implementador, no de la arquitectura.
+% Enriquecimiento no expone sintonizador: su config (modelo de embedding, chunking)
+% es técnica del implementador. Los parámetros de dominio del RAG (top-k, umbral)
+% viven en el sintonizador de Composición.
+\node[sintbox] (sint-extr) at (3,7.3)   {Selección de portales,\\reglas y prioridad};
+\node[sintbox] (sint-comp) at (9.4,7.3) {Template, variables\\y parámetros de recuperación};
+\node[sintbox] (sint-norm) at (19,7.3)  {Criterios de\\consolidación};
+\draw[sint] (sint-extr.south) -- (extr.north);
+\draw[sint] (sint-comp.south) -- (comp.north);
+\draw[sint] (sint-norm.south) -- (norm.north);
+
+% ---------- Filtro compuesto: Recuperación aumentada (Enriquecimiento + Composición) ----------
+\begin{scope}[on background layer]
+  \node[compuesto, fit=(enriq)(comp), inner xsep=7pt, inner ysep=12pt] (rag) {};
+\end{scope}
+\node[font=\small\itshape, anchor=south west] at (rag.north west) {Recuperación aumentada};
+
+% ---------- Banda inferior: repositorio común (borde grueso) ----------
+\node[repos, minimum width=18cm, minimum height=1.2cm] (repo) at (11,0.3)
+  {Repositorio común --- PostgreSQL / ORM de Odoo};
+\foreach \f in {extr,enriq,comp,invoc,deco,norm}{
+  \draw[memoria] (\f.south) -- (\f.south |- repo.north);
+}
+
+% ================= LEYENDA =================
+\node[anchor=north west, font=\footnotesize] (leyenda) at (-1.5,-1.6) {%
+  \begin{tabular}{@{}cl@{\hspace{10pt}}cl@{}}
+    \tikz[baseline=-0.6ex]{\draw[thick,rounded corners=1pt] (0,-0.13) rectangle (0.5,0.13);}
+      & filtro
+    & \tikz[baseline=-0.6ex]{\draw[thick,fill=black] (0,-0.06) rectangle (0.12,0.06);}
+      & puerto (tipado) \\[5pt]
+    \tikz[baseline=-0.9ex]{%
+        \draw[thick] (-0.23,0) -- (-0.23,-0.34);
+        \draw[thick] (0.23,0) -- (0.23,-0.34);
+        \draw[thick] (-0.23,-0.34) arc (180:360:0.23 and 0.08);
+        \draw[thick] (0,0) ellipse (0.23 and 0.08);}
+      & fuente / sumidero
+    & \tikz[baseline=-0.6ex]{\draw[line width=1.9pt,{Latex[length=2.2mm]}-{Latex[length=2.2mm]}] (0,0) -- (0.65,0);}
+      & acceso al repositorio \\[6pt]
+    \tikz[baseline=-0.6ex]{\draw[thick] (0,0) -- (0.6,0);}
+      & tubo tipado
+    & \tikz[baseline=-0.6ex]{\draw[thick,{Circle[length=1.6mm]}-{Latex[length=2mm]}] (0,0) -- (0.6,0);}
+      & sintonizador \\[5pt]
+    \tikz[baseline=-0.6ex]{\draw[thick,dash pattern=on 4pt off 3pt] (0,0) -- (0.6,0);}
+      & conexión al entorno
+    & \tikz[baseline=-0.6ex]{\draw[thick,dash pattern=on 3pt off 2pt,rounded corners=2pt] (0,-0.13) rectangle (0.5,0.13);}
+      & filtro compuesto \\
+  \end{tabular}
+};
+
+% ================= TABLA DE PUERTOS =================
+\node[anchor=north west, font=\footnotesize] (tabla) at (10.6,-1.6) {%
+  \begin{tabular}{@{}rll@{\hspace{14pt}}rll@{}}
+    \multicolumn{6}{@{}l}{\textbf{Referencia de puertos}\quad\footnotesize(\texttt{X[]} denota un recordset de \texttt{X}; el contenido reside en el repositorio común)} \\[3pt]
+    1  & Extracción (ent.)      & flujo del portal     & 7  & Invocación (ent.)     & \texttt{Prompt[]} \\
+    2  & Extracción (sal.)      & \texttt{Noticia[]}   & 8  & Invocación (sal.)     & \texttt{RespuestaIAG[]} \\
+    3  & Enriquecimiento (ent.) & \texttt{Noticia[]}   & 9  & Decodificación (ent.) & \texttt{RespuestaIAG[]} \\
+    4  & Enriquecimiento (sal.) & \texttt{Noticia[]}   & 10 & Decodificación (sal.) & \texttt{Análisis[]} \\
+    5  & Composición (ent.)     & \texttt{Noticia[]}   & 11 & Normalización (ent.)  & \texttt{Análisis[]} \\
+    6  & Composición (sal.)     & \texttt{Prompt[]}    & 12 & Normalización (sal.)  & \texttt{Resultado} \\
+  \end{tabular}
+};
+
+\end{tikzpicture}
+\end{document}

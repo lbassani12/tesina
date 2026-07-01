@@ -58,8 +58,8 @@
 \node[pnum] at ($(extr-in)  +(-0.18,0.32)$) {1};
 \node[pnum] at ($(extr-out) +(0.18,0.32)$)  {2};
 \node[pnum] at ($(enriq-in) +(-0.18,0.32)$) {3};
-\node[pnum] at ($(enriq-out)+(0.18,0.32)$)  {4};
-\node[pnum] at ($(comp-in)  +(-0.18,0.32)$) {5};
+\node[pnum, text=black!55] at ($(enriq-out)+(0.18,0.32)$)  {4};
+\node[pnum, text=black!55] at ($(comp-in)  +(-0.18,0.32)$) {5};
 \node[pnum] at ($(comp-out) +(0.18,0.32)$)  {6};
 \node[pnum] at ($(invoc-in) +(-0.18,0.32)$) {7};
 \node[pnum] at ($(invoc-out)+(0.18,0.32)$)  {8};
@@ -70,7 +70,7 @@
 
 % ---------- Tubos tipados entre filtros (líneas sin flecha, unen puertos) ----------
 \draw[tubo] (extr-out)  -- (enriq-in);
-\draw[tubo] (enriq-out) -- (comp-in);
+\draw[tubo, draw=black!45] (enriq-out) -- (comp-in);
 \draw[tubo] (comp-out)  -- (invoc-in);
 \draw[tubo] (invoc-out) -- (deco-in);
 \draw[tubo] (deco-out)  -- (norm-in);
@@ -97,6 +97,9 @@
   \node[compuesto, fit=(enriq)(comp), inner xsep=7pt, inner ysep=12pt] (rag) {};
 \end{scope}
 \node[font=\small\itshape, anchor=south west] at (rag.north west) {Recuperación aumentada};
+% Puertos internos del compuesto (4-5): tono atenuado para señalar su encapsulación
+\node[puerto, fill=black!40, draw=black!40] at (enriq.east) {};
+\node[puerto, fill=black!40, draw=black!40] at (comp.west) {};
 
 % ---------- Banda inferior: repositorio común (borde grueso) ----------
 \node[repos, minimum width=18cm, minimum height=1.2cm] (repo) at (11,0.3)
@@ -119,9 +122,9 @@
         \draw[thick] (0,0) ellipse (0.23 and 0.08);}
       & fuente / sumidero
     & \tikz[baseline=-0.6ex]{\draw[line width=1.9pt,{Latex[length=2.2mm]}-{Latex[length=2.2mm]}] (0,0) -- (0.65,0);}
-      & acceso al repositorio \\[6pt]
+      & acceso al repositorio (contenido) \\[6pt]
     \tikz[baseline=-0.6ex]{\draw[thick] (0,0) -- (0.6,0);}
-      & tubo tipado
+      & tubo tipado (referencias)
     & \tikz[baseline=-0.6ex]{\draw[thick,{Circle[length=1.6mm]}-{Latex[length=2mm]}] (0,0) -- (0.6,0);}
       & sintonizador \\[5pt]
     \tikz[baseline=-0.6ex]{\draw[thick,dash pattern=on 4pt off 3pt] (0,0) -- (0.6,0);}

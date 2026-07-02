@@ -401,7 +401,7 @@ Esta sección caracteriza el framework propuesto como un sistema de Tubos y Filt
 \subsection{Vista de conjunto y patrón estructural}
 \label{sec:arq-car-conjunto}
 
-El diagrama canónico de la Figura~\ref{fig:arq-pipeline} resume la configuración del sistema: un pipeline lineal de seis filtros que va desde la fuente ---el conjunto de portales digitales monitoreados--- hasta el sumidero, conformado por la capa de presentación de resultados. Los filtros se denominan Extracción, Enriquecimiento semántico, Composición de contexto, Invocación generativa, Decodificación y Normalización; cada uno encapsula una transformación específica sobre la representación de los datos que recibe y la entrega al siguiente filtro a través de un tubo dedicado. Cada tubo transporta un \textit{recordset} tipado ---en la terminología de Odoo, un conjunto ordenado de referencias a los registros resultantes de la transformación---, mientras que el contenido completo de esos registros reside en un repositorio común compartido por todos los filtros; los puertos de entrada y salida de cada filtro se numeran en la figura y se detallan, junto con su tipo, en la tabla de referencia que la acompaña.
+El diagrama canónico de la Figura~\ref{fig:arq-pipeline} resume la configuración del sistema: un pipeline lineal de seis filtros que va desde la fuente ---el conjunto de portales digitales monitoreados--- hasta el sumidero, conformado por la capa de presentación de resultados. Los filtros se denominan Extracción, Enriquecimiento semántico, Composición de contexto, Invocación generativa, Decodificación y Normalización; cada uno encapsula una transformación específica sobre la representación de los datos que recibe y la entrega al siguiente filtro a través de un tubo dedicado. Cada tubo transporta un \textit{recordset} tipado ---en la terminología de Odoo, un conjunto ordenado de referencias a los registros resultantes de la transformación---, mientras que el contenido completo de esos registros reside en un repositorio común compartido por todos los filtros; los puertos de entrada y salida de cada filtro se numeran en la figura y se detallan, junto con su tipo y su cardinalidad, en la tabla de referencia que la acompaña.
 
 \begin{landscape}
   \begin{figure}
@@ -419,37 +419,44 @@ Tres observaciones sobre la configuración resultan oportunas antes de abordar e
 \subsection{Componentes: los filtros del framework}
 \label{sec:arq-car-filtros}
 
-Esta subsección caracteriza cada uno de los seis filtros ---dos de los cuales, según se anticipó, se agrupan en el filtro compuesto Recuperación aumentada--- siguiendo el esquema que el catálogo de \citet{cristia:2025} prescribe para el componente de un sistema de Tubos y Filtros: para cada filtro se especifican sus puertos de entrada y salida con su tipo, los sintonizadores que expone ---si los tiene---, su acceso al repositorio común y una especificación funcional de la transformación que realiza. La numeración de los puertos remite a la tabla de referencia de la Figura~\ref{fig:arq-pipeline}.
+Esta subsección caracteriza cada uno de los seis filtros ---dos de los cuales, según se anticipó, se agrupan en el filtro compuesto Recuperación aumentada--- siguiendo el esquema que el catálogo de \citet{cristia:2025} prescribe para el componente de un sistema de Tubos y Filtros: para cada filtro se especifican sus puertos de entrada y salida con su tipo, los sintonizadores que expone ---si los tiene---, su acceso al repositorio común y una especificación funcional de la transformación que realiza. La numeración de los puertos remite a la tabla de referencia de la Figura~\ref{fig:arq-pipeline}; la estructura interna de los tipos que circulan por ellos se especifica en el Apéndice~\ref{anexo:tipos}.
 
 Todos los filtros comparten un mismo patrón de operación, consecuencia del uso del repositorio común: reciben por su puerto de entrada un \textit{recordset}, recuperan del repositorio el contenido asociado a esas referencias, aplican su transformación, persisten los resultados y emiten por su puerto de salida un nuevo \textit{recordset} que referencia los registros producidos. Salvo el filtro de Extracción ---que es un filtro activo, disparado por las acciones planificadas de la plataforma según la frecuencia configurada para cada portal---, los restantes operan a demanda dentro de la ejecución de un análisis, consumiendo los datos disponibles en su puerto de entrada.
+
+Este patrón admite una formulación más precisa, que extiende la notación funcional con que el catálogo describe a los filtros. En el estilo puro, un filtro del pipeline es una función \(f : T[c] \to T'[c']\) de su puerto de entrada en su puerto de salida \citep[p.~24]{cristia:2025}. En la variante heterogénea aquí adoptada, en cambio, la transformación del contenido ocurre en el repositorio común, de modo que el estado que se transforma es el par flujo--repositorio:
+\[
+  f : (T[c],\ \mathit{Rep}) \to (T'[c'],\ \mathit{Rep}')
+  \qquad \text{con } \mathit{Rep}' = \mathit{Rep} \cup \Delta_f,
+\]
+donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\Delta_f\) el conjunto de registros que éste persiste. El \textit{recordset} emitido por el puerto de salida es, precisamente, el conjunto de referencias a ese delta ---\(\mathit{refs}(\Delta_f)\)---: el tubo transporta la referencia a la transformación que el repositorio absorbió. Dos consecuencias se siguen de esta formulación. La primera es la \textit{monotonía} del repositorio respecto del flujo de datos: cada filtro únicamente agrega registros ---\(\mathit{Rep} \subseteq \mathit{Rep}'\)---, ninguno modifica ni elimina los que otro produjo, propiedad de la que depende la trazabilidad extremo a extremo del sistema (Apéndice~\ref{anexo:tipos}). La segunda es de método: al admitir el repositorio común, el propio catálogo exige documentar y explicar el conector adicional que la deformación introduce \citep[\S3.13.1]{cristia:2025}, y la firma extendida constituye esa documentación en los mismos términos funcionales con que el catálogo describe el estilo puro. Conviene precisar el alcance: la firma describe la forma de la transformación, no su semántica ---no supone determinismo, pues la invocación generativa es estocástica, ni pureza funcional---. Las seis firmas concretas del pipeline se consignan en el Apéndice~\ref{anexo:tipos}.
 
 \paragraph{Extracción.} Interfaz:
 \begin{itemize}
   \item \textbf{Puerto de entrada} (1): flujo del portal, como conexión al entorno desde la fuente.
   \item \textbf{Puerto de salida} (2): \texttt{Noticia[]}.
   \item \textbf{Sintonizador}: selección de los portales a monitorear, definición de las reglas de extracción mediante expresiones regulares y asignación de la prioridad de monitoreo.
-  \item \textbf{Acceso al repositorio}: escribe los registros \texttt{Noticia} (título, bajada, cuerpo, URL y metadatos descriptivos).
+  \item \textbf{Acceso al repositorio}: escribe los registros \texttt{Noticia} (título, copete, texto y enlace de la publicación, junto con sus metadatos de procedencia; Apéndice~\ref{anexo:tipos}).
 \end{itemize}
 \textit{Especificación funcional.} Accede a los portales registrados, recorre su estructura mediante técnicas de \textit{web scraping} de tipo \textit{spider} y recupera las publicaciones que satisfacen las reglas de extracción configuradas. De cada publicación extrae los elementos relevantes, normaliza el texto y lo persiste como un registro \texttt{Noticia} en el repositorio. Emite por su puerto de salida el \textit{recordset} con la totalidad de las noticias que conforman el corpus del análisis. La descripción detallada de esta etapa, que se apoya en la herramienta de scraping preexistente del entorno institucional, se desarrolla en la Subsección~\ref{sec:arq-impl-preexistente}.
 
-\paragraph{Recuperación aumentada (filtro compuesto).} Los filtros de Enriquecimiento semántico y Composición de contexto no operan de manera independiente: el primero genera las representaciones vectoriales que el segundo consume para recuperar el material empírico relevante. En conjunto implementan el patrón de \textit{recuperación aumentada} (\textit{retrieval-augmented}): la indexación semántica del corpus y su posterior recuperación contextual. Por esta razón se los agrupa en un único filtro compuesto que, por el cierre composicional del estilo (Subsección~\ref{sec:arq-estilo-componentes}), constituye en sí mismo un filtro: hacia el exterior expone un puerto de entrada de tipo \texttt{Noticia[]} (puerto 3) y un puerto de salida de tipo \texttt{Prompt[]} (puerto 6), mientras que el tubo que comunica ambos sub-filtros (puertos 4 y 5) queda confinado a su interior. La denominación recoge el concepto homónimo de la inteligencia artificial generativa contemporánea, con la salvedad de que la etapa de generación propiamente dicha corresponde al filtro de Invocación generativa, posterior a este compuesto. Sus dos sub-filtros se describen a continuación.
+\paragraph{Recuperación aumentada (filtro compuesto).} Los filtros de Enriquecimiento semántico y Composición de contexto no operan de manera independiente: el primero genera las representaciones vectoriales que el segundo consume para recuperar el material empírico relevante. En conjunto implementan el patrón de \textit{recuperación aumentada} (\textit{retrieval-augmented}): la indexación semántica del corpus y su posterior recuperación contextual. Por esta razón se los agrupa en un único filtro compuesto que, por el cierre composicional del estilo (Subsección~\ref{sec:arq-estilo-componentes}), constituye en sí mismo un filtro: hacia el exterior expone un puerto de entrada de tipo \texttt{Noticia[]} (puerto 3) y un puerto de salida de tipo \texttt{Prompt[]} (puerto 6), mientras que el tubo que comunica ambos sub-filtros (puertos 4 y 5), de tipo \texttt{Embedding[]}, queda confinado a su interior. La denominación recoge el concepto homónimo de la inteligencia artificial generativa contemporánea, con la salvedad de que la etapa de generación propiamente dicha corresponde al filtro de Invocación generativa, posterior a este compuesto. Sus dos sub-filtros se describen a continuación.
 
 \paragraph{Enriquecimiento semántico (sub-filtro).} Interfaz:
 \begin{itemize}
   \item \textbf{Puerto de entrada} (3): \texttt{Noticia[]}.
-  \item \textbf{Puerto de salida} (4): \texttt{Noticia[]}.
-  \item \textbf{Acceso al repositorio}: lee el texto de las noticias recibidas y escribe la representación vectorial (\textit{embedding}) asociada a cada una.
+  \item \textbf{Puerto de salida} (4): \texttt{Embedding[]}.
+  \item \textbf{Acceso al repositorio}: lee el texto de las noticias recibidas y escribe los registros \texttt{Embedding} ---la representación vectorial asociada a cada una---.
 \end{itemize}
-\textit{Especificación funcional.} Para cada noticia del \textit{recordset} de entrada, recupera su contenido textual del repositorio y computa su representación vectorial mediante el modelo de \textit{embedding} configurado, persistiendo el vector resultante en asociación con la noticia. No altera la identidad ni la cardinalidad del \textit{recordset}: emite el mismo conjunto de noticias, ahora enriquecidas con su vector semántico, disponible para las operaciones de recuperación que realiza el filtro siguiente. Este filtro no expone sintonizadores al experto del dominio: su configuración ---el modelo de \textit{embedding} y la estrategia de fragmentación--- es de carácter técnico y la fija el implementador como parámetro interno. Conviene distinguir la \textit{generación} del \textit{embedding}, que ocurre aquí sin intervención del experto, de su posterior \textit{uso} en la recuperación, que sí admite parametrización de dominio y se realiza en el filtro de Composición de contexto.
+\textit{Especificación funcional.} Para cada noticia del \textit{recordset} de entrada, recupera su contenido textual del repositorio y computa su representación vectorial mediante el modelo de \textit{embedding} configurado, persistiéndola como un registro \texttt{Embedding} que referencia a la noticia que codifica. Preserva la cardinalidad ---emite un \texttt{Embedding} por noticia--- pero transforma el tipo que circula: su salida no es el conjunto de noticias sino el de sus representaciones semánticas, disponibles para las operaciones de recuperación que realiza el filtro siguiente. Este filtro no expone sintonizadores al experto del dominio: su configuración ---el modelo de \textit{embedding} y la estrategia de fragmentación--- es de carácter técnico y la fija el implementador como parámetro interno. Conviene distinguir la \textit{generación} del \textit{embedding}, que ocurre aquí sin intervención del experto, de su posterior \textit{uso} en la recuperación, que sí admite parametrización de dominio y se realiza en el filtro de Composición de contexto.
 
 \paragraph{Composición de contexto (sub-filtro).} Interfaz:
 \begin{itemize}
-  \item \textbf{Puerto de entrada} (5): \texttt{Noticia[]}.
+  \item \textbf{Puerto de entrada} (5): \texttt{Embedding[]}.
   \item \textbf{Puerto de salida} (6): \texttt{Prompt[]}.
   \item \textbf{Sintonizador}: selección del \textit{template} de \textit{prompt}, customización de las variables de contexto, ingreso de texto libre, ajuste de los parámetros del modelo generativo (temperatura, longitud de salida) y de los parámetros de recuperación (cantidad de documentos a recuperar y umbral de similitud).
-  \item \textbf{Acceso al repositorio}: lee las noticias y sus vectores ---para la recuperación--- y los \textit{templates} disponibles; escribe los registros \texttt{Prompt}.
+  \item \textbf{Acceso al repositorio}: lee los vectores recibidos y las noticias que estos referencian ---para la recuperación--- y los \textit{templates} disponibles; escribe los registros \texttt{Prompt}.
 \end{itemize}
-\textit{Especificación funcional.} Constituye el núcleo de la intervención del experto del dominio. A partir del \textit{template} seleccionado y de las variables de contexto configuradas, realiza la recuperación contextual (\textit{retrieval}): consulta el repositorio para obtener las noticias semánticamente relevantes según similitud vectorial, e integra ese material empírico con el \textit{template}, las aclaraciones de texto libre y los parámetros definidos para componer el \textit{prompt} completo destinado al modelo generativo. La cardinalidad puede transformarse en esta etapa: a partir del \textit{recordset} de noticias, el filtro produce uno o varios \textit{prompts} según la estrategia analítica ---un único \textit{prompt} agregado sobre el corpus, o un \textit{prompt} por unidad de análisis---. Persiste los registros \texttt{Prompt} y emite el \textit{recordset} correspondiente. El diseño del panel de \textit{templates} que da soporte a este sintonizador se desarrolla en la Subsección~\ref{sec:arq-car-sintonizadores}.
+\textit{Especificación funcional.} Constituye el núcleo de la intervención del experto del dominio. A partir del \textit{template} seleccionado y de las variables de contexto configuradas, realiza la recuperación contextual (\textit{retrieval}): a partir de los \texttt{Embedding} recibidos consulta el repositorio para obtener las noticias semánticamente relevantes según similitud vectorial, e integra ese material empírico con el \textit{template}, las aclaraciones de texto libre y los parámetros definidos para componer el \textit{prompt} completo destinado al modelo generativo. La cardinalidad puede transformarse en esta etapa: a partir del \textit{recordset} recibido, el filtro produce uno o varios \textit{prompts} según la estrategia analítica ---un único \textit{prompt} agregado sobre el corpus, o un \textit{prompt} por unidad de análisis---. Persiste los registros \texttt{Prompt} y emite el \textit{recordset} correspondiente. El diseño del panel de \textit{templates} que da soporte a este sintonizador se desarrolla en la Subsección~\ref{sec:arq-car-sintonizadores}.
 
 \paragraph{Invocación generativa.} Interfaz:
 \begin{itemize}
@@ -465,7 +472,9 @@ Todos los filtros comparten un mismo patrón de operación, consecuencia del uso
   \item \textbf{Puerto de salida} (10): \texttt{Análisis[]}.
   \item \textbf{Acceso al repositorio}: lee las respuestas crudas y escribe los análisis estructurados.
 \end{itemize}
-\textit{Especificación funcional.} Transforma la salida del modelo generativo ---típicamente texto en un lenguaje de marcado--- en una estructura de datos del dominio apta para su tratamiento posterior. Para cada respuesta cruda del \textit{recordset} de entrada, interpreta su formato, valida su conformidad con la estructura esperada y persiste el resultado como un registro \texttt{Análisis}. Emite el \textit{recordset} de análisis estructurados. Esta separación entre la obtención de la respuesta (filtro anterior) y su decodificación aísla el manejo del formato de salida del modelo, de modo que un cambio en dicho formato no afecte a las etapas previas.
+\textit{Especificación funcional.} Transforma la salida del modelo generativo ---típicamente texto en un lenguaje de marcado--- en una estructura de datos del dominio apta para su tratamiento posterior. Para cada respuesta cruda del \textit{recordset} de entrada, interpreta su formato ---aísla el fragmento estructurado de la prosa circundante y lo convierte de texto en objeto---, valida su conformidad con la estructura esperada ---el esquema declarado por el \textit{template} del estudio, que el filtro alcanza siguiendo la cadena de referencias que va de la respuesta a su \textit{prompt} y de éste a su \textit{template}, sin requerir por ello configuración de dominio propia---, canonicaliza los valores hacia los tipos del dominio y persiste el resultado como un registro \texttt{Análisis}. La validación opera como una compuerta: la respuesta que no conforma el esquema no se persiste como \texttt{Análisis} ---la política ante la no conformidad (reintentar la invocación, reparar, descartar) es configuración técnica del implementador---, de modo que las etapas posteriores consumen exclusivamente estructuras válidas. Emite el \textit{recordset} de análisis estructurados. Esta separación entre la obtención de la respuesta (filtro anterior) y su decodificación aísla el manejo del formato de salida del modelo, de modo que un cambio en dicho formato no afecte a las etapas previas.
+
+Conviene precisar el sentido del término y el compromiso arquitectónico que la etapa encierra. En el procesamiento de lenguaje natural, \textit{decoding} designa la estrategia con que el modelo selecciona cada token durante la generación ---búsqueda voraz, \textit{beam search}, muestreo--- \citep{wiher:2022}; la decodificación de este filtro es, en cambio, la interpretación estructural de la salida ya generada. La práctica contemporánea conoce un punto en el que ambos sentidos se fusionan: la \textit{generación restringida} (\textit{constrained decoding}) ---hoy la técnica dominante en la industria para obtener salida estructurada--- hace que una gramática o un autómata enmascare el vocabulario del modelo en cada paso de la generación, garantizando por construcción la validez sintáctica del resultado \citep{willardlouf:2023, geng:2025}. El diseño aquí adoptado no excluye esa técnica, pero no deposita en ella el contrato: la garantía que ofrece vive en el momento de la invocación y se acopla al proveedor o al motor de inferencia ---los proveedores comerciales soportan deliberadamente sólo un subconjunto de los esquemas expresables \citep{geng:2025}---, mientras que mantener la validación aguas abajo, en un filtro propio, la conserva agnóstica del proveedor y preserva la sustituibilidad de Invocación generativa (Subsección~\ref{sec:arq-estilo-justificacion}). Ambas estrategias son, además, componibles: aun si el implementador emplea generación restringida en la invocación, la validación semántica contra el esquema del estudio, la canonicalización y la compuerta de no conformidad permanecen en esta etapa, pues exceden lo que una gramática puede garantizar.
 
 \paragraph{Normalización.} Interfaz:
 \begin{itemize}
@@ -485,9 +494,9 @@ La caracterización de un tubo no se agota, sin embargo, en el tipo de sus eleme
 
 El pipeline comprende cinco tubos internos, además de las conexiones de la fuente y el sumidero con el entorno. La cardinalidad recorre la cadena \(N \to N \to M \to M \to M \to 1\), cuyos tramos se detallan a continuación con remisión a los puertos de la Figura~\ref{fig:arq-pipeline}.
 
-Extracción produce el corpus: emite \texttt{Noticia[N]} (puerto~2), donde \(N\) es la cantidad de noticias recolectadas; la conexión previa ---del portal al puerto~1--- transporta el flujo crudo del portal, sin estructura de \textit{recordset}, y queda por ello fuera de la notación tipada. El primer tubo (2\(\to\)3) lleva ese \texttt{Noticia[N]} a Enriquecimiento semántico, que preserva la cardinalidad: emite las mismas \(N\) noticias (puerto~4) ---ahora con su vector persistido en el repositorio---, de modo que el tubo interno del filtro compuesto \textit{Recuperación aumentada} (4\(\to\)5) transporta nuevamente \texttt{Noticia[N]}. Enriquecimiento es, en este sentido, la identidad sobre la cardinalidad: su efecto es un refinamiento en el repositorio, no un cambio en el conjunto que circula.
+Extracción produce el corpus: emite \texttt{Noticia[N]} (puerto~2), donde \(N\) es la cantidad de noticias recolectadas; la conexión previa ---del portal al puerto~1--- transporta el flujo crudo del portal, sin estructura de \textit{recordset}, y queda por ello fuera de la notación tipada. El primer tubo (2\(\to\)3) lleva ese \texttt{Noticia[N]} a Enriquecimiento semántico, que preserva la cardinalidad pero transforma el tipo: emite un \texttt{Embedding} por cada noticia (puerto~4), de modo que el tubo interno del filtro compuesto \textit{Recuperación aumentada} (4\(\to\)5) transporta \texttt{Embedding[N]} ---las \(N\) representaciones vectoriales, cada una con la referencia a la noticia que codifica---. En este tramo la cardinalidad es la invariante y la representación es lo que cambia: cada noticia sigue presente en el flujo, pero mediada por su codificación semántica.
 
-Composición de contexto redefine la cardinalidad: a partir de las \(N\) noticias emite \texttt{Prompt[M]} (puerto~6), con \(1 \le M \le N\), donde \(M\) es la cantidad de \textit{unidades de análisis} que fija la estrategia ---desde un único \textit{prompt} agregado sobre el corpus (\(M=1\)) hasta un \textit{prompt} por noticia (\(M=N\))---. Cada \texttt{Prompt} incorpora, por recuperación semántica, el subconjunto de noticias relevante a su unidad; la relación entre noticias y \textit{prompts} es, por lo tanto, de muchos a muchos, y se registra en el propio \texttt{Prompt} (Subsección~\ref{sec:arq-car-filtros}).
+Composición de contexto redefine la cardinalidad: a partir de los \(N\) \texttt{Embedding} recibidos emite \texttt{Prompt[M]} (puerto~6), con \(1 \le M \le N\), donde \(M\) es la cantidad de \textit{unidades de análisis} que fija la estrategia ---desde un único \textit{prompt} agregado sobre el corpus (\(M=1\)) hasta un \textit{prompt} por noticia (\(M=N\))---. Cada \texttt{Prompt} incorpora, por recuperación semántica, el subconjunto de noticias relevante a su unidad; la relación entre noticias y \textit{prompts} es, por lo tanto, de muchos a muchos, y se registra en el propio \texttt{Prompt} (Subsección~\ref{sec:arq-car-filtros}).
 
 Los dos tubos siguientes preservan \(M\): Invocación generativa emite una \texttt{RespuestaIAG} por cada \textit{prompt} (\texttt{Prompt[M]} \(\to\) \texttt{RespuestaIAG[M]}, puerto~8) y Decodificación una \texttt{Análisis} por cada respuesta (\texttt{RespuestaIAG[M]} \(\to\) \texttt{Análisis[M]}, puerto~10). Que la cardinalidad se mantenga en \(M\) a lo largo de estas etapas expresa que el análisis procede como un \textit{map} sobre las unidades definidas en la composición: cada unidad se invoca y se decodifica de manera independiente.
 
@@ -500,7 +509,7 @@ El diseño adopta dos de las especializaciones canónicas que el estilo admite -
 
 La especialización de \textit{pipeline} restringe la topología a una secuencia lineal de filtros, cada uno con un único puerto de entrada y un único puerto de salida \citep[\S3.12.1]{cristia:2025}; en los términos de \citet{garlanshaw:1994}, ``pipelines\ldots restrict the topologies to linear sequences of filters''. Su adopción responde a la naturaleza del problema: el análisis de noticias procede como una cadena de transformaciones sucesivas ---extracción, enriquecimiento, composición, invocación, decodificación y normalización--- sin ramificaciones ni puntos de decisión en su configuración base, de modo que la restricción a un único puerto de entrada y de salida por filtro no supone pérdida de expresividad para el ciclo completo de análisis. Las variantes analíticas que requieran recombinar etapas se acomodan por la composicionalidad del estilo (Subsección~\ref{sec:arq-estilo-componentes}), no por la ramificación de la topología.
 
-La especialización de \textit{tubos tipados} exige que cada tubo transporte un dato de tipo bien definido ---``typed pipes, which require that the data passed between two filters have a well-defined type'' \citep{garlanshaw:1994}---, de manera que un puerto de tipo \texttt{T} sólo pueda conectarse a un tubo del mismo tipo, sin que el conector realice conversión alguna \citep[\S3.12.2]{cristia:2025}. En el framework, cada tubo declara el tipo del \textit{recordset} que transporta ---\texttt{Noticia[]}, \texttt{Prompt[]}, \texttt{RespuestaIAG[]}, \texttt{An\'alisis[]} y \texttt{Resultado}, según la tabla de referencia de la Figura~\ref{fig:arq-pipeline}---. El tipado cumple una doble función: documenta el contrato entre etapas ---qué produce cada filtro y qué espera el siguiente--- y permite detectar tempranamente errores de composición, al volver la conexión de dos filtros incompatibles un error de tipo antes que un fallo en tiempo de ejecución. Conviene señalar el compromiso que supone: al declarar tipos concretos, los filtros dependen más del contexto que en la formulación no tipada, lo que reduce la flexibilidad de recomposición a cambio de mayor seguridad y de un tratamiento más ordenado de los datos \citep[\S3.12.2]{cristia:2025}.
+La especialización de \textit{tubos tipados} exige que cada tubo transporte un dato de tipo bien definido ---``typed pipes, which require that the data passed between two filters have a well-defined type'' \citep{garlanshaw:1994}---, de manera que un puerto de tipo \texttt{T} sólo pueda conectarse a un tubo del mismo tipo, sin que el conector realice conversión alguna \citep[\S3.12.2]{cristia:2025}. En el framework, cada tubo declara el tipo del \textit{recordset} que transporta ---\texttt{Noticia[]}, \texttt{Embedding[]}, \texttt{Prompt[]}, \texttt{RespuestaIAG[]}, \texttt{Análisis[]} y \texttt{Resultado}, según la tabla de referencia de la Figura~\ref{fig:arq-pipeline}; su estructura interna se especifica en el Apéndice~\ref{anexo:tipos}---. El tipado cumple una doble función: documenta el contrato entre etapas ---qué produce cada filtro y qué espera el siguiente--- y permite detectar tempranamente errores de composición, al volver la conexión de dos filtros incompatibles un error de tipo antes que un fallo en tiempo de ejecución. Conviene señalar el compromiso que supone: al declarar tipos concretos, los filtros dependen más del contexto que en la formulación no tipada, lo que reduce la flexibilidad de recomposición a cambio de mayor seguridad y de un tratamiento más ordenado de los datos \citep[\S3.12.2]{cristia:2025}.
 
 \subsection{Deformación aplicada: repositorio común sobre PostgreSQL}
 \label{sec:arq-car-repositorio}
@@ -520,7 +529,7 @@ El catálogo de \citet[\S3.13.2]{cristia:2025} documenta los \textit{sintonizado
 
 Esta caracterización no es exclusiva del catálogo: tiene un precedente directo en la formulación seminal del estilo. Al resolver la interacción con el usuario en su caso de estudio del osciloscopio, \citet{garlanshaw:1994} asocian a cada filtro una \textit{control interface} ``that allows an external entity to set parameters of operation for the filter'', y modelan así los filtros como funciones de orden superior ``for which the configuration parameters determine what data transformation the filter will perform''; su virtud es que ``decouples the signal processing functions\ldots from the actual user interface''. El sintonizador reifica esa interfaz de control: desacopla la parametrización que aporta el experto del procesamiento que realiza el filtro. La misma separación entre configuración y datos reaparece en las bibliotecas modernas de aprendizaje automático ---en \textit{scikit-learn}, el constructor de un estimador ``does not see any actual data\ldots All it does is attach the given parameters to the object'' \citep{buitinck:2013}---.
 
-En el framework exponen sintonizador únicamente los tres filtros cuyo comportamiento depende de decisiones de dominio: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador como parámetro interno (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable. El más elaborado es el de Composición de contexto, que se materializa como un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje; su realización concreta en el módulo se retoma en la Subsección~\ref{sec:arq-impl-materializacion}.
+En el framework exponen sintonizador únicamente los tres filtros cuyo comportamiento depende de decisiones de dominio: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador como parámetro interno (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable. El más elaborado es el de Composición de contexto, que se materializa como un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}, y su realización concreta en el módulo se retoma en la Subsección~\ref{sec:arq-impl-materializacion}.
 
 Que la intervención del experto se canalice por sintonizadores ---y no por el flujo de datos--- es lo que la mantiene compatible con el estilo: el sintonizador ajusta \textit{cómo} transforma un filtro, sin alterar la red de tubos ni agregar un puerto al pipeline. La configuración así incorporada es un parámetro del filtro, no un dato que circule por la arquitectura.
 
@@ -869,6 +878,208 @@ La normalización implica varias tareas, como:
 
 
 
+
+% =====================================================================
+%  APÉNDICE --- Tipos de datos del pipeline
+% =====================================================================
+\appendix
+
+\lstdefinestyle{tipoanexo}{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  keepspaces=true,
+  breaklines=true,
+  frame=single,
+  framerule=0.4pt,
+  xleftmargin=1em,
+  xrightmargin=1em,
+  aboveskip=1.2em,
+  belowskip=0.6em,
+}
+
+\chapter{Tipos de datos del pipeline}
+\label{anexo:tipos}
+
+La especialización de tubos tipados adoptada en el Capítulo~\ref{cap:arquitectura} exige que cada tubo declare el tipo del \textit{recordset} que transporta (Subsección~\ref{sec:arq-car-especializaciones}). El capítulo nombra esos tipos ---\texttt{Noticia}, \texttt{Embedding}, \texttt{Prompt}, \texttt{RespuestaIAG}, \texttt{Análisis} y \texttt{Resultado}--- y describe las transformaciones que los producen; este apéndice completa la caracterización especificando la estructura interna de cada uno. Las definiciones constituyen los contratos de datos del framework: fijan qué produce cada filtro y qué puede esperar el siguiente, con independencia de la plataforma sobre la que el framework se materialice. Se especifica además la estructura del \textit{template} ---la entidad del repositorio que ancla la definición del estudio---, que no circula por los tubos pero es referida por los tipos del flujo (Sección~\ref{anexo:tipo-template}).
+
+\section{Notación y criterios de diseño}
+\label{anexo:tipos-notacion}
+
+Cada tipo se especifica como un registro de pares \texttt{clave: tipo}, en una notación de estilo JSON. Los tipos primitivos son \texttt{string}, \texttt{int}, \texttt{float} y \texttt{datetime}; \texttt{float[]} denota una lista de valores y \texttt{objeto} una estructura anidada cuyo esquema no fija el framework. El marcador \texttt{ref} denota una referencia a un registro del repositorio común ---el comentario de cada clave indica el registro referenciado--- y \texttt{ref[]}, una colección ordenada de referencias; esta representación es la contraparte, a nivel del dato, del transporte por referencia que caracteriza a los conectores del sistema (Subsección~\ref{sec:arq-car-repositorio}). El sufijo \texttt{?} marca una clave opcional. La cardinalidad con que cada tipo circula por los tubos ---\texttt{Tipo[c]}--- se detalló en la Subsección~\ref{sec:arq-car-tubos} y se recuerda al inicio de cada sección.
+
+Tres criterios, aplicados de manera uniforme, gobiernan qué claves integran cada contrato y cuáles se excluyen deliberadamente.
+
+\begin{enumerate}
+  \item \textbf{Contrato mínimo.} Cada tipo contiene únicamente la carga útil que algún filtro posterior consume y la procedencia del dato ---cuándo se produjo y a partir de qué registros---. Toda clave adicional volvería al contrato más exigente de lo que el pipeline requiere, dificultando la sustitución de los filtros que lo producen.
+  \item \textbf{La procedencia viaja; la identidad del productor, no.} Registrar a partir de qué dato se produjo un registro es procedencia, y sostiene la auditabilidad; registrar con qué recurso técnico se lo produjo ---el modelo de \textit{embedding}, el proveedor generativo--- describiría la identidad del filtro productor, que el estilo veda conocer a los restantes filtros (Subsección~\ref{sec:arq-estilo-invariantes}). Cambiar ese recurso equivale a sustituir el filtro, no a alterar los datos que emite.
+  \item \textbf{Los esquemas de dominio se delegan al estudio.} Donde el contenido depende del caso analítico ---\texttt{Análisis} y \texttt{Resultado}---, el framework fija el sobre (procedencia y carga estructurada) y delega el esquema interno a la definición del estudio, declarada en el \textit{template} (Sección~\ref{anexo:tipo-template}). Fijar claves de dominio en el contrato casaría al framework con un caso de estudio particular, contra el requisito de diversidad analítica (Subsección~\ref{sec:arq-estilo-justificacion}).
+\end{enumerate}
+
+\section{\texorpdfstring{\texttt{Noticia}}{Noticia}}
+\label{anexo:tipo-noticia}
+
+Producido por Extracción; circula como \texttt{Noticia[N]} por el tubo 2\(\to\)3, donde \(N\) es el tamaño del corpus.
+
+\noindent\begin{minipage}{\linewidth}
+  \begin{lstlisting}[style=tipoanexo]
+Noticia {
+  titulo:            string    // título de la publicación
+  copete?:           string    // resumen editorial del portal
+  texto:             string    // cuerpo completo, normalizado
+  link:              string    // URL canónica; clave única
+  medio:             ref       // portal de origen
+  departamento:      string    // zona geográfica del portal
+  fecha_hora?:       datetime  // fecha declarada de publicación
+  fecha_registro:    datetime  // fecha de ingreso al corpus
+  reglas_aplicadas:  string    // reglas que la seleccionaron
+}
+\end{lstlisting}
+\end{minipage}
+
+Las cuatro primeras claves constituyen el contenido extraído: el título, el copete ---el resumen editorial que acompaña al título---, el cuerpo textual completo y el enlace canónico de la publicación, que oficia además de identificador único del registro en el repositorio. Las restantes registran la procedencia: el portal del que la noticia fue extraída, la adscripción geográfica de ese portal, la fecha de publicación que el portal declara ---opcional, pues no todo portal la expone en forma interpretable---, la fecha cierta de incorporación al corpus y las reglas de extracción que motivaron su selección. Esta última clave completa la trazabilidad de la etapa: documenta por qué cada noticia integra el corpus, en términos de las reglas configuradas en el sintonizador de Extracción. El copete comparte la opcionalidad de la fecha de publicación: su disponibilidad depende de lo que el portal publique y de la vía de extracción empleada.
+
+\section{\texorpdfstring{\texttt{Embedding}}{Embedding}}
+\label{anexo:tipo-embedding}
+
+Producido por Enriquecimiento semántico; circula como \texttt{Embedding[N]} por el tubo interno 4\(\to\)5 del filtro compuesto Recuperación aumentada.
+
+\noindent\begin{minipage}{\linewidth}
+  \begin{lstlisting}[style=tipoanexo]
+Embedding {
+  noticia:         ref       // noticia que codifica
+  vector:          float[]   // representación vectorial
+  fecha_registro:  datetime  // fecha de cómputo del vector
+}
+\end{lstlisting}
+\end{minipage}
+
+El tipo reifica la transformación de Enriquecimiento semántico: cada registro asocia una noticia ---por referencia--- con su representación vectorial, de modo que el filtro emite las representaciones y no las noticias que las originan (Subsección~\ref{sec:arq-car-tubos}). El contrato ilustra el segundo criterio de la Sección~\ref{anexo:tipos-notacion}: no incluye un identificador del modelo que computó el vector, porque ese dato describiría la identidad del filtro productor y no la procedencia del dato. Dos vectores sólo son comparables dentro de un mismo espacio semántico; reemplazar el modelo de \textit{embedding} equivale, por lo tanto, a sustituir el filtro completo y recomputar las representaciones del corpus, no a mezclar en el repositorio vectores de espacios heterogéneos.
+
+\section{\texorpdfstring{\texttt{Prompt}}{Prompt}}
+\label{anexo:tipo-prompt}
+
+Producido por Composición de contexto; circula como \texttt{Prompt[M]} por el tubo 6\(\to\)7, donde \(M\) es la cantidad de unidades de análisis del estudio.
+
+\noindent\begin{minipage}{\linewidth}
+  \begin{lstlisting}[style=tipoanexo]
+Prompt {
+  texto:            string    // prompt completo para el modelo
+  parametros: {               // parámetros de generación
+    temperatura:      float
+    longitud_salida:  int
+  }
+  noticias:         ref[]     // noticias del contexto (M:N)
+  template:         ref       // template de origen
+  fecha_registro:   datetime  // fecha de composición
+}
+\end{lstlisting}
+\end{minipage}
+
+La clave \texttt{texto} materializa la composición completa ---\textit{template}, variables de contexto, aclaraciones de texto libre y material empírico recuperado---, por lo que el registro documenta en forma íntegra lo que se envía al modelo generativo; los ingredientes de la composición no se registran por separado, pues su combinación está ya materializada en el texto y el \textit{template} de origen ---con el objetivo del análisis y el esquema de respuesta que éste declara (Sección~\ref{anexo:tipo-template})--- queda anclado por referencia. La clave \texttt{parametros} merece una precisión: la temperatura y la longitud de salida las fija el experto en el sintonizador de Composición, pero su consumidor es Invocación generativa; dado que los sintonizadores no se invocan entre filtros (Subsección~\ref{sec:arq-car-sintonizadores}), la única vía compatible con el estilo para hacérselos llegar es el propio dato. No se trata de configuración del filtro filtrándose en el contrato, sino de información que un consumidor aguas abajo espera. La clave \texttt{noticias}, por último, registra la relación de muchos a muchos entre noticias y \textit{prompts} que la recuperación semántica establece (Subsección~\ref{sec:arq-car-tubos}).
+
+\section{\texorpdfstring{\texttt{RespuestaIAG}}{RespuestaIAG}}
+\label{anexo:tipo-respuestaiag}
+
+Producido por Invocación generativa; circula como \texttt{RespuestaIAG[M]} por el tubo 8\(\to\)9.
+
+\noindent\begin{minipage}{\linewidth}
+  \begin{lstlisting}[style=tipoanexo]
+RespuestaIAG {
+  prompt:          ref       // prompt que la originó
+  texto:           string    // respuesta cruda, sin decodificar
+  fecha_registro:  datetime  // fecha de recepción
+}
+\end{lstlisting}
+\end{minipage}
+
+El registro conserva la respuesta cruda tal como la produjo el servicio generativo, sin interpretación alguna: su decodificación corresponde al filtro siguiente. Por el segundo criterio de diseño quedan fuera el proveedor, el modelo y sus credenciales ---identidad del filtro de Invocación, cuya sustitución completa es precisamente lo que el aislamiento de la etapa habilita (Subsección~\ref{sec:arq-car-filtros})---, así como la telemetría operacional de la petición, que ningún filtro consume.
+
+\section{\texorpdfstring{\texttt{Análisis}}{Análisis}}
+\label{anexo:tipo-analisis}
+
+Producido por Decodificación; circula como \texttt{Análisis[M]} por el tubo 10\(\to\)11.
+
+\noindent\begin{minipage}{\linewidth}
+  \begin{lstlisting}[style=tipoanexo]
+Análisis {
+  respuesta:       ref       // respuesta cruda de origen
+  contenido:       objeto    // estructura analítica; esquema
+                             //   declarado por el template
+  fecha_registro:  datetime  // fecha de decodificación
+}
+\end{lstlisting}
+\end{minipage}
+
+El tipo aplica el tercer criterio de diseño: el framework fija el sobre y delega el esquema. La clave \texttt{contenido} porta la estructura analítica ya validada y canonicalizada, cuyo esquema interno ---qué claves, con qué tipos y vocabularios--- lo declara el \textit{template} del estudio (Sección~\ref{anexo:tipo-template}): la definición analítica que declara el objetivo del análisis y especifica qué se le pide al modelo especifica también, como su contraparte, qué estructura se espera de la respuesta. El \texttt{contenido} queda así plenamente caracterizado: es una instancia del \texttt{esquema\_respuesta} del \textit{template}, producida bajo el \texttt{objetivo} que éste declara. Esta delegación explica, además, cómo Decodificación valida sin exponer sintonizador: alcanza el esquema esperado siguiendo la cadena de referencias que va de la respuesta a su \textit{prompt} y de éste a su \textit{template} (Subsección~\ref{sec:arq-car-filtros}). El tipo no incluye un estado de validación: la validación es una compuerta y no un atributo, de modo que toda instancia de \texttt{Análisis} que circula por el pipeline es, por construcción, una estructura conforme.
+
+\section{\texorpdfstring{\texttt{Resultado}}{Resultado}}
+\label{anexo:tipo-resultado}
+
+Producido por Normalización; se entrega por el puerto 12 al sumidero como registro único, tipado sin cardinalidad.
+
+\noindent\begin{minipage}{\linewidth}
+  \begin{lstlisting}[style=tipoanexo]
+Resultado {
+  analisis:        ref[]     // análisis consolidados
+  contenido:       objeto    // producto consolidado; esquema
+                             //   según criterios del estudio
+  fecha_registro:  datetime  // fecha de consolidación
+}
+\end{lstlisting}
+\end{minipage}
+
+Como \texttt{Análisis}, el tipo fija el sobre y delega el esquema: la forma del producto consolidado ---distribuciones temáticas, comparaciones entre portales, series temporales--- depende del caso analítico y la definen los criterios de consolidación del estudio. Esos criterios, así como las variables de comparación del analista, no integran el contrato: son configuración del sintonizador de Normalización consumida por el propio filtro, y su efecto queda materializado en el contenido consolidado.
+
+\section{\texorpdfstring{\texttt{Template}}{Template}}
+\label{anexo:tipo-template}
+
+A diferencia de los seis tipos anteriores, el \textit{template} no circula por los tubos: es la entidad del repositorio común que ancla la definición del estudio, creada y editada por el experto del dominio a través del panel de \textit{templates} (Subsección~\ref{sec:arq-car-sintonizadores}) e incorporada al flujo por referencia ---cada \texttt{Prompt} la ancla directamente y cada \texttt{Análisis} la alcanza por la cadena de referencias---.
+
+\noindent\begin{minipage}{\linewidth}
+\begin{lstlisting}[style=tipoanexo]
+Template {
+  nombre:             string   // identificación de la plantilla
+  objetivo:           string   // objetivo del análisis: alcance,
+                               //   paradigma, referencias
+  instrucciones:      string   // cuerpo del prompt, con variables
+  variables:          objeto   // variables de contexto declaradas
+  esquema_respuesta:  objeto   // esquema esperado del contenido
+}
+\end{lstlisting}
+\end{minipage}
+
+El tipo reifica los tres datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}: los datos empíricos ingresan por la recuperación semántica en Composición de contexto; los objetivos requeridos para el análisis ---alcance, paradigma de análisis, referencias a tener en cuenta--- se declaran en la clave \texttt{objetivo}; y el tipo de salida o representación se fija en \texttt{esquema\_respuesta}, el esquema contra el cual valida Decodificación. La clave \texttt{objetivo} merece énfasis: el pipeline no transporta únicamente datos empíricos transformados, sino también la intención analítica que les da sentido ---bajo qué paradigma, con qué alcance y contra qué referencias se analiza---, que viaja por referencia con cada \texttt{Prompt} y cada \texttt{Análisis}, del mismo modo que todo contenido del sistema. Por tratarse de configuración editada por sintonizador, los registros \texttt{Template} quedan fuera del alcance de la monotonía del flujo (Sección~\ref{anexo:tipos-firmas}); la referencia ancla la identidad de la plantilla, y la composición íntegra efectivamente enviada al modelo queda materializada en el texto de cada \texttt{Prompt} (Sección~\ref{anexo:tipo-prompt}), lo que preserva la auditabilidad de lo ejecutado aun si la plantilla es editada con posterioridad.
+
+\section{Los filtros como transformaciones de estado}
+\label{anexo:tipos-firmas}
+
+Definidos los tipos, las especificaciones funcionales del Capítulo~\ref{cap:arquitectura} admiten una síntesis formal. Según la formulación introducida en la Subsección~\ref{sec:arq-car-filtros} ---que extiende la notación funcional del catálogo de \citet[p.~24]{cristia:2025} a la variante heterogénea---, cada filtro realiza una transformación \(f : (T[c],\ \mathit{Rep}) \to (T'[c'],\ \mathit{Rep}')\), donde \(\mathit{Rep}' = \mathit{Rep} \cup \Delta_f\), \(\Delta_f\) es el conjunto de registros que el filtro persiste y el \textit{recordset} emitido es \(\mathit{refs}(\Delta_f)\). Las seis firmas del pipeline se encadenan:
+
+\begin{center}
+  \begin{tabular}{@{}ll@{}}
+    Extracción:      & \((\text{flujo del portal},\ \mathit{Rep}_0) \to (\texttt{Noticia[N]},\ \mathit{Rep}_1)\)   \\[2pt]
+    Enriquecimiento: & \((\texttt{Noticia[N]},\ \mathit{Rep}_1) \to (\texttt{Embedding[N]},\ \mathit{Rep}_2)\)     \\[2pt]
+    Composición:     & \((\texttt{Embedding[N]},\ \mathit{Rep}_2) \to (\texttt{Prompt[M]},\ \mathit{Rep}_3)\)      \\[2pt]
+    Invocación:      & \((\texttt{Prompt[M]},\ \mathit{Rep}_3) \to (\texttt{RespuestaIAG[M]},\ \mathit{Rep}_4)\)   \\[2pt]
+    Decodificación:  & \((\texttt{RespuestaIAG[M]},\ \mathit{Rep}_4) \to (\texttt{Análisis[M]},\ \mathit{Rep}_5)\) \\[2pt]
+    Normalización:   & \((\texttt{Análisis[M]},\ \mathit{Rep}_5) \to (\texttt{Resultado},\ \mathit{Rep}_6)\)       \\
+  \end{tabular}
+\end{center}
+
+con \(\mathit{Rep}_i = \mathit{Rep}_{i-1} \cup \Delta_i\), donde cada \(\Delta_i\) es el conjunto de registros del tipo correspondiente que la etapa persiste: los \(N\) registros \texttt{Noticia}, los \(N\) \texttt{Embedding}, los \(M\) \texttt{Prompt}, y así sucesivamente. El encadenamiento de los subíndices exhibe el enhebrado del repositorio a través del pipeline: cada filtro recibe el estado que dejó el anterior. La monotonía ---\(\mathit{Rep}_0 \subseteq \mathit{Rep}_1 \subseteq \dots \subseteq \mathit{Rep}_6\)--- se afirma sobre los registros del flujo de datos: los sintonizadores editan configuración (\textit{templates}, reglas de extracción, criterios de consolidación), pero esa configuración no pertenece al flujo ni es modificada por ningún filtro. El estado final \(\mathit{Rep}_6\) contiene, por lo tanto, la historia completa del estudio: el corpus, sus representaciones semánticas, los \textit{prompts} compuestos, las respuestas crudas, los análisis decodificados y el resultado consolidado.
+
+Por el cierre composicional del estilo (Subsección~\ref{sec:arq-estilo-componentes}), la composición de las seis firmas es a su vez un filtro en el sentido extendido: el sistema completo realiza la transformación \((\text{flujo del portal},\ \mathit{Rep}_0) \to (\texttt{Resultado},\ \mathit{Rep}_6)\), que convierte el flujo de los portales digitales en un producto analítico consolidado y deja persistida en el repositorio la historia íntegra de esa conversión. Sobre esa historia se construye la cadena de procedencia que se describe a continuación.
+
+\section{La cadena de procedencia}
+\label{anexo:tipos-procedencia}
+
+Leídas en conjunto, las claves de procedencia de los seis tipos forman una cadena continua de referencias que recorre el pipeline en sentido inverso:
+
+\begin{center}
+  \texttt{Resultado} \(\to\) \texttt{Análisis} \(\to\) \texttt{RespuestaIAG} \(\to\) \texttt{Prompt} \(\to\) \texttt{Noticia} (y \textit{template})
+\end{center}
+
+Desde el producto final del estudio puede así reconstruirse qué análisis lo componen, de qué respuestas crudas provienen, con qué \textit{prompts} ---y bajo qué \textit{template} y parámetros--- se generaron, sobre qué noticias se apoyó cada composición y, para cada noticia, de qué portal fue extraída, cuándo, y qué reglas motivaron su ingreso al corpus; la rama \texttt{Embedding} \(\to\) \texttt{Noticia} completa el cuadro para la capa de recuperación. La documentación del recorrido del proceso que la especificación de Normalización promete (Subsección~\ref{sec:arq-car-filtros}) no requiere, por lo tanto, un registro adicional: es una propiedad estructural del sistema de tipos, y constituye la materialización, a nivel del dato, de la auditabilidad lineal que motivó la elección del estilo (Subsección~\ref{sec:arq-estilo-justificacion}).
 
 \bibliographystyle{plainnat}  % estilo autor-a\u00f1o compatible con natbib
 \bibliography{refs}

@@ -137,13 +137,14 @@
 % ================= TABLA DE PUERTOS =================
 \node[anchor=north west, font=\footnotesize] (tabla) at (10.6,-1.6) {%
   \begin{tabular}{@{}rll@{\hspace{14pt}}rll@{}}
-    \multicolumn{6}{@{}l}{\textbf{Referencia de puertos}\quad\footnotesize(\texttt{X[]} denota un recordset de \texttt{X}; el contenido reside en el repositorio común)} \\[3pt]
-    1  & Extracción (ent.)      & flujo del portal     & 7  & Invocación (ent.)     & \texttt{Prompt[]} \\
-    2  & Extracción (sal.)      & \texttt{Noticia[]}   & 8  & Invocación (sal.)     & \texttt{RespuestaIAG[]} \\
-    3  & Enriquecimiento (ent.) & \texttt{Noticia[]}   & 9  & Decodificación (ent.) & \texttt{RespuestaIAG[]} \\
-    4  & Enriquecimiento (sal.) & \texttt{Noticia[]}   & 10 & Decodificación (sal.) & \texttt{Análisis[]} \\
-    5  & Composición (ent.)     & \texttt{Noticia[]}   & 11 & Normalización (ent.)  & \texttt{Análisis[]} \\
-    6  & Composición (sal.)     & \texttt{Prompt[]}    & 12 & Normalización (sal.)  & \texttt{Resultado} \\
+    \multicolumn{6}{@{}l}{\textbf{Referencia de puertos}\quad\footnotesize(\texttt{X[c]} denota un recordset de tipo \texttt{X} y cardinalidad $c$; el contenido reside en el repositorio común)} \\
+    \multicolumn{6}{@{}l}{\footnotesize($N$: cantidad de noticias del corpus; $M$: cantidad de unidades de análisis, con $1 \le M \le N$)} \\[3pt]
+    1  & Extracción (ent.)      & flujo del portal       & 7  & Invocación (ent.)     & \texttt{Prompt[M]} \\
+    2  & Extracción (sal.)      & \texttt{Noticia[N]}    & 8  & Invocación (sal.)     & \texttt{RespuestaIAG[M]} \\
+    3  & Enriquecimiento (ent.) & \texttt{Noticia[N]}    & 9  & Decodificación (ent.) & \texttt{RespuestaIAG[M]} \\
+    4  & Enriquecimiento (sal.) & \texttt{Embedding[N]}  & 10 & Decodificación (sal.) & \texttt{Análisis[M]} \\
+    5  & Composición (ent.)     & \texttt{Embedding[N]}  & 11 & Normalización (ent.)  & \texttt{Análisis[M]} \\
+    6  & Composición (sal.)     & \texttt{Prompt[M]}     & 12 & Normalización (sal.)  & \texttt{Resultado} \\
   \end{tabular}
 };
 

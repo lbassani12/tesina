@@ -42,14 +42,15 @@
 \node[filtro] (comp)  at (9.4,4.5)  {Composición\\de contexto};
 \node[filtro] (invoc) at (12.6,4.5) {Invocación\\generativa};
 \node[filtro] (deco)  at (15.8,4.5) {Decodificación};
-\node[filtro] (norm)  at (19.0,4.5) {Normalización};
+\node[filtro] (verif) at (19.0,4.5) {Verificación};
+\node[filtro] (norm)  at (22.2,4.5) {Normalización};
 
 % ---------- Fuente y sumidero (separados para que la conexión punteada respire) ----------
 \node[exterior] (portales) at (-1.1,4.5) {Portales\\digitales};
-\node[exterior] (presenta) at (23.1,4.5) {Capa de\\presentación\\\scriptsize(tableros, reportes)};
+\node[exterior] (presenta) at (26.3,4.5) {Capa de\\presentación\\\scriptsize(tableros, reportes)};
 
 % ---------- Puertos (cuadraditos en bordes O/E, y=4.5) ----------
-\foreach \f in {extr,enriq,comp,invoc,deco,norm}{
+\foreach \f in {extr,enriq,comp,invoc,deco,verif,norm}{
   \node[puerto] (\f-in)  at (\f.west) {};
   \node[puerto] (\f-out) at (\f.east) {};
 }
@@ -65,15 +66,18 @@
 \node[pnum] at ($(invoc-out)+(0.18,0.32)$)  {8};
 \node[pnum] at ($(deco-in)  +(-0.18,0.32)$) {9};
 \node[pnum] at ($(deco-out) +(0.18,0.32)$)  {10};
-\node[pnum] at ($(norm-in)  +(-0.18,0.32)$) {11};
-\node[pnum] at ($(norm-out) +(0.18,0.32)$)  {12};
+\node[pnum] at ($(verif-in) +(-0.18,0.32)$) {11};
+\node[pnum] at ($(verif-out)+(0.18,0.32)$)  {12};
+\node[pnum] at ($(norm-in)  +(-0.18,0.32)$) {13};
+\node[pnum] at ($(norm-out) +(0.18,0.32)$)  {14};
 
 % ---------- Tubos tipados entre filtros (líneas sin flecha, unen puertos) ----------
 \draw[tubo] (extr-out)  -- (enriq-in);
 \draw[tubo, draw=black!45] (enriq-out) -- (comp-in);
 \draw[tubo] (comp-out)  -- (invoc-in);
 \draw[tubo] (invoc-out) -- (deco-in);
-\draw[tubo] (deco-out)  -- (norm-in);
+\draw[tubo] (deco-out)  -- (verif-in);
+\draw[tubo] (verif-out) -- (norm-in);
 
 % ---------- Conexiones al entorno (punteadas, sin flecha) ----------
 \draw[conexion] (portales.east) -- (extr-in);
@@ -84,13 +88,16 @@
 % en una GUI única es decisión del implementador, no de la arquitectura.
 % Enriquecimiento no expone sintonizador: su config (modelo de embedding, chunking)
 % es técnica del implementador. Los parámetros de dominio del RAG (top-k, umbral)
-% viven en el sintonizador de Composición.
-\node[sintbox] (sint-extr) at (3,7.3)   {Selección de portales,\\reglas y prioridad};
-\node[sintbox] (sint-comp) at (9.4,7.3) {Template, variables\\y parámetros de recuperación};
-\node[sintbox] (sint-norm) at (19,7.3)  {Criterios de\\consolidación};
-\draw[sint] (sint-extr.south) -- (extr.north);
-\draw[sint] (sint-comp.south) -- (comp.north);
-\draw[sint] (sint-norm.south) -- (norm.north);
+% viven en el sintonizador de Composición. Verificación expone sintonizador:
+% el criterio editorial de validez y la selección del ejecutor de la verificación.
+\node[sintbox] (sint-extr)  at (3,7.3)    {Selección de portales,\\reglas y prioridad};
+\node[sintbox] (sint-comp)  at (9.4,7.3)  {Template, variables\\y parámetros de recuperación};
+\node[sintbox] (sint-verif) at (19,7.3)   {Criterio de validez\\y ejecutor};
+\node[sintbox] (sint-norm)  at (22.2,7.3) {Criterios de\\consolidación};
+\draw[sint] (sint-extr.south)  -- (extr.north);
+\draw[sint] (sint-comp.south)  -- (comp.north);
+\draw[sint] (sint-verif.south) -- (verif.north);
+\draw[sint] (sint-norm.south)  -- (norm.north);
 
 % ---------- Filtro compuesto: Recuperación aumentada (Enriquecimiento + Composición) ----------
 \begin{scope}[on background layer]
@@ -102,9 +109,9 @@
 \node[puerto, fill=black!40, draw=black!40] at (comp.west) {};
 
 % ---------- Banda inferior: repositorio común (borde grueso) ----------
-\node[repos, minimum width=18cm, minimum height=1.2cm] (repo) at (11,0.3)
+\node[repos, minimum width=21cm, minimum height=1.2cm] (repo) at (12.6,0.3)
   {Repositorio común --- PostgreSQL / ORM de Odoo};
-\foreach \f in {extr,enriq,comp,invoc,deco,norm}{
+\foreach \f in {extr,enriq,comp,invoc,deco,verif,norm}{
   \draw[memoria] (\f.south) -- (\f.south |- repo.north);
 }
 
@@ -135,16 +142,17 @@
 };
 
 % ================= TABLA DE PUERTOS =================
-\node[anchor=north west, font=\footnotesize] (tabla) at (10.6,-1.6) {%
+\node[anchor=north west, font=\footnotesize] (tabla) at (11.4,-1.6) {%
   \begin{tabular}{@{}rll@{\hspace{14pt}}rll@{}}
     \multicolumn{6}{@{}l}{\textbf{Referencia de puertos}\quad\footnotesize(\texttt{X[c]} denota un recordset de tipo \texttt{X} y cardinalidad $c$; el contenido reside en el repositorio común)} \\
     \multicolumn{6}{@{}l}{\footnotesize($N$: cantidad de noticias del corpus; $M$: cantidad de unidades de análisis, con $1 \le M \le N$)} \\[3pt]
-    1  & Extracción (ent.)      & flujo del portal       & 7  & Invocación (ent.)     & \texttt{Prompt[M]} \\
-    2  & Extracción (sal.)      & \texttt{Noticia[N]}    & 8  & Invocación (sal.)     & \texttt{RespuestaIAG[M]} \\
-    3  & Enriquecimiento (ent.) & \texttt{Noticia[N]}    & 9  & Decodificación (ent.) & \texttt{RespuestaIAG[M]} \\
-    4  & Enriquecimiento (sal.) & \texttt{Embedding[N]}  & 10 & Decodificación (sal.) & \texttt{Análisis[M]} \\
-    5  & Composición (ent.)     & \texttt{Embedding[N]}  & 11 & Normalización (ent.)  & \texttt{Análisis[M]} \\
-    6  & Composición (sal.)     & \texttt{Prompt[M]}     & 12 & Normalización (sal.)  & \texttt{Resultado} \\
+    1  & Extracción (ent.)      & flujo del portal       & 8  & Invocación (sal.)     & \texttt{RespuestaIAG[M]} \\
+    2  & Extracción (sal.)      & \texttt{Noticia[N]}    & 9  & Decodificación (ent.) & \texttt{RespuestaIAG[M]} \\
+    3  & Enriquecimiento (ent.) & \texttt{Noticia[N]}    & 10 & Decodificación (sal.) & \texttt{Análisis[M]} \\
+    4  & Enriquecimiento (sal.) & \texttt{Embedding[N]}  & 11 & Verificación (ent.)   & \texttt{Análisis[M]} \\
+    5  & Composición (ent.)     & \texttt{Embedding[N]}  & 12 & Verificación (sal.)   & \texttt{Veredicto[M]} \\
+    6  & Composición (sal.)     & \texttt{Prompt[M]}     & 13 & Normalización (ent.)  & \texttt{Veredicto[M]} \\
+    7  & Invocación (ent.)      & \texttt{Prompt[M]}     & 14 & Normalización (sal.)  & \texttt{Resultado} \\
   \end{tabular}
 };
 

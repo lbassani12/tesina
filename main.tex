@@ -28,7 +28,7 @@
 
 \makeindex
 
-\title{\textbf{Una infraestructura técnica y procedimental para el análisis de noticias de portales digitales a través de inteligencia artificial generativa}\\
+\title{\textbf{Framework para el análisis de noticias de portales digitales mediante inteligencia artificial generativa}\\
 \large Tesina de grado
 }
 
@@ -51,7 +51,7 @@
 
   % Título
   {\huge\bfseries
-    Una infraestructura técnica y procedimental para el análisis de noticias de portales digitales a través de inteligencia artificial generativa\par}
+    Framework para el análisis de noticias de portales digitales mediante inteligencia artificial generativa\par}
 
   \vspace{0.5cm}
 
@@ -117,50 +117,61 @@ Para su implementación se utilizarán los siguientes datos de entrada para la c
   \item El tipo de salida o representación del análisis. Ejemplo: narrativa, tablas, gráficos, etc.
 \end{enumerate}
 \section{Objetivos}
-Teniendo en cuenta las necesidades e hipótesis de solución se define un objetivo general para este trabajo de la siguiente manera:
+A partir de la motivación y el estado del arte relevados, se define el siguiente objetivo general para el presente trabajo:
 
 \begin{quote}
-  \textbf{Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
-  }
+  \textbf{Diseñar e implementar un framework basado en el estilo arquitectónico de Tubos y Filtros que automatice el análisis de noticias de portales digitales mediante inteligencia artificial generativa, manteniendo trazabilidad del flujo de datos, control editorial por parte del experto del dominio y reproducibilidad del proceso analítico.}
 \end{quote}
 
-Para la concreción del objetivo general propuesto se plantean los siguientes objetivos específicos.
-
-\begin{quote}
-  \begin{itemize}
-    \item [OE1:] \textbf{Desarrollar una aplicación informática que permita gestionar el proceso integral de extracción y transformación de datos, análisis y muestra de resultados.}
-  \end{itemize}
-\end{quote}
-
-\vspace{0.3 cm}
-
-El alcance de este objetivo es crear un módulo específico que pueda ser integrado en la suite del framework denominado \textit{Odoo Foundation}\footnote{\url{https://www.odoo.com/es_ES}} en su versión comunitaria de código abierto.
-El módulo contará con servicios de gestión para los valores de parametrización de los algoritmos que intervienen en el proceso que se implementa. El usuario final podrá cargar, a través de formularios, la información necesaria para el acceso a los portales de noticias, las reglas de búsquedas de información y criterios sobre la aplicación de procedimientos. Se desarrollarán integraciones con otros módulos de la suite de Odoo que permitan la visualización de la información de resultados en tableros, informes y reportes adecuados para el propósito de aplicación.
+Para la concreción del objetivo general se plantean los siguientes objetivos específicos:
 
 \vspace{0.3 cm}
 
 \begin{quote}
   \begin{itemize}
-    \item [OE2:] \textbf{Diseñar e implementar, en la aplicación informática, un proceso que organice las tareas y procedimientos de las etapas de recolección de datos, análisis y visualización.}
+    \item [OE1:] \textbf{Diseñar e implementar un módulo \textit{addon} para Odoo Community que integre el ciclo completo de extracción de noticias, composición de \textit{prompts} mediante \textit{templates} parametrizables, invocación de servicios generativos, verificación editorial de resultados y consolidación analítica, satisfaciendo los requisitos de gobernanza y trazabilidad documental identificados en la revisión sistemática.}
   \end{itemize}
 \end{quote}
 
 \vspace{0.3 cm}
 
-En este objetivo específico, se pretende organizar y automatizar la hoja de ruta necesaria para satisfacer a los expertos del dominio y usuarios finales de la tecnología. Las tareas que se deben ejecutar forman parte de un proceso que debe ser diseñado e implementado tecnológicamente.
-
+El módulo se integra como \textit{addon} sobre la suite \textit{Odoo Community}\footnote{\url{https://www.odoo.com/es_ES}} de código abierto, aprovechando la infraestructura preexistente del entorno CAETI/CIM. Provee servicios de gestión para los valores de parametrización de los algoritmos que intervienen en el pipeline, y expone al experto del dominio ---a través de formularios--- la configuración de portales, reglas de extracción, \textit{templates} de análisis y criterios de verificación. Se desarrollarán integraciones con los módulos de informes y tableros de Odoo para la visualización de los resultados consolidados.
 
 \vspace{0.3 cm}
 
 \begin{quote}
   \begin{itemize}
-    \item [OE3:] \textbf{Diseñar e implementar los procedimientos de acceso a los servicios de IAG guiado por ``prompts''.}
+    \item [OE2:] \textbf{Modelar el ciclo de análisis como un mapa de procesos (BPMN) que formalice la secuencia de actividades, los roles intervinientes ---experto del dominio, implementador, sistema--- y las entradas y salidas de cada etapa, garantizando la reproducibilidad procedimental y la correspondencia biyectiva entre los pasos del proceso y los filtros de la arquitectura propuesta.}
   \end{itemize}
 \end{quote}
 
 \vspace{0.3 cm}
 
-Los servicios de inteligencia artificial generativa que se utilizarán en las tareas específicas del proceso, serán diseñados a través de un estilo de arquitectura que permita una adecuada integración al proceso mencionado. Para este propósito, se utilizarán los fundamentos del estilo de arquitectura denominada Tubos y Filtros \citep{garlanshaw:1994, shawgarlan:1996}.
+Este objetivo formaliza la hoja de ruta procedimental que organiza el trabajo del experto del dominio y del sistema, y constituye el puente entre la caracterización arquitectónica (Capítulo~\ref{cap:arquitectura}) y la operación concreta del framework. Las actividades se describen siguiendo el estándar BPMN y se documentan con sus objetivos, alcance, entradas y salidas.
+
+\vspace{0.3 cm}
+
+\begin{quote}
+  \begin{itemize}
+    \item [OE3:] \textbf{Caracterizar el pipeline de procesamiento generativo bajo el estilo arquitectónico de Tubos y Filtros, especificando los filtros, conectores, sintonizadores y tipos de datos del sistema, y verificando formalmente los invariantes esenciales del estilo sobre el diseño resultante.}
+  \end{itemize}
+\end{quote}
+
+\vspace{0.3 cm}
+
+El pipeline de procesamiento se fundamenta en el estilo de Tubos y Filtros \citep{garlanshaw:1994, shawgarlan:1996}, adaptado al caso concreto mediante las especializaciones de \textit{pipeline} lineal, \textit{tubos tipados} y \textit{repositorio común}. La caracterización formal de cada filtro, de los sintonizadores que parametriza el experto y de los contratos de datos entre etapas ---junto con la verificación de los cuatro invariantes esenciales del estilo--- constituye el núcleo conceptual del presente trabajo.
+
+\vspace{0.3 cm}
+
+\begin{quote}
+  \begin{itemize}
+    \item [OE4:] \textbf{Validar el framework mediante un caso de aplicación concreto sobre noticias de portales digitales regionales, analizando la calidad de los resultados obtenidos y discutiendo las limitaciones de la propuesta en términos de escalabilidad, fidelidad documental y costo computacional.}
+  \end{itemize}
+\end{quote}
+
+\vspace{0.3 cm}
+
+El caso de aplicación materializa el ciclo completo sobre un escenario empírico delimitado ---selección de portales, configuración del \textit{template}, ejecución del pipeline y entrega de resultados---, y permite discutir la adecuación del framework a los objetivos planteados, las limitaciones observadas y las oportunidades de trabajo futuro.
 
 \chapter{Análisis bibliográfico?}
 \label{cap:rsl}
@@ -318,7 +329,42 @@ Se han identificado las siguientes brechas que el framework propuesto en esta te
   \item \textbf{Gobernanza de publicación y responsabilidad editorial:} Existen riesgos por la publicación automática de análisis sin filtros de veracidad o atribución, siendo críticos los procedimientos \textit{human-in-the-loop} ante controversias.
 \end{itemize}
 
-\textbf{Propuesta de valor:} Ante estas brechas, un framework modular integrado proporcionará scraping resistente, indexación por embeddings, y control sobre la incertidumbre, mitigando los riesgos de la automatización ciega y aumentando la reproducibilidad y la trazabilidad para los investigadores.
+Cada una de estas brechas se aborda de manera explícita desde los objetivos específicos formulados en la Sección~\ref{sec:intro-objetivos}. La Tabla~\ref{tab:trazabilidad-brechas-objetivos} fija la correspondencia entre cada brecha identificada y los objetivos que la atienden, junto con el mecanismo concreto mediante el cual la propuesta la aborda.
+
+\begin{table}[H]
+  \centering
+  \caption{Trazabilidad entre brechas identificadas en la revisión sistemática y objetivos específicos que las atienden.}
+  \label{tab:trazabilidad-brechas-objetivos}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{@{}l l l X@{}}
+    \toprule
+    \textbf{Brecha} & \textbf{OE} & \textbf{Capítulo} & \textbf{Mecanismo de abordaje} \\
+    \midrule
+    Escalabilidad y consistencia de anotaciones
+      & OE3 & Cap.~\ref{cap:arquitectura}
+      & Tipos de datos con esquemas declarados por \textit{template} (\S~\ref{sec:arq-car-especializaciones} y Apéndice~\ref{anexo:tipos}). \\
+    \addlinespace
+    Robustez del \textit{scraping}
+      & OE3 & Cap.~\ref{cap:arquitectura}
+      & Sustituibilidad del filtro de Extracción: puede reemplazarse sin afectar el resto del pipeline (Subsección~\ref{sec:arq-estilo-justificacion}). \\
+    \addlinespace
+    Trazabilidad en ciencias sociales
+      & OE1, OE3 & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
+      & Cadena de procedencia de extremo a extremo desde \texttt{Resultado} hasta \texttt{Noticia} (Apéndice~\ref{anexo:tipos}). \\
+    \addlinespace
+    Calibración de incertidumbre
+      & OE3 & Cap.~\ref{cap:arquitectura}
+      & Filtro de Verificación con campo \texttt{confianza} explícito en el tipo \texttt{Veredicto} (Subsección~\ref{sec:arq-car-filtros}). \\
+    \addlinespace
+    Gobernanza editorial \textit{human-in-the-loop}
+      & OE1, OE2 & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
+      & Compuerta blanda en Verificación + mapeo BPMN de la intervención del experto (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}). \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\textbf{Propuesta de valor:} Ante estas brechas, un framework modular integrado proporcionará \textit{scraping} resistente, indexación por \textit{embeddings}, control sobre la incertidumbre y gobernanza editorial explícita, mitigando los riesgos de la automatización ciega y aumentando la reproducibilidad y la trazabilidad para los investigadores.
 
 \section{Conclusión del Capítulo}
 \label{sec:rsl-conclusion}
@@ -599,7 +645,7 @@ En cuarto lugar, la etapa de Verificación introduce un compromiso propio cuando
 
 \noindent\fbox{%
   \parbox{\textwidth}{%
-    \textbf{Objetivo:} Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
+    \textbf{Objetivo:} Diseñar e implementar un framework basado en el estilo arquitectónico de Tubos y Filtros que automatice el análisis de noticias de portales digitales mediante inteligencia artificial generativa, manteniendo trazabilidad del flujo de datos, control editorial por parte del experto del dominio y reproducibilidad del proceso analítico.
 
 
     \textbf{Alcance:} Desarrollar un framework que permita recopilar requerimientos de expertos (01), recopilar datos del mundo real utilizando técnicas de \textit{scraping} (02), definir el contexto del análisis mediante el uso de \textit{prompt engineering} (03), obtener la salida de la IAG (04), realizar una visualización previa de los resultados (05), refinar la salida a través de la retroalimentación del análisis, ajustando y mejorando el contexto de manera iterativa; adaptándose progresivamente a las necesidades del experto a cargo (06), y presentar los resultados obtenidos (07).

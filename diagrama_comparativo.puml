@@ -1,0 +1,127 @@
+@startuml
+
+skinparam defaultFontName Helvetica
+skinparam defaultFontSize 11
+skinparam shadowing false
+
+' Paleta semantica de colores
+' Verde (#D8E8D8): componente equivalente en ambas arquitecturas
+' Amarillo (#F0E0B0): componente extendido en la tesina (Verificacion compuerta blanda)
+' Rosa (#F0B0B0): componente exclusivo de la tesina (Sintonizadores)
+' Celeste (#D0E8F0): componente exclusivo de Microsoft (Blob Storage, Competing Consumers)
+
+left to right direction
+
+' ================================================================
+'  Microsoft Azure
+' ================================================================
+package "Microsoft Azure\nPipes and Filters + Claim Check\n(Azure Architecture Center, 2024)" {
+
+  component "Data Source\n(imagenes, datos)" as AzureSource #D8E8D8
+  database "Queue 1\nAzure Queue\n[tubo / pipe]\n[tipo Noticia[N]]" as Q1 #D8E8D8
+
+  component "Filter A\nAzure Function\n[instancia 1]" as FA1 #D8E8D8
+  component "Filter A\nAzure Function\n[instancia 2]" as FA2 #D8E8D8
+  component "Filter A\nAzure Function\n[instancia N]" as FAN #D8E8D8
+
+  database "Queue 2\nAzure Queue\n[tipo Prompt[M]]" as Q2 #D8E8D8
+  component "Filter B\nAzure Function" as FB #D8E8D8
+  component "Sink\n(presentacion)" as AzureSink #D8E8D8
+
+  database "Blob Storage\n[Azure claim check:\npayload en storage,\npuntero en queue]" as AzureBlob #D0E8F0
+  component "Competing\nConsumers\n[multiples instancias\ndel mismo filtro]" as CC #D0E8F0
+
+  AzureSource --> Q1
+  Q1 --> FA1
+  Q1 --> FA2
+  Q1 --> FAN
+  FA1 --> Q2
+  FA2 --> Q2
+  FAN --> Q2
+  Q2 --> FB
+  FB --> AzureSink
+  FA1 -[dashed]-> AzureBlob : claim check
+  FB -[dashed]-> AzureBlob : claim check
+}
+
+' ================================================================
+'  Framework de la Tesina
+' ================================================================
+package "Framework de la Tesina\nTubos y Filtros + Claim Check + Extensiones\n(Bassani 2026)" {
+
+  component "Portales\ndigitales\n[fonte]" as Portales #D8E8D8
+  component "Extraccion\n[filtro]" as Extraccion #D8E8D8
+
+  rectangle "Recuperacion Aumentada\n[filtro compuesto]" {
+    component "Enriquecimiento\nsemantico" as Enriq #D8E8D8
+    component "Composicion\nde contexto" as Comp #D8E8D8
+    Enriq --> Comp
+  }
+
+  component "Invocacion\ngenerativa" as Invoc #D8E8D8
+  component "Decodificacion" as Decod #D8E8D8
+
+  component "Normalizacion" as Norm #D8E8D8
+  component "Presentacion\n[sumidero]" as Presentacion #D8E8D8
+
+  ' Verificacion con compuerta blanda: EXTENDIDO respecto a Microsoft
+  component "Verificacion\n[compuerta blanda]" as Verif #F0E0B0
+
+  database "Repositorio comun\nPostgreSQL / ORM Odoo\n[claim check:\nrecordsets en tubos,\ncontenido en DB]" as Repo #D8E8D8
+
+  ' Sintonizadores: EXCLUSIVOS de la tesina (deformation canonica de TpF)
+  component "Sintonizador 1\nportales y reglas" as Sint1 #F0B0B0
+  component "Sintonizador 2\ntemplate variables" as Sint2 #F0B0B0
+  component "Sintonizador 3\ncriterio validez" as Sint3 #F0B0B0
+  component "Sintonizador 4\nconsolidacion" as Sint4 #F0B0B0
+
+  Portales --> Extraccion
+  Extraccion --> Enriq
+  Enriq --> Comp
+  Comp --> Invoc
+  Invoc --> Decod
+  Decod --> Verif
+  Verif --> Norm
+  Norm --> Presentacion
+
+  Sint1 -[dashed]-> Extraccion : config
+  Sint2 -[dashed]-> Comp : config
+  Sint3 -[dashed]-> Verif : config
+  Sint4 -[dashed]-> Norm : config
+
+  Extraccion -[dashed]-> Repo
+  Enriq -[dashed]-> Repo
+  Comp -[dashed]-> Repo
+  Invoc -[dashed]-> Repo
+  Decod -[dashed]-> Repo
+  Verif -[dashed]-> Repo
+  Norm -[dashed]-> Repo
+}
+
+' ================================================================
+'  CORRESPONDENCIAS ENTRE AMBAS ARQUITECTURAS
+' ================================================================
+AzureSource .[dotted]> Portales : equivalente (fonte)
+AzureSink .[dotted]> Presentacion : equivalente (sumidero)
+Q1 .[dotted]> Extraccion : equivalente tubo Noticia
+FA1 .[dotted]> Enriq : equivalente filtro
+FA2 .[dotted]> Comp : equivalente filtro (N)
+FB .[dotted]> Invoc : equivalente filtro
+AzureBlob .[dotted]> Repo : equivalente claim check
+' CC y Verif son diferentes: MS escala horizontal, tesina agnostica el ejecutor
+CC .[dotted]> Verif : DIFERENTE
+
+legend right
+  <back:#D8E8D8>       </back>   Componente **equivalente** en ambas propuestas
+  <back:#D0E8F0>       </back>   Componente **exclusivo de Azure** (Blob Storage, Competing Consumers)
+  <back:#F0E0B0>       </back>   Filtro **extendido en la tesina** (compuerta blanda en Verificacion)
+  <back:#F0B0B0>       </back>   Componente **exclusivo de la tesina** (sintonizadores)
+  ...>   Correspondencia estructural (linea punteada)
+  ...>   Diferencia de diseno (linea punteada)
+endlegend
+
+caption
+Comparacion de arquitecturas: Microsoft Azure (Pipes and Filters) vs.\nFramework de la Tesina (Tubos y Filtros).\nReferencia: Azure Architecture Center (2024); Bassani (2026).
+endcaption
+
+@enduml

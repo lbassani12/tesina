@@ -28,6 +28,7 @@
 
 # PDF intermedio del diagrama standalone (el PNG final sí se versiona)
 diagrama_arquitectura.pdf
+diagrama_comparativo.pdf
 
 # pdfx
 *.xmpdata-bak

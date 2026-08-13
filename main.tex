@@ -327,69 +327,69 @@ Asimismo, \citet{neupane2025} demuestra la eficacia de combinar un backend de sc
 
 La Tabla~\ref{tab:comparativa-estudios} sintetiza los nueve estudios incluidos, agregando la columna ``Relación con la presente tesina'' que explica el vínculo de cada trabajo con los aportes que esta investiga. Esta tabla complementa la Tabla~\ref{tab:estudios-rsl} (pág.~\pageref{tab:estudios-rsl}), que organiza los mismos trabajos por pregunta de investigación con foco en aportes y limitaciones.
 
-\begin{table}[H]
+\begin{table}[!htbp]
   \centering
   \caption{Comparativa de los estudios incluidos en la revisión sistemática.}
   \label{tab:comparativa-estudios}
-  \footnotesize
+  \scriptsize
   \setlength{\tabcolsep}{3pt}
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.1cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{1.7cm} >{\raggedright\arraybackslash}X@{}}
     \toprule
-    \textbf{Estudio} & \textbf{Enfoque} & \textbf{Caso de aplicación} & \textbf{Limitación principal} & \textbf{Relación con la presente tesina} \\
+    \textbf{Estudio} & \textbf{Enfoque}                                                                                                        & \textbf{Caso de aplicación} & \textbf{Limitación principal} & \textbf{Relación con la presente tesina} \\
     \midrule
     \citet{milbauer2023} (NewsSense)
-      & NLP cross-document + verificación de evidencia
-      & \textit{Sensemaking} del lector sobre noticias contradictorias
-      & No escala a corpus masivos
-      & Antecedente directo del filtro de Verificación: motiva el juicio de fidelidad con sustentación documental. \\
+                     & NLP cross-document + verificación de evidencia
+                     & \textit{Sensemaking} del lector sobre noticias contradictorias
+                     & No escala a corpus masivos
+                     & Antecedente directo del filtro de Verificación: motiva el juicio de fidelidad con sustentación documental.                                                                                                                       \\
     \addlinespace
     \citet{pavlyshenko2024} (RAG + bayesiano)
-      & IAG + modelado bayesiano para cuantificar incertidumbre
-      & Elecciones US 2024
-      & Muestra acotada; caso único
-      & Respalda la necesidad de calibrar incertidumbre (brecha~4) con el campo \texttt{confianza} del tipo \texttt{Veredicto}. \\
+                     & IAG + modelado bayesiano para cuantificar incertidumbre
+                     & Elecciones US 2024
+                     & Muestra acotada; caso único
+                     & Respalda la necesidad de calibrar incertidumbre (brecha~4) con el campo \texttt{confianza} del tipo \texttt{Veredicto}.                                                                                                          \\
     \addlinespace
     \citet{haider2025} (Media Bias Detector)
-      & Pipeline de scraping + LLMs para sesgo y encuadre a escala
-      & Corpus multi-portal en desarrollo
-      & Falta estandarización cross-plataforma de etiquetas
-      & Justifica la robustez del scraping (brecha~2) y los esquemas declarados por \textit{template}. \\
+                     & Pipeline de scraping + LLMs para sesgo y encuadre a escala
+                     & Corpus multi-portal en desarrollo
+                     & Falta estandarización cross-plataforma de etiquetas
+                     & Justifica la robustez del scraping (brecha~2) y los esquemas declarados por \textit{template}.                                                                                                                                   \\
     \addlinespace
     \citet{samuel2025} (ML + LLMs)
-      & Combinación de ML clásico y LLMs para trazar dinámicas emocionales
-      & Tema único: ``AI phobia''
-      & Corpus específico; tema único
-      & Valida el uso de modelos generativos para el agenda-setting de segundo nivel (atributos afectivos). \\
+                     & Combinación de ML clásico y LLMs para trazar dinámicas emocionales
+                     & Tema único: ``AI phobia''
+                     & Corpus específico; tema único
+                     & Valida el uso de modelos generativos para el agenda-setting de segundo nivel (atributos afectivos).                                                                                                                              \\
     \addlinespace
     \citet{behbahanian} (GlimzAI)
-      & Pipeline end-to-end con deduplicación semántica por \textit{embeddings}
-      & Agregación de noticias general
-      & Sin validación con usuarios; foco en distribución
-      & Patrón arquitectónico cercano al filtro de Enriquecimiento semántico; diverge en la ausencia de gobernanza editorial. \\
+                     & Pipeline end-to-end con deduplicación semántica por \textit{embeddings}
+                     & Agregación de noticias general
+                     & Sin validación con usuarios; foco en distribución
+                     & Patrón arquitectónico cercano al filtro de Enriquecimiento semántico; diverge en la ausencia de gobernanza editorial.                                                                                                            \\
     \addlinespace
     \citet{neupane2025} (Node.js + GPT-4o)
-      & Clustering temático + generación automática de contenido
-      & Portal autónomo
-      & Sin validación con expertos
-      & Patrón scraping → \textit{embedding} → LLM análogo al pipeline propuesto, sin verificación editorial. \\
+                     & Clustering temático + generación automática de contenido
+                     & Portal autónomo
+                     & Sin validación con expertos
+                     & Patrón scraping → \textit{embedding} → LLM análogo al pipeline propuesto, sin verificación editorial.                                                                                                                            \\
     \addlinespace
     \citet{ameer:2025} (NexGen MediaCraft)
-      & Broadcasting time-real con presentador virtual 3D
-      & Noticias en tiempo real
-      & Foco en presentación, no en análisis interpretativo
-      & Muestra alcance alternativo del sumidero; la presente tesina prioriza el análisis sobre la entrega multimedia. \\
+                     & Broadcasting time-real con presentador virtual 3D
+                     & Noticias en tiempo real
+                     & Foco en presentación, no en análisis interpretativo
+                     & Muestra alcance alternativo del sumidero; la presente tesina prioriza el análisis sobre la entrega multimedia.                                                                                                                   \\
     \addlinespace
     \citet{begum:2024} (GPT-3.5 + BERTweet)
-      & Reportes diarios con resumen en dos niveles + análisis de sentimiento
-      & Personalización individual por correo
-      & Foco en usuario individual
-      & Inspiración para el análisis multi-nivel (resumen + análisis) del filtro de Normalización. \\
+                     & Reportes diarios con resumen en dos niveles + análisis de sentimiento
+                     & Personalización individual por correo
+                     & Foco en usuario individual
+                     & Inspiración para el análisis multi-nivel (resumen + análisis) del filtro de Normalización.                                                                                                                                       \\
     \addlinespace
     \citet{somasundharam:2025} (LangChain + LLaMA-3)
-      & RAG con FAISS + trazabilidad de fuentes
-      & Consultas multi-URL de baja latencia
-      & Foco en \textit{performance}; no en análisis interpretativo
-      & Antecedente del patrón Claim Check que inspira el repositorio común (\S~\ref{sec:arq-car-repositorio}). \\
+                     & RAG con FAISS + trazabilidad de fuentes
+                     & Consultas multi-URL de baja latencia
+                     & Foco en \textit{performance}; no en análisis interpretativo
+                     & Antecedente del patrón Claim Check que inspira el repositorio común (\S~\ref{sec:arq-car-repositorio}).                                                                                                                          \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -417,29 +417,29 @@ Cada una de estas brechas se aborda de manera explícita desde los objetivos esp
   \label{tab:trazabilidad-brechas-objetivos}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabularx}{\textwidth}{@{}l l l X@{}}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm} l l X@{}}
     \toprule
-    \textbf{Brecha} & \textbf{OE} & \textbf{Capítulo} & \textbf{Mecanismo de abordaje} \\
+    \textbf{Brecha} & \textbf{OE}                                                                                                                                      & \textbf{Capítulo}                                & \textbf{Mecanismo de abordaje} \\
     \midrule
     Escalabilidad y consistencia de anotaciones
-      & OE3 & Cap.~\ref{cap:arquitectura}
-      & Tipos de datos con esquemas declarados por \textit{template} (\S~\ref{sec:arq-car-especializaciones} y Apéndice~\ref{anexo:tipos}). \\
+                    & OE3                                                                                                                                              & Cap.~\ref{cap:arquitectura}
+                    & Tipos de datos con esquemas declarados por \textit{template} (\S~\ref{sec:arq-car-especializaciones} y Apéndice~\ref{anexo:tipos}).                                                                                                  \\
     \addlinespace
     Robustez del \textit{scraping}
-      & OE3 & Cap.~\ref{cap:arquitectura}
-      & Sustituibilidad del filtro de Extracción: puede reemplazarse sin afectar el resto del pipeline (Subsección~\ref{sec:arq-estilo-justificacion}). \\
+                    & OE3                                                                                                                                              & Cap.~\ref{cap:arquitectura}
+                    & Sustituibilidad del filtro de Extracción: puede reemplazarse sin afectar el resto del pipeline (Subsección~\ref{sec:arq-estilo-justificacion}).                                                                                      \\
     \addlinespace
     Trazabilidad en ciencias sociales
-      & OE1, OE3 & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
-      & Cadena de procedencia de extremo a extremo desde \texttt{Resultado} hasta \texttt{Noticia} (Apéndice~\ref{anexo:tipos}). \\
+                    & OE1, OE3                                                                                                                                         & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
+                    & Cadena de procedencia de extremo a extremo desde \texttt{Resultado} hasta \texttt{Noticia} (Apéndice~\ref{anexo:tipos}).                                                                                                             \\
     \addlinespace
     Calibración de incertidumbre
-      & OE3 & Cap.~\ref{cap:arquitectura}
-      & Filtro de Verificación con campo \texttt{confianza} explícito en el tipo \texttt{Veredicto} (Subsección~\ref{sec:arq-car-filtros}). \\
+                    & OE3                                                                                                                                              & Cap.~\ref{cap:arquitectura}
+                    & Filtro de Verificación con campo \texttt{confianza} explícito en el tipo \texttt{Veredicto} (Subsección~\ref{sec:arq-car-filtros}).                                                                                                  \\
     \addlinespace
     Gobernanza editorial \textit{human-in-the-loop}
-      & OE1, OE2 & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
-      & Compuerta blanda en Verificación + mapeo BPMN de la intervención del experto (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}). \\
+                    & OE1, OE2                                                                                                                                         & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
+                    & Compuerta blanda en Verificación + mapeo BPMN de la intervención del experto (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}).                                                                                     \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -714,16 +714,16 @@ El pipeline transporta por los tubos \textit{recordsets} tipados cuyo contenido 
   \footnotesize
   \begin{tabularx}{\textwidth}{@{}l l l l X@{}}
     \toprule
-    \textbf{Tipo}     & \textbf{Producido por}  & \textbf{Tubo}      & \textbf{Card.} & \textbf{Contenido principal} \\
+    \textbf{Tipo}     & \textbf{Producido por}  & \textbf{Tubo}     & \textbf{Card.} & \textbf{Contenido principal}                                       \\
     \midrule
-    Noticia           & Extracción              & 2$\to$3            & $N$            & Título, texto, link, medio, fecha, reglas \\
-    Embedding         & Enriquecimiento         & 4$\to$5 (interno)  & $N$            & Vector + ref. a noticia \\
-    Prompt            & Composición de contexto & 6$\to$7            & $M$            & Texto del prompt, parámetros, refs. a noticias y \textit{template} \\
-    RespuestaIAG      & Invocación              & 8$\to$9            & $M$            & Respuesta cruda del modelo + ref. al prompt \\
-    Análisis          & Decodificación          & 10$\to$11          & $M$            & Estructura analítica validada + ref. a respuesta \\
-    Veredicto         & Verificación            & 12$\to$13          & $M$            & Estado, confianza, sustento + ref. al análisis \\
-    Resultado         & Normalización           & 14 (salida)        & 1              & Producto consolidado + refs. a veredictos \\
-    \textit{Template} & (repositorio)           & ---                & ---            & Objetivo, instrucciones, esquema de respuesta \\
+    Noticia           & Extracción              & 2$\to$3           & $N$            & Título, texto, link, medio, fecha, reglas                          \\
+    Embedding         & Enriquecimiento         & 4$\to$5 (interno) & $N$            & Vector + ref. a noticia                                            \\
+    Prompt            & Composición de contexto & 6$\to$7           & $M$            & Texto del prompt, parámetros, refs. a noticias y \textit{template} \\
+    RespuestaIAG      & Invocación              & 8$\to$9           & $M$            & Respuesta cruda del modelo + ref. al prompt                        \\
+    Análisis          & Decodificación          & 10$\to$11         & $M$            & Estructura analítica validada + ref. a respuesta                   \\
+    Veredicto         & Verificación            & 12$\to$13         & $M$            & Estado, confianza, sustento + ref. al análisis                     \\
+    Resultado         & Normalización           & 14 (salida)       & 1              & Producto consolidado + refs. a veredictos                          \\
+    \textit{Template} & (repositorio)           & ---               & ---            & Objetivo, instrucciones, esquema de respuesta                      \\
     \bottomrule
   \end{tabularx}
 \end{table}

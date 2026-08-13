@@ -174,7 +174,7 @@ El pipeline de procesamiento se fundamenta en el estilo de Tubos y Filtros \cite
 
 El caso de aplicación materializa el ciclo completo sobre un escenario empírico delimitado ---selección de portales, configuración del \textit{template}, ejecución del pipeline y entrega de resultados---, y permite discutir la adecuación del framework a los objetivos planteados, las limitaciones observadas y las oportunidades de trabajo futuro.
 
-\chapter{Análisis bibliográfico?}
+\chapter{Marco teórico y revisión sistemática de la literatura}
 \label{cap:rsl}
 
 En el contexto de un ecosistema mediático caracterizado por la hipermediatización y la proliferación de datos, los métodos tradicionales de análisis de contenido enfrentan desafíos sin precedentes. Este capítulo aborda las bases teóricas y técnicas necesarias para fundamentar una infraestructura que automatice el análisis de noticias digitales. Se presenta primero el marco teórico que define el campo conceptual; luego se documenta la revisión sistemática de la literatura (RSL) que guió la selección de fuentes, junto con las preguntas de investigación, la metodología empleada y los estudios incluidos; finalmente se analiza el estado del arte en tres ejes temáticos, se sintetizan las brechas detectadas y se cierra con las implicancias para esta tesina.
@@ -186,17 +186,23 @@ Según \citet[p.~1]{luhmann2000}: ``\textit{Todo lo que sabemos acerca de nuestr
 
 La forma más influyente en que se ha estudiado empíricamente este fenómeno es la teoría del \textit{agenda-setting}. \citet{mccombs:1972} formularon la hipótesis de que ``\textit{los medios masivos establecen la agenda de cada campaña política, influyendo en la prominencia de las actitudes hacia los temas políticos}''. Recuperando una observación previa de Cohen, los autores sintetizaron este efecto en una fórmula que se volvió canónica: la prensa ``\textit{puede no ser exitosa la mayor parte del tiempo en decirle a la gente qué pensar, pero es asombrosamente exitosa en decirle a sus lectores sobre qué pensar}''. El estudio empírico de \citet{mccombs:1972} sobre la elección presidencial estadounidense de 1968 en Chapel Hill encontró correlaciones cercanas a la unidad entre el énfasis temático de los medios y los temas que los votantes consideraban importantes, estableciendo así el primer nivel de la agenda-setting: la transferencia de prominencia (\textit{salience}) desde la agenda mediática hacia la agenda pública.
 
-Dos décadas más tarde, \citet{mccombs:1997} extendieron la teoría al notar que los objetos sobre los que los medios construyen agenda --candidatos, temas, eventos-- poseen \textit{atributos}, tanto sustantivos como afectivos. Así, ``\textit{el primer nivel de la agenda-setting es la transmisión de la prominencia de los objetos; el segundo nivel de la agenda-setting es la transmisión de la prominencia de los atributos}'' \citep[p.~704]{mccombs:1997}. Esta extensión vincula la agenda-setting con el concepto de \textit{framing} desarrollado por Entman: enmarcar es seleccionar qué atributos de un objeto se vuelven prominentes en un texto comunicativo. La famosa fórmula de Cohen se reescribe en consecuencia: los medios no solo nos dicen ``\textit{sobre qué pensar, sino que también nos dicen cómo pensar al respecto}'' \citep[p.~716]{mccombs:1997}. Este segundo nivel sustenta los estudios contemporáneos que miden computacionalmente el sesgo y el sentimiento en la cobertura mediática, analizados más adelante en la Sección~\ref{sec:rsl-estado-arte}.
+Dos décadas más tarde, \citet{mccombs:1997} extendieron la teoría al notar que los objetos sobre los que los medios construyen agenda --candidatos, temas, eventos-- poseen \textit{atributos}, tanto sustantivos como afectivos. Así, ``\textit{el primer nivel de la agenda-setting es la transmisión de la prominencia de los objetos; el segundo nivel de la agenda-setting es la transmisión de la prominencia de los atributos}'' \citep[p.~704]{mccombs:1997}. Esta extensión vincula la agenda-setting con el concepto de \textit{framing} formalizado por \citet{entman:1993}: enmarcar es ``\textit{seleccionar algunos aspectos de una realidad percibida y hacerlos más prominentes en un texto comunicativo, de modo de promover una definición particular del problema, una interpretación causal, una evaluación moral y/o una recomendación de tratamiento para el asunto descrito}'' \citep[p.~52]{entman:1993}. Enmarcar, entonces, es seleccionar qué atributos de un objeto se vuelven prominentes en un texto comunicativo. La famosa fórmula de Cohen se reescribe en consecuencia: los medios no solo nos dicen ``\textit{sobre qué pensar, sino que también nos dicen cómo pensar al respecto}'' \citep[p.~716]{mccombs:1997}. Este segundo nivel sustenta los estudios contemporáneos que miden computacionalmente el sesgo y el sentimiento en la cobertura mediática, analizados más adelante en la Sección~\ref{sec:rsl-estado-arte}.
 
 El paisaje en el que opera la agenda-setting cambió radicalmente desde McCombs y Shaw. \citet{couldry:2017} caracterizan la situación contemporánea como \textit{deep mediatization}, un régimen marcado por tres procesos simultáneos: la \textit{datafication} (cada encuentro mediado deja un rastro de datos), la fragmentación profunda de las audiencias y la incorporación de plataformas y algoritmos a la construcción misma del acontecimiento mediático. En palabras de los autores, ``\textit{las construcciones algorítmicas de la realidad pasan a formar parte de la construcción de los eventos mediáticos}'' \citep[p.~3]{couldry:2017}, transformación que obliga a analizar los procesos mediáticos contemplando el rol de datos y algoritmos. En sintonía con esta caracterización, \citet{carlon:2020} sitúa el concepto de \textit{sociedad hipermediatizada} como el contexto general en el que esta tesina inscribe su objeto de estudio.
 
 Esta transformación del objeto exige una transformación correlativa de los métodos. \citet{berry:2011} identifica este desplazamiento como un \textit{computational turn}: la creciente dependencia de las ciencias sociales y humanidades respecto de técnicas computacionales para acceder a sus objetos. Berry advierte que las técnicas computacionales ``\textit{no son meramente un instrumento empuñado por los métodos tradicionales; más bien, tienen efectos profundos sobre todos los aspectos de las disciplinas}'' \citep[p.~13]{berry:2011}: introducen nuevos modos de análisis --como el \textit{distant reading} de Moretti recuperado por \citet{berry:2011}, según el cual los corpus literarios masivos no pueden comprenderse sumando lecturas individuales sino tratándolos como sistemas colectivos-- y reconfiguran las preguntas que las disciplinas pueden formular. \citet{meunier:2021} extiende esta línea hacia la semiótica computacional, ofreciendo un sustrato teórico complementario para la articulación entre código, signos y significado.
 
-El giro computacional aplicado al análisis del lenguaje natural cuenta con un punto de inflexión técnico preciso: la arquitectura \textit{Transformer} propuesta por \citet{vaswani:2017}. A diferencia de las redes recurrentes y convolucionales previas, el Transformer se basa exclusivamente en mecanismos de \textit{self-attention}, entendidos como una función que relaciona distintas posiciones dentro de una secuencia para construir una representación contextual de la misma. La entrada y la salida del modelo se construyen sobre \textit{embeddings}: representaciones vectoriales aprendidas que codifican unidades lingüísticas en un espacio continuo de alta dimensionalidad. Sobre esta arquitectura se construyen los modelos generativos contemporáneos --LaMDA, GPT-3, GPT-4-- capaces de traducir, clasificar y generar respuestas analíticas complejas; así como los modelos multimodales --DALL-E 2 y sucesores-- útiles para complementar representaciones visuales del discurso.
+El giro computacional aplicado al análisis del lenguaje natural cuenta con un punto de inflexión técnico preciso: la arquitectura \textit{Transformer} propuesta por \citet{vaswani:2017}. El aporte distintivo de esta arquitectura no reside en la representación vectorial de las unidades lingüísticas ---los \textit{embeddings} eran ya un recurso consolidado del NLP anterior, con familias como Word2Vec \citep{mikolov:2013}, GloVe y FastText--- sino en el mecanismo de \textit{self-attention}, una función que relaciona todas las posiciones de una secuencia en paralelo, permitiendo capturar dependencias de largo alcance que las arquitecturas recurrentes y convolucionales previas procesaban de manera secuencial o local. Sobre esta base se construyen los modelos de lenguaje extenso contemporáneos ---GPT-3, GPT-4, LaMDA y sus sucesores--- capaces de traducir, clasificar, resumir y generar respuestas analíticas complejas a partir de instrucciones en lenguaje natural.
 
 Estos desarrollos teóricos y técnicos encuentran un antecedente empírico relevante en el trabajo de tesis doctoral de Pablo Rey-Mazón, ``Color of Corruption'' \citep{mazon:2023}, que articula varias herramientas y una metodología novedosas para medir el proceso de \textit{agenda-setting} en un ecosistema mediático complejo. Según Rey-Mazón, la metodología tradicional de análisis de contenido se basa en el supuesto de que el contenido ya está completo y estático para su estudio, lo que ignora el flujo constante de noticias y su influencia sobre la recepción. En contraste, su software \textbf{Homepagex} rastrea la posición de los elementos noticiosos en las páginas de inicio durante varios días, permitiendo reconstruir los flujos y ciclos de noticias en los sitios web mediante el cruce entre una base de datos construida por scraping horario y análisis automatizado de contenido. La herramienta complementaria \textbf{Color of Corruption} consiste en una base de datos de imágenes de noticias sobre corrupción etiquetada por tono emocional, enfoque narrativo y presencia de actores específicos, soporte de la metodología denominada \textit{Visual Agenda-Setting Analysis}. La cercanía conceptual y metodológica del trabajo de Rey-Mazón con la propuesta de esta tesina lo vuelve una referencia central.
 
-Disponer de modelos generativos no alcanza, sin embargo, para construir una infraestructura utilizable: es necesario orquestar las tecnologías mediante estándares de procesos de negocio. Trabajos como el de \citet{PRADES2013115} establecen metodologías para implementar flujos de trabajo en BPMN de acuerdo con el estándar ANSI/ISA-95. Investigaciones recientes, como la de \citet{bertagnolio2023}, demuestran la viabilidad de incorporar modelos generativos dentro de mapas de procesos tecnológicos automatizados. La articulación entre marcos teóricos, instrumentos computacionales y orquestación procedimental que se propone en esta tesina se inscribe en esa misma línea.
+Disponer de modelos generativos no alcanza, sin embargo, para construir una infraestructura utilizable: es necesario orquestar las tecnologías mediante estándares formales de procesos de negocio. Trabajos como el de \citet{PRADES2013115} establecen metodologías para implementar flujos de trabajo en BPMN de acuerdo con el estándar ANSI/ISA-95, proporcionando un vocabulario normalizado para especificar cada etapa del proceso y los roles intervinientes. La incorporación de modelos generativos dentro de pipelines de procesos automatizados ---con el consiguiente desafío de combinar invocación no determinista, verificación de resultados y composición de etapas--- es una línea de trabajo activa en ingeniería de software%
+% TODO [REV-001 §6.2]: reemplazar esta nota por una cita verificable a un trabajo que aborde
+% explícitamente la orquestación de LLMs dentro de pipelines de procesos automatizados.
+% Candidatos sugeridos en DECISIONES-REV-001.md §4: Xi et al. (2023) \textit{The Rise and
+% Potential of Large Language Model Based Agents: A Survey}; Wang et al. (2024) \textit{Voyager};
+% Hong et al. (2024) \textit{MetaGPT}. Verificar cada uno antes de citar.
+. La articulación entre marcos teóricos, instrumentos computacionales y orquestación procedimental que se propone en esta tesina se inscribe en esa misma línea.
 
 \section{Revisión Sistemática de la Literatura}
 \label{sec:rsl}
@@ -216,7 +222,7 @@ La revisión se orientó a responder las siguientes preguntas:
 
 La presente revisión se condujo siguiendo las directrices del protocolo PRISMA 2020 \citep{page2021prisma}, con el propósito de identificar estudios que combinaran análisis de noticias, web scraping, embeddings y modelos de lenguaje extenso (LLM).
 
-La recolección bibliográfica se ejecutó durante mayo de 2026 sobre seis bases de datos académicas: SciSpace (búsqueda básica), SciSpace con filtro de texto completo, SciSpace Library, biblioteca personal del autor, Google Scholar y ArXiv. La cadena de búsqueda exacta aplicada se detalla en la Figura~\ref{fig:prisma}. Los conteos por base de datos fueron: SciSpace (n=100), SciSpace texto completo (n=100), SciSpace Library (n=8), biblioteca personal (n=6), Google Scholar (n=20) y ArXiv (n=20), totalizando 254 registros identificados.
+La recolección bibliográfica se ejecutó durante mayo de 2026 sobre cinco bases de datos y agregadores académicos: SciSpace (búsqueda básica), SciSpace con filtro de texto completo, SciSpace Library, Google Scholar y ArXiv. A estos se sumó una búsqueda complementaria por \textit{snowballing} sobre la biblioteca personal del autor, utilizada para recuperar trabajos conocidos previamente por el equipo de investigación y evitar la omisión de referencias clave no bien indexadas en los agregadores. La cadena de búsqueda exacta aplicada se detalla en la Figura~\ref{fig:prisma}. Los conteos por fuente fueron: SciSpace (n=100), SciSpace texto completo (n=100), SciSpace Library (n=8), Google Scholar (n=20), ArXiv (n=20) y \textit{snowballing} sobre biblioteca personal (n=6), totalizando 254 registros identificados.
 
 Los \textbf{criterios de inclusión} aplicados fueron:
 
@@ -239,6 +245,8 @@ Complementariamente, los \textbf{criterios de exclusión} aplicados fueron:
 \end{itemize}
 
 El proceso de selección se desarrolló en cuatro fases ejecutadas por el autor. Primero se eliminaron los duplicados entre bases (n=20), reduciendo el corpus a 234 registros. A continuación se realizó un cribado por título y resumen aplicando los criterios de inclusión, excluyendo 130 registros por baja relevancia y conservando 104. Sobre estos se buscó recuperar el texto completo, descartando 54 informes por no contar con acceso público al documento (CE5). Finalmente, los 50 informes recuperados fueron evaluados a texto completo aplicando los criterios de exclusión, descartando 41: 20 por estar fuera del tema principal (CE4), 12 por carecer de metodología replicable (CE3) y 9 por idioma no admitido (CI3 incumplido). El conjunto final quedó conformado por 9 estudios, presentados en la Sección~\ref{sec:rsl-estudios} y analizados en la Sección~\ref{sec:rsl-estado-arte}.
+
+Conviene reconocer dos limitaciones de esta revisión. En primer lugar, el cribado por título, resumen y texto completo fue ejecutado en todas sus fases por un único evaluador (el autor de la tesina), sin el cálculo de acuerdo inter-evaluador (kappa de Cohen) que una revisión sistemática canónica exige. Esta decisión responde al alcance acotado de una tesina de grado, pero implica que la selección final no está exenta de sesgo subjetivo en la aplicación de los criterios de inclusión y exclusión. En segundo lugar, las bases de datos consultadas ---SciSpace, Google Scholar, ArXiv--- son agregadores de cobertura amplia pero no curadas editorialmente al nivel de IEEE Xplore, ACM Digital Library o Scopus, fuentes primarias esperables en Ciencias de la Computación; esta limitación se atenderá en una ronda complementaria de búsquedas en las bases canónicas antes de la defensa final.
 
 \begin{figure}[H]
   \centering
@@ -315,7 +323,78 @@ Esta subsección aborda la PR3 examinando las arquitecturas de software emergent
 
 Asimismo, \citet{neupane2025} demuestra la eficacia de combinar un backend de scraping basado en Node.js con modelos como GPT-4o para orquestar pipelines que van desde la extracción y clustering semántico hasta la publicación automatizada de contenido \citep{neupane2025}.
 
-Variantes contemporáneas amplían este patrón arquitectónico en distintas direcciones. \citet{ameer:2025} propone \textit{NexGen MediaCraft}, un sistema que combina \textit{scraping} horario, base vectorial e inferencia con un modelo \textit{DeepSeek} ajustado para producir noticias en tiempo real entregadas mediante un presentador virtual 3D. \citet{begum:2024} integra GoogleNews y Newspaper4k para extracción, GPT-3.5-turbo-16k para resumen en dos niveles y BERTweet para análisis de sentimiento, distribuyendo reportes personalizados por correo electrónico. Por su parte, \citet{somasundharam:2025} aplica una arquitectura RAG con FAISS, \textit{embeddings} de Hugging Face y LLaMA-3 sobre LangChain, priorizando la trazabilidad de las fuentes y la baja latencia en respuestas a consultas multi-URL. En conjunto, estos trabajos confirman la consolidación de un patrón común --scraping, indexación vectorial e inferencia con LLMs-- pero exhiben divergencias significativas en sus objetivos finales (entrega multimedia, reporte personalizado, recuperación trazable) y en los criterios de evaluación aplicados.
+\ En conjunto, estos trabajos confirman la consolidación de un patrón común --scraping, indexación vectorial e inferencia con LLMs-- pero exhiben divergencias significativas en sus objetivos finales (entrega multimedia, reporte personalizado, recuperación trazable) y en los criterios de evaluación aplicados.
+
+La Tabla~\ref{tab:comparativa-estudios} sintetiza los nueve estudios incluidos, agregando la columna ``Relación con la presente tesina'' que explica el vínculo de cada trabajo con los aportes que esta investiga. Esta tabla complementa la Tabla~\ref{tab:estudios-rsl} (pág.~\pageref{tab:estudios-rsl}), que organiza los mismos trabajos por pregunta de investigación con foco en aportes y limitaciones.
+
+\begin{table}[H]
+  \centering
+  \caption{Comparativa de los estudios incluidos en la revisión sistemática.}
+  \label{tab:comparativa-estudios}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.1cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{1.7cm} >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Estudio} & \textbf{Enfoque} & \textbf{Caso de aplicación} & \textbf{Limitación principal} & \textbf{Relación con la presente tesina} \\
+    \midrule
+    \citet{milbauer2023} (NewsSense)
+      & NLP cross-document + verificación de evidencia
+      & \textit{Sensemaking} del lector sobre noticias contradictorias
+      & No escala a corpus masivos
+      & Antecedente directo del filtro de Verificación: motiva el juicio de fidelidad con sustentación documental. \\
+    \addlinespace
+    \citet{pavlyshenko2024} (RAG + bayesiano)
+      & IAG + modelado bayesiano para cuantificar incertidumbre
+      & Elecciones US 2024
+      & Muestra acotada; caso único
+      & Respalda la necesidad de calibrar incertidumbre (brecha~4) con el campo \texttt{confianza} del tipo \texttt{Veredicto}. \\
+    \addlinespace
+    \citet{haider2025} (Media Bias Detector)
+      & Pipeline de scraping + LLMs para sesgo y encuadre a escala
+      & Corpus multi-portal en desarrollo
+      & Falta estandarización cross-plataforma de etiquetas
+      & Justifica la robustez del scraping (brecha~2) y los esquemas declarados por \textit{template}. \\
+    \addlinespace
+    \citet{samuel2025} (ML + LLMs)
+      & Combinación de ML clásico y LLMs para trazar dinámicas emocionales
+      & Tema único: ``AI phobia''
+      & Corpus específico; tema único
+      & Valida el uso de modelos generativos para el agenda-setting de segundo nivel (atributos afectivos). \\
+    \addlinespace
+    \citet{behbahanian} (GlimzAI)
+      & Pipeline end-to-end con deduplicación semántica por \textit{embeddings}
+      & Agregación de noticias general
+      & Sin validación con usuarios; foco en distribución
+      & Patrón arquitectónico cercano al filtro de Enriquecimiento semántico; diverge en la ausencia de gobernanza editorial. \\
+    \addlinespace
+    \citet{neupane2025} (Node.js + GPT-4o)
+      & Clustering temático + generación automática de contenido
+      & Portal autónomo
+      & Sin validación con expertos
+      & Patrón scraping → \textit{embedding} → LLM análogo al pipeline propuesto, sin verificación editorial. \\
+    \addlinespace
+    \citet{ameer:2025} (NexGen MediaCraft)
+      & Broadcasting time-real con presentador virtual 3D
+      & Noticias en tiempo real
+      & Foco en presentación, no en análisis interpretativo
+      & Muestra alcance alternativo del sumidero; la presente tesina prioriza el análisis sobre la entrega multimedia. \\
+    \addlinespace
+    \citet{begum:2024} (GPT-3.5 + BERTweet)
+      & Reportes diarios con resumen en dos niveles + análisis de sentimiento
+      & Personalización individual por correo
+      & Foco en usuario individual
+      & Inspiración para el análisis multi-nivel (resumen + análisis) del filtro de Normalización. \\
+    \addlinespace
+    \citet{somasundharam:2025} (LangChain + LLaMA-3)
+      & RAG con FAISS + trazabilidad de fuentes
+      & Consultas multi-URL de baja latencia
+      & Foco en \textit{performance}; no en análisis interpretativo
+      & Antecedente del patrón Claim Check que inspira el repositorio común (\S~\ref{sec:arq-car-repositorio}). \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+La lectura transversal de la tabla confirma el argumento presentado: existe un patrón arquitectónico consolidado (scraping, \textit{embeddings}, RAG e inferencia con LLMs) que ninguna de las obras relevadas completa con las cinco dimensiones que la presente tesina aborda de manera integral ---tipos de datos contractuales entre filtros, trazabilidad documental de extremo a extremo, verificación editorial explícita con calibración de incertidumbre, parametrización por \textit{templates} gestionados, y carácter auditable por aplicación del estilo Tubos y Filtros.
 
 \section{Síntesis Crítica y Brechas en la Investigación}
 \label{sec:rsl-brechas}

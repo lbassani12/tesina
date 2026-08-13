@@ -83,9 +83,6 @@
 \printindex
 
 
-% agrego comentario para commitear y ver el sync
-
-
 \chapter{Introducción}
 \label{cap:intro}
 \section{Motivación}
@@ -97,7 +94,7 @@ El panorama informativo actual se caracteriza por la proliferación de portales 
   \item La magnitud de los paquetes textuales y el volumen de los datos y metadatos asociados demandan análisis pormenorizados para generar conocimiento relevante, una tarea abrumadora sin las herramientas adecuadas.
 \end{enumerate}
 
-Esta necesidad se inscribe en un contexto más amplio dentro de las ciencias sociales y humanas, marcado por lo que se ha denominado el ``giro computacional'' \citep{berry:2011}. Este giro exige la incorporación de herramientas, técnicas y métodos que permitan enriquecer y sofisticar los procedimientos de análisis a través de su computarización \citep{meunier:2022}. La relevancia de este enfoque se extiende también a sectores de gestión gubernamental, donde la información actualizada proveniente de las conversaciones públicas es crucial para la toma de decisiones y el diseño de políticas públicas.
+Esta necesidad se inscribe en un contexto más amplio dentro de las ciencias sociales y humanas, marcado por lo que se ha denominado el ``giro computacional'' \citep{berry:2011}. Este giro exige la incorporación de herramientas, técnicas y métodos que permitan enriquecer y sofisticar los procedimientos de análisis a través de su computarización \citep{meunier:2021}. La relevancia de este enfoque se extiende también a sectores de gestión gubernamental, donde la información actualizada proveniente de las conversaciones públicas es crucial para la toma de decisiones y el diseño de políticas públicas.
 
 
 Para superar este desafío, se necesitan instrumentos de análisis de texto más sofisticados que permitan identificar correlaciones entre noticias, acoplamiento y cohesión de los términos, conceptos y significantes. Estos instrumentos proporcionarán a los investigadores un sólido respaldo tecnológico para automatizar y optimizar sus protocolos de estudio, incluyendo la formación de la agenda mediática y la difusión de información de manera más eficiente.
@@ -181,7 +178,7 @@ Dos décadas más tarde, \citet{mccombs:1997} extendieron la teoría al notar qu
 
 El paisaje en el que opera la agenda-setting cambió radicalmente desde McCombs y Shaw. \citet{couldry:2017} caracterizan la situación contemporánea como \textit{deep mediatization}, un régimen marcado por tres procesos simultáneos: la \textit{datafication} (cada encuentro mediado deja un rastro de datos), la fragmentación profunda de las audiencias y la incorporación de plataformas y algoritmos a la construcción misma del acontecimiento mediático. En palabras de los autores, ``\textit{las construcciones algorítmicas de la realidad pasan a formar parte de la construcción de los eventos mediáticos}'' \citep[p.~3]{couldry:2017}, transformación que obliga a analizar los procesos mediáticos contemplando el rol de datos y algoritmos. En sintonía con esta caracterización, \citet{carlon:2020} sitúa el concepto de \textit{sociedad hipermediatizada} como el contexto general en el que esta tesina inscribe su objeto de estudio.
 
-Esta transformación del objeto exige una transformación correlativa de los métodos. \citet{berry:2011} identifica este desplazamiento como un \textit{computational turn}: la creciente dependencia de las ciencias sociales y humanidades respecto de técnicas computacionales para acceder a sus objetos. Berry advierte que las técnicas computacionales ``\textit{no son meramente un instrumento empuñado por los métodos tradicionales; más bien, tienen efectos profundos sobre todos los aspectos de las disciplinas}'' \citep[p.~13]{berry:2011}: introducen nuevos modos de análisis --como el \textit{distant reading} de Moretti recuperado por \citet{berry:2011}, según el cual los corpus literarios masivos no pueden comprenderse sumando lecturas individuales sino tratándolos como sistemas colectivos-- y reconfiguran las preguntas que las disciplinas pueden formular. \citet{meunier:2022} extiende esta línea hacia la semiótica computacional, ofreciendo un sustrato teórico complementario para la articulación entre código, signos y significado.
+Esta transformación del objeto exige una transformación correlativa de los métodos. \citet{berry:2011} identifica este desplazamiento como un \textit{computational turn}: la creciente dependencia de las ciencias sociales y humanidades respecto de técnicas computacionales para acceder a sus objetos. Berry advierte que las técnicas computacionales ``\textit{no son meramente un instrumento empuñado por los métodos tradicionales; más bien, tienen efectos profundos sobre todos los aspectos de las disciplinas}'' \citep[p.~13]{berry:2011}: introducen nuevos modos de análisis --como el \textit{distant reading} de Moretti recuperado por \citet{berry:2011}, según el cual los corpus literarios masivos no pueden comprenderse sumando lecturas individuales sino tratándolos como sistemas colectivos-- y reconfiguran las preguntas que las disciplinas pueden formular. \citet{meunier:2021} extiende esta línea hacia la semiótica computacional, ofreciendo un sustrato teórico complementario para la articulación entre código, signos y significado.
 
 El giro computacional aplicado al análisis del lenguaje natural cuenta con un punto de inflexión técnico preciso: la arquitectura \textit{Transformer} propuesta por \citet{vaswani:2017}. A diferencia de las redes recurrentes y convolucionales previas, el Transformer se basa exclusivamente en mecanismos de \textit{self-attention}, entendidos como una función que relaciona distintas posiciones dentro de una secuencia para construir una representación contextual de la misma. La entrada y la salida del modelo se construyen sobre \textit{embeddings}: representaciones vectoriales aprendidas que codifican unidades lingüísticas en un espacio continuo de alta dimensionalidad. Sobre esta arquitectura se construyen los modelos generativos contemporáneos --LaMDA, GPT-3, GPT-4-- capaces de traducir, clasificar y generar respuestas analíticas complejas; así como los modelos multimodales --DALL-E 2 y sucesores-- útiles para complementar representaciones visuales del discurso.
 
@@ -245,7 +242,7 @@ El proceso de selección descrito en la sección anterior arrojó nueve estudios
 
 Una lectura transversal del corpus revela un patrón arquitectónico recurrente: la mayoría de los trabajos articula una cadena de procesamiento que va de la ingesta de contenido --ya sea por \textit{scraping} directo o por consumo de APIs noticiosas-- a la representación semántica mediante \textit{embeddings} o esquemas RAG, y de allí a la inferencia con modelos de lenguaje extenso \citep{neupane2025, behbahanian, somasundharam:2025, ameer:2025}. Las variantes no afectan la estructura general sino los énfasis: algunos priorizan deduplicación y agregación \citep{behbahanian}, otros la entrega multimedia o personalizada \citep{ameer:2025, begum:2024}, y otros la trazabilidad de fuentes \citep{somasundharam:2025}. Esta convergencia técnica confirma que el patrón existe como herencia disponible, pero también vuelve más visibles las dimensiones que ningún estudio resuelve por completo.
 
-En particular, las limitaciones que reportan los propios autores conforman un mapa de zonas no cubiertas que se repiten a lo largo del corpus: la ausencia de validación con usuarios o expertos \citep{behbahanian, neupane2025}, el sacrificio de la profundidad interpretativa en favor de la distribución o la \textit{performance} \citep{ameer:2025, somasundharam:2025}, la dependencia de muestras acotadas o casos únicos \citep{pavlyshenko2024, sundar2025} y la falta de estandarización cross-plataforma \citep{haider2025}. La Tabla~\ref{tab:estudios-rsl} sintetiza este panorama agrupado por pregunta de investigación; la columna ``Estudio'' incorpora entre paréntesis el sistema o stack distintivo de cada trabajo.
+En particular, las limitaciones que reportan los propios autores conforman un mapa de zonas no cubiertas que se repiten a lo largo del corpus: la ausencia de validación con usuarios o expertos \citep{behbahanian, neupane2025}, el sacrificio de la profundidad interpretativa en favor de la distribución o la \textit{performance} \citep{ameer:2025, somasundharam:2025}, la dependencia de muestras acotadas o casos únicos \citep{pavlyshenko2024, samuel2025} y la falta de estandarización cross-plataforma \citep{haider2025}. La Tabla~\ref{tab:estudios-rsl} sintetiza este panorama agrupado por pregunta de investigación; la columna ``Estudio'' incorpora entre paréntesis el sistema o stack distintivo de cada trabajo.
 
 \begin{table}[H]
   \centering
@@ -267,7 +264,7 @@ En particular, las limitaciones que reportan los propios autores conforman un ma
     \midrule
     \citet{haider2025} (\textit{Media Bias Detector}) & Medición sistemática de selección y encuadre mediático a escala                                                              & Sistema en curso; falta estandarización cross-plataforma de etiquetas \\
     \addlinespace
-    \citet{sundar2025} (ML + LLMs sobre corpus)       & Traza dinámicas emocionales (\textit{AI phobia}) propagadas por la cobertura mediática                                       & Tema único; corpus específico                                         \\
+    \citet{samuel2025} (ML + LLMs sobre corpus)       & Traza dinámicas emocionales (\textit{AI phobia}) propagadas por la cobertura mediática                                       & Tema único; corpus específico                                         \\
     \midrule
     \multicolumn{3}{@{}l}{\textit{PR3 — Arquitecturas de software con IAG para el procesamiento de noticias}}                                                                                                                                                \\
     \midrule
@@ -298,7 +295,7 @@ Por otro lado, \citet{pavlyshenko2024} evalúa el uso de modelos GPT frente a m�
 \label{sec:rsl-agenda}
 Esta subsección aborda la PR2 examinando cómo trabajos recientes han operacionalizado computacionalmente el agenda-setting de segundo nivel propuesto por \citet{mccombs:1997}, particularmente en lo relativo a dos atributos centrales: el sesgo y el encuadre (\textit{framing}) por un lado, y el sentimiento por otro. \citet{haider2025} proponen un framework para detectar el sesgo mediático a escala, subrayando que la selección y el encuadre pueden medirse sistemáticamente mediante pipelines de scraping integrados con LLMs. Este enfoque permite una vigilancia continua de la responsabilidad mediática, algo que los métodos manuales de codificación no podían alcanzar por limitaciones de escala \citep{haider2025}.
 
-Complementariamente, el estudio de \citet{sundar2025} sobre la difusión del miedo hacia la inteligencia artificial evidencia cómo la cobertura mediática amplifica sentimientos públicos. Al emplear una combinación de aprendizaje automático y LLMs, los autores logran trazar dinámicas emocionales en el corpus noticioso, demostrando que la infraestructura técnica es capaz de revelar no solo qué temas están en la agenda, sino qué emociones colectivas se están propagando a través de ella \citep{sundar2025}.
+Complementariamente, el estudio de \citet{samuel2025} sobre la difusión del miedo hacia la inteligencia artificial evidencia cómo la cobertura mediática amplifica sentimientos públicos. Al emplear una combinación de aprendizaje automático y LLMs, los autores logran trazar dinámicas emocionales en el corpus noticioso, demostrando que la infraestructura técnica es capaz de revelar no solo qué temas están en la agenda, sino qué emociones colectivas se están propagando a través de ella \citep{samuel2025}.
 
 \subsection{Arquitecturas de Software con IAG para el Procesamiento de Noticias}
 \label{sec:rsl-arquitecturas}
@@ -327,7 +324,7 @@ Se han identificado las siguientes brechas que el framework propuesto en esta te
 \label{sec:rsl-conclusion}
 La revisión sistemática presentada en este capítulo permite delimitar con precisión el punto de partida de esta tesina, tanto en lo que la literatura ya ha consolidado como en lo que aún permanece sin resolver.
 
-En el plano de lo consolidado, los nueve estudios analizados confirman que el patrón arquitectónico que combina \textit{web scraping}, indexación mediante \textit{embeddings} e inferencia con modelos de lenguaje extenso es técnicamente viable y reproducible en distintos dominios de aplicación \citep{behbahanian, neupane2025, somasundharam:2025}. Asimismo, queda establecido que la inteligencia artificial generativa supera al NLP estadístico tradicional en tareas interpretativas \citep{milbauer2023, pavlyshenko2024} y que es posible operacionalizar computacionalmente el \textit{agenda-setting} de segundo nivel a escala \citep{haider2025, sundar2025}. Esta base no constituye, por lo tanto, un riesgo a explorar en este trabajo, sino el suelo técnico sobre el que se construye.
+En el plano de lo consolidado, los nueve estudios analizados confirman que el patrón arquitectónico que combina \textit{web scraping}, indexación mediante \textit{embeddings} e inferencia con modelos de lenguaje extenso es técnicamente viable y reproducible en distintos dominios de aplicación \citep{behbahanian, neupane2025, somasundharam:2025}. Asimismo, queda establecido que la inteligencia artificial generativa supera al NLP estadístico tradicional en tareas interpretativas \citep{milbauer2023, pavlyshenko2024} y que es posible operacionalizar computacionalmente el \textit{agenda-setting} de segundo nivel a escala \citep{haider2025, samuel2025}. Esta base no constituye, por lo tanto, un riesgo a explorar en este trabajo, sino el suelo técnico sobre el que se construye.
 
 En el plano de lo no resuelto, la Síntesis Crítica (Sección~\ref{sec:rsl-brechas}) identificó cinco brechas que los sistemas existentes no abordan de manera integral: la ausencia de estándares interoperables para anotar tópico, tono y encuadre de forma comparable entre plataformas; la fragilidad del \textit{scraping} ante cambios estructurales de los portales; la falta de trazabilidad documental entre la evidencia extraída y las afirmaciones generadas por los modelos; la escasa calibración de la incertidumbre en los \textit{scores} de análisis; y la carencia de procedimientos de gobernanza editorial \textit{human-in-the-loop}. Estas brechas configuran el espacio problemático específico desde el cual arranca esta tesina.
 
@@ -605,7 +602,7 @@ En cuarto lugar, la etapa de Verificación introduce un compromiso propio cuando
     \textbf{Objetivo:} Crear un framework para automatizar el análisis de noticias digitales a través de inteligencia artificial generativa.
 
 
-    \textbf{Alcance:} Desarrollar un framework que permita recopilar requerimientos de expertos (01), recopilar datos del mundo real utilizando técnicas de \textit{scrapping} (02), definir el contexto del análisis mediante el uso de \textit{prompt engineering} (03), obtener la salida de la IAG (04), realizar una visualización previa de los resultados (05), refinar la salida a través de la retroalimentación del análisis, ajustando y mejorando el contexto de manera iterativa; adaptándose progresivamente a las necesidades del experto a cargo (06), y presentar los resultados obtenidos (07).
+    \textbf{Alcance:} Desarrollar un framework que permita recopilar requerimientos de expertos (01), recopilar datos del mundo real utilizando técnicas de \textit{scraping} (02), definir el contexto del análisis mediante el uso de \textit{prompt engineering} (03), obtener la salida de la IAG (04), realizar una visualización previa de los resultados (05), refinar la salida a través de la retroalimentación del análisis, ajustando y mejorando el contexto de manera iterativa; adaptándose progresivamente a las necesidades del experto a cargo (06), y presentar los resultados obtenidos (07).
 
 
 
@@ -618,15 +615,15 @@ En cuarto lugar, la etapa de Verificación introduce un compromiso propio cuando
 
 \vspace{0.5cm}
 
-De los procesos antes mencionados, a continuación se describen los procesos de soporte Nro. 02 -\textbf{Scrapping}, 03 - \textbf{Definición de Contexto} y 04- \textbf{Procesamiento IAG}.
+De los procesos antes mencionados, a continuación se describen los procesos de soporte Nro. 02 -\textbf{Scraping}, 03 - \textbf{Definición de Contexto} y 04- \textbf{Procesamiento IAG}.
 
 \newpage
 \section{Recopilación de requerimientos}
 \label{sec:proc-requerimientos}
 
 \newpage
-\section{Scrapping}
-\label{sec:proc-scrapping}
+\section{Scraping}
+\label{sec:proc-scraping}
 \begin{figure}[h]
   \centering
   \includegraphics[height=4in]{Diagrama 02-Scrapping.png}
@@ -640,7 +637,7 @@ De los procesos antes mencionados, a continuación se describen los procesos de 
 
     \textbf{Entrada:} Portales digitales regionales relevantes y variables claves como el rango de fechas y el tipo de elección.
 
-    \textbf{Salida:} Datos procesados y transformados utilizando técnicas de NPL embedding, que permitirán su representación en forma numérica. Además, se aplicarán técnicas de encoding para almacenar los datos en un formato adecuado, teniendo en cuenta su posterior análisis y la implementación de algoritmos de inteligencia artificial.
+    \textbf{Salida:} Datos procesados y transformados utilizando técnicas de NLP embedding, que permitirán su representación en forma numérica. Además, se aplicarán técnicas de encoding para almacenar los datos en un formato adecuado, teniendo en cuenta su posterior análisis y la implementación de algoritmos de inteligencia artificial.
   }%
 }
 
@@ -650,7 +647,7 @@ De los procesos antes mencionados, a continuación se describen los procesos de 
 
 Actor: Experto de dominio.
 
-Actividad: Seleccionar los portales que serán scrappeados por la herramienta. Esta elección se basa en criterios de idoneidad, credibilidad, número de visitas de usuarios y región geográfica específica. El experto evaluará cuidadosamente cada portal para determinar su relevancia y confiabilidad en cuanto a los datos que se desean obtener. Esta selección se basa en el conocimiento y experiencia del experto en el dominio específico y busca garantizar que los portales elegidos aporten información valiosa y representativa para el análisis posterior del proceso de Scrapping.
+Actividad: Seleccionar los portales que serán scrapeados por la herramienta. Esta elección se basa en criterios de idoneidad, credibilidad, número de visitas de usuarios y región geográfica específica. El experto evaluará cuidadosamente cada portal para determinar su relevancia y confiabilidad en cuanto a los datos que se desean obtener. Esta selección se basa en el conocimiento y experiencia del experto en el dominio específico y busca garantizar que los portales elegidos aporten información valiosa y representativa para el análisis posterior del proceso de Scraping.
 
 \vspace{0.5cm}
 
@@ -658,27 +655,27 @@ Actividad: Seleccionar los portales que serán scrappeados por la herramienta. E
 
 Actor: Experto de dominio.
 
-Actividad: Acotar la información que será recopilada por la aplicación de Scrapping. Esto implica seleccionar las métricas y datos relevantes que se guardarán durante el proceso de extracción. Además de las palabras clave y los títulos importantes, el experto puede considerar la inclusión de otros elementos, como:
+Actividad: Acotar la información que será recopilada por la aplicación de Scraping. Esto implica seleccionar las métricas y datos relevantes que se guardarán durante el proceso de extracción. Además de las palabras clave y los títulos importantes, el experto puede considerar la inclusión de otros elementos, como:
 
 Categorías de información específicas relacionadas con los resultados electorales, encuestas o percepciones de la gente.
 Rango de fechas a recorrer para obtener datos históricos o analizar tendencias a lo largo del tiempo.
 Variables demográficas o geográficas relevantes para segmentar y comprender mejor los datos recolectados.
 Otros criterios específicos basados en el objetivo y alcance de la investigación.
-El experto debe tener en cuenta que la selección de métricas competentes es fundamental para garantizar la calidad y relevancia de los datos extraídos durante el proceso de Scrapping.
+El experto debe tener en cuenta que la selección de métricas competentes es fundamental para garantizar la calidad y relevancia de los datos extraídos durante el proceso de Scraping.
 \vspace{0.5cm}
 
-\textbf{03. Proceso de scrapp}
+\textbf{03. Proceso de scraping}
 
-Actor: Aplicación de Scrapping.
+Actor: Aplicación de Scraping.
 
 Actividad: Recorrer los portales seleccionados y guardar la información relevante. Utiliza técnicas automatizadas para navegar por las páginas web, identificar los datos definidos previamente y extraerlos. La información se almacena en un formato adecuado para su posterior procesamiento y análisis.
 \vspace{0.5cm}
 
-\textbf{04. NPL Embedding}
+\textbf{04. NLP Embedding}
 
-Actor: Aplicación de Scrapping.
+Actor: Aplicación de Scraping.
 
-Actividad: La aplicación utilizará técnicas de NPL (Natural Language Processing) Embedding para transformar los datos de texto recolectados en representaciones numéricas de alta dimensionalidad. Esto implica asignar un vector numérico a cada palabra o frase, capturando su significado y contexto semántico. El objetivo es organizar y estructurar de manera que las palabras similares se encuentren en un espacio vectorial cercano,  permitiendo un análisis más eficiente y preciso en etapas posteriores del proceso. El NPL Embedding ayuda a la aplicación a comprender y procesar el texto de manera más sofisticada, facilitando la identificación de patrones, temas o tendencias en los datos extraídos.
+Actividad: La aplicación utilizará técnicas de NLP (Natural Language Processing) Embedding para transformar los datos de texto recolectados en representaciones numéricas de alta dimensionalidad. Esto implica asignar un vector numérico a cada palabra o frase, capturando su significado y contexto semántico. El objetivo es organizar y estructurar de manera que las palabras similares se encuentren en un espacio vectorial cercano,  permitiendo un análisis más eficiente y preciso en etapas posteriores del proceso. El NLP Embedding ayuda a la aplicación a comprender y procesar el texto de manera más sofisticada, facilitando la identificación de patrones, temas o tendencias en los datos extraídos.
 \vspace{0.5cm}
 
 \textbf{05. Embedding Personalizado}
@@ -729,9 +726,9 @@ El proceso de encoding puede involucrar técnicas como la codificación one-hot,
 
 Actor: Implementador de la aplicación.
 
-Actividad: Proporcionar una interfaz gráfica que habilite la selección de prompt templates para el experto de dominio. La elección de seleccionar un template en lugar de crear un prompt desde cero se realizó con el objetivo de evitar el ``Síndrome de la Página en Blanco'' (\textit{Blank Page Syndrome}), el efecto en el que los usuarios, al encontrarse frente a una página en blanco, no saben por dónde comenzar \citep{johnyprompt}.
+Actividad: Proporcionar una interfaz gráfica que habilite la selección de prompt templates para el experto de dominio. La elección de seleccionar un template en lugar de crear un prompt desde cero se realizó con el objetivo de evitar el ``Síndrome de la Página en Blanco'' (\textit{Blank Page Syndrome}), el efecto en el que los usuarios, al encontrarse frente a una página en blanco, no saben por dónde comenzar \citep{zamfirescu2023}.
 
-Los templates van a utilizar una lista de instrucciones básicas con características que queremos que todos cumplan basándonos en investigaciones previas sobre cómo crear un prompt adecuado \citep{johnyprompt, prompt-eng:2024}. Ej:
+Los templates van a utilizar una lista de instrucciones básicas con características que queremos que todos cumplan basándonos en investigaciones previas sobre cómo crear un prompt adecuado \citep{zamfirescu2023, prompt-eng:2024}. Ej:
 
 \begin{itemize}
   \item Los prompts deben ser concisos, claros y fáciles de entender. Se debe evitar el lenguaje complejo y la información innecesaria.
@@ -787,7 +784,7 @@ Además de estos filtros contextuales iniciales, esta etapa también incluye la 
 
   \item \textbf{Top-K y Top-P:} Son técnicas que restringen la predicción del siguiente token a un subconjunto de tokens con mayor probabilidad. \textit{Top-K} limita la elección a los K tokens más probables, mientras que \textit{Top-P} (también conocido como \textit{nucleus sampling}) considera los tokens cuya probabilidad acumulada alcanza un umbral P. Ambos parámetros permiten modular la aleatoriedad y control de la generación.
 
-  \item \textbf{Output Length:} Define la cantidad máxima de tokens a generar por parte del modelo. Cuantos más tokens se generen, mayor será el cómputo requerido, lo que impacta en el tiempo de respuesta y los recursos utilizados. Esta longitud puede controlarse directamente en el sistema o bien incluirse como una instrucción dentro del \textit{prompt}. La tesis ya hace referencia al ``Token Limit'' dentro de las tablas de ejemplo de \textit{prompts}.
+  \item \textbf{Output Length:} Define la cantidad máxima de tokens a generar por parte del modelo. Cuantos más tokens se generen, mayor será el cómputo requerido, lo que impacta en el tiempo de respuesta y los recursos utilizados. Esta longitud puede controlarse directamente en el sistema o bien incluirse como una instrucción dentro del \textit{prompt}. La tesina ya hace referencia al ``Token Limit'' dentro de las tablas de ejemplo de \textit{prompts}.
 
   \item \textbf{Uso de variables:} Para aumentar la reutilización y adaptabilidad de los \textit{templates}, es recomendable incorporar variables dinámicas en los \textit{prompts}. Estas permiten insertar datos contextuales (como fechas, actores, ubicaciones o temas) sin necesidad de reescribir el \textit{prompt} completo cada vez. Esta estrategia, también mencionada previamente en la tesina, optimiza el proceso de personalización y facilita la integración del sistema en flujos de trabajo automatizados.
 \end{itemize}
@@ -800,7 +797,7 @@ Actor: Experto de dominio.
 
 Actividad: El experto podrá ingresar libremente aclaraciones o ejemplos que querrá incluir en el prompt para dejar en claro cual es su idea de análisis. Con el fin de guiar de manera efectiva el proceso de generación, resulta útil incluir ejemplos o escenarios específicos en los prompts. Estos ejemplos pueden ilustrar los tipos de interacciones o respuestas deseadas que la IAG debería generar. Al incorporarlos la IAG puede aprender y emular el comportamiento deseado.
 
-En un estudio previo todos los participantes mostraron una fuerte preferencia por la instrucción directa en lugar de proporcionar ejemplos en línea, y cuando se les animó a dar ejemplos, la mayoría de los participantes lo hicieron y señalaron su efectividad en la mejora de resultados \citep{johnyprompt}.
+En un estudio previo todos los participantes mostraron una fuerte preferencia por la instrucción directa en lugar de proporcionar ejemplos en línea, y cuando se les animó a dar ejemplos, la mayoría de los participantes lo hicieron y señalaron su efectividad en la mejora de resultados \citep{zamfirescu2023}.
 
 
 \vspace{0.5cm}

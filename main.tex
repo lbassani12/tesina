@@ -117,6 +117,7 @@ Para su implementación se utilizarán los siguientes datos de entrada para la c
   \item El tipo de salida o representación del análisis. Ejemplo: narrativa, tablas, gráficos, etc.
 \end{enumerate}
 \section{Objetivos}
+\label{sec:intro-objetivos}
 A partir de la motivación y el estado del arte relevados, se define el siguiente objetivo general para el presente trabajo:
 
 \begin{quote}
@@ -159,7 +160,7 @@ Este objetivo formaliza la hoja de ruta procedimental que organiza el trabajo de
 
 \vspace{0.3 cm}
 
-El pipeline de procesamiento se fundamenta en el estilo de Tubos y Filtros \citep{garlanshaw:1994, shawgarlan:1996}, adaptado al caso concreto mediante las especializaciones de \textit{pipeline} lineal, \textit{tubos tipados} y \textit{repositorio común}. La caracterización formal de cada filtro, de los sintonizadores que parametriza el experto y de los contratos de datos entre etapas ---junto con la verificación de los cuatro invariantes esenciales del estilo--- constituye el núcleo conceptual del presente trabajo.
+El pipeline de procesamiento se fundamenta en el estilo de Tubos y Filtros \citep{garlanshaw:1994, shawgarlan:1996}, adaptado al caso concreto mediante las especializaciones de \textit{pipeline} y \textit{tubos tipados}, junto con la incorporación de un repositorio común como desviación controlada del estilo. La caracterización formal de cada filtro, de los sintonizadores que parametriza el experto y de los contratos de datos entre etapas ---junto con la verificación de los cuatro invariantes esenciales del estilo--- constituye el núcleo conceptual del presente trabajo.
 
 \vspace{0.3 cm}
 
@@ -374,7 +375,7 @@ En el plano de lo consolidado, los nueve estudios analizados confirman que el pa
 
 En el plano de lo no resuelto, la Síntesis Crítica (Sección~\ref{sec:rsl-brechas}) identificó cinco brechas que los sistemas existentes no abordan de manera integral: la ausencia de estándares interoperables para anotar tópico, tono y encuadre de forma comparable entre plataformas; la fragilidad del \textit{scraping} ante cambios estructurales de los portales; la falta de trazabilidad documental entre la evidencia extraída y las afirmaciones generadas por los modelos; la escasa calibración de la incertidumbre en los \textit{scores} de análisis; y la carencia de procedimientos de gobernanza editorial \textit{human-in-the-loop}. Estas brechas configuran el espacio problemático específico desde el cual arranca esta tesina.
 
-A partir de ese punto de partida, los tres objetivos específicos definidos en el Capítulo~\ref{cap:intro} responden a brechas concretas detectadas en la revisión. El OE1 (módulo Odoo) institucionaliza el flujo extracción-análisis-visualización como aplicación gestionable y auditable, atendiendo a las carencias de gobernanza y trazabilidad. El OE2 (mapa de procesos) formaliza la hoja de ruta procedimental que dota de reproducibilidad y robustez a las etapas de recolección y análisis. El OE3 (procedimientos de acceso a IAG mediante \textit{prompt engineering} bajo arquitectura Tubos y Filtros) busca consistencia de anotaciones y trazabilidad de inferencias en la capa generativa. En conjunto, el framework propuesto no aspira a reemplazar el patrón arquitectónico consolidado por la literatura, sino a completarlo en las dimensiones procedimentales y de rigor científico que los prototipos relevados aún no resuelven.
+A partir de ese punto de partida, los cuatro objetivos específicos definidos en el Capítulo~\ref{cap:intro} responden a brechas concretas detectadas en la revisión. El OE1 (módulo \textit{addon} de Odoo) institucionaliza el flujo extracción-análisis-visualización como aplicación gestionable y auditable, atendiendo a las carencias de gobernanza y trazabilidad. El OE2 (mapa de procesos BPMN) formaliza la hoja de ruta procedimental que dota de reproducibilidad y robustez a las etapas de recolección y análisis. El OE3 (caracterización del pipeline bajo el estilo Tubos y Filtros) busca consistencia de anotaciones y trazabilidad de inferencias en la capa generativa. El OE4 (caso de aplicación) somete la propuesta a validación empírica sobre un escenario concreto, cerrando el ciclo entre diseño y evidencia. En conjunto, el framework propuesto no aspira a reemplazar el patrón arquitectónico consolidado por la literatura, sino a completarlo en las dimensiones procedimentales y de rigor científico que los prototipos relevados aún no resuelven.
 
 El capítulo siguiente desarrolla la primera capa de esta propuesta: la aplicación de \textit{scraping} que materializa el componente de extracción del framework.
 

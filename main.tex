@@ -142,13 +142,13 @@ El módulo se integra como \textit{addon} sobre la suite \textit{Odoo Community}
 
 \begin{quote}
   \begin{itemize}
-    \item [OE2:] \textbf{Modelar el ciclo de análisis como un mapa de procesos (BPMN) que formalice la secuencia de actividades, los roles intervinientes ---experto del dominio, implementador, sistema--- y las entradas y salidas de cada etapa, garantizando la reproducibilidad procedimental y la correspondencia biyectiva entre los pasos del proceso y los filtros de la arquitectura propuesta.}
+    \item [OE2:] \textbf{Modelar el ciclo de análisis como un mapa de procesos inspirado en la notación BPMN, que documente la secuencia de actividades, los roles intervinientes ---experto del dominio, implementador y componentes del sistema--- y las entradas y salidas de cada etapa, favoreciendo la reproducibilidad procedimental y estableciendo la correspondencia entre los procesos del ciclo y los filtros de la arquitectura propuesta.}
   \end{itemize}
 \end{quote}
 
 \vspace{0.3 cm}
 
-Este objetivo formaliza la hoja de ruta procedimental que organiza el trabajo del experto del dominio y del sistema, y constituye el puente entre la caracterización arquitectónica (Capítulo~\ref{cap:arquitectura}) y la operación concreta del framework. Las actividades se describen siguiendo el estándar BPMN y se documentan con sus objetivos, alcance, entradas y salidas.
+Este objetivo formaliza la hoja de ruta procedimental que organiza el trabajo del experto del dominio y del sistema, y constituye el puente entre la caracterización arquitectónica (Capítulo~\ref{cap:arquitectura}) y la operación concreta del framework. Las actividades se representan mediante diagramas inspirados en la notación BPMN y se documentan con sus objetivos, alcance, entradas y salidas.
 
 \vspace{0.3 cm}
 
@@ -245,9 +245,6 @@ Complementariamente, los \textbf{criterios de exclusión} aplicados fueron:
 \end{itemize}
 
 El proceso de selección se desarrolló en cuatro fases ejecutadas por el autor. Primero se eliminaron los duplicados entre bases (n=20), reduciendo el corpus a 234 registros. A continuación se realizó un cribado por título y resumen aplicando los criterios de inclusión, excluyendo 130 registros por baja relevancia y conservando 104. Sobre estos se buscó recuperar el texto completo, descartando 54 informes por no contar con acceso público al documento (CE5). Finalmente, los 50 informes recuperados fueron evaluados a texto completo aplicando los criterios de exclusión, descartando 41: 20 por estar fuera del tema principal (CE4), 12 por carecer de metodología replicable (CE3) y 9 por idioma no admitido (CI3 incumplido). El conjunto final quedó conformado por 9 estudios, presentados en la Sección~\ref{sec:rsl-estudios} y analizados en la Sección~\ref{sec:rsl-estado-arte}.
-
-Conviene reconocer dos limitaciones de esta revisión. En primer lugar, el cribado por título, resumen y texto completo fue ejecutado en todas sus fases por un único evaluador (el autor de la tesina), sin el cálculo de acuerdo inter-evaluador (kappa de Cohen) que una revisión sistemática canónica exige. Esta decisión responde al alcance acotado de una tesina de grado, pero implica que la selección final no está exenta de sesgo subjetivo en la aplicación de los criterios de inclusión y exclusión. En segundo lugar, las bases de datos consultadas ---SciSpace, Google Scholar, ArXiv--- son agregadores de cobertura amplia pero no curadas editorialmente al nivel de IEEE Xplore, ACM Digital Library o Scopus, fuentes primarias esperables en Ciencias de la Computación; esta limitación se atenderá en una ronda complementaria de búsquedas en las bases canónicas antes de la defensa final.
-
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{prisma_diagram.png}
@@ -331,64 +328,55 @@ La Tabla~\ref{tab:comparativa-estudios} sintetiza los nueve estudios incluidos, 
   \centering
   \caption{Comparativa de los estudios incluidos en la revisión sistemática.}
   \label{tab:comparativa-estudios}
-  \scriptsize
+  \footnotesize
   \setlength{\tabcolsep}{3pt}
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.1cm} >{\raggedright\arraybackslash}p{2.0cm} >{\raggedright\arraybackslash}p{2.3cm} >{\raggedright\arraybackslash}p{1.7cm} >{\raggedright\arraybackslash}X@{}}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.4cm} >{\raggedright\arraybackslash}p{2.5cm} >{\raggedright\arraybackslash}p{2.7cm} >{\raggedright\arraybackslash}X@{}}
     \toprule
-    \textbf{Estudio} & \textbf{Enfoque}                                                                                                        & \textbf{Caso de aplicación} & \textbf{Limitación principal} & \textbf{Relación con la presente tesina} \\
+    \textbf{Estudio} & \textbf{Enfoque}                                                                                                        & \textbf{Caso de aplicación} & \textbf{Relación con la presente tesina} \\
     \midrule
     \citet{milbauer2023} (NewsSense)
                      & NLP cross-document + verificación de evidencia
                      & \textit{Sensemaking} del lector sobre noticias contradictorias
-                     & No escala a corpus masivos
                      & Antecedente directo del filtro de Verificación: motiva el juicio de fidelidad con sustentación documental.                                                                                                                       \\
     \addlinespace
     \citet{pavlyshenko2024} (RAG + bayesiano)
                      & IAG + modelado bayesiano para cuantificar incertidumbre
                      & Elecciones US 2024
-                     & Muestra acotada; caso único
                      & Respalda la necesidad de calibrar incertidumbre (brecha~4) con el campo \texttt{confianza} del tipo \texttt{Veredicto}.                                                                                                          \\
     \addlinespace
     \citet{haider2025} (Media Bias Detector)
                      & Pipeline de scraping + LLMs para sesgo y encuadre a escala
                      & Corpus multi-portal en desarrollo
-                     & Falta estandarización cross-plataforma de etiquetas
                      & Justifica la robustez del scraping (brecha~2) y los esquemas declarados por \textit{template}.                                                                                                                                   \\
     \addlinespace
     \citet{samuel2025} (ML + LLMs)
                      & Combinación de ML clásico y LLMs para trazar dinámicas emocionales
                      & Tema único: ``AI phobia''
-                     & Corpus específico; tema único
                      & Valida el uso de modelos generativos para el agenda-setting de segundo nivel (atributos afectivos).                                                                                                                              \\
     \addlinespace
     \citet{behbahanian} (GlimzAI)
                      & Pipeline end-to-end con deduplicación semántica por \textit{embeddings}
                      & Agregación de noticias general
-                     & Sin validación con usuarios; foco en distribución
                      & Patrón arquitectónico cercano al filtro de Enriquecimiento semántico; diverge en la ausencia de gobernanza editorial.                                                                                                            \\
     \addlinespace
     \citet{neupane2025} (Node.js + GPT-4o)
                      & Clustering temático + generación automática de contenido
                      & Portal autónomo
-                     & Sin validación con expertos
                      & Patrón scraping → \textit{embedding} → LLM análogo al pipeline propuesto, sin verificación editorial.                                                                                                                            \\
     \addlinespace
     \citet{ameer:2025} (NexGen MediaCraft)
                      & Broadcasting time-real con presentador virtual 3D
                      & Noticias en tiempo real
-                     & Foco en presentación, no en análisis interpretativo
                      & Muestra alcance alternativo del sumidero; la presente tesina prioriza el análisis sobre la entrega multimedia.                                                                                                                   \\
     \addlinespace
     \citet{begum:2024} (GPT-3.5 + BERTweet)
                      & Reportes diarios con resumen en dos niveles + análisis de sentimiento
                      & Personalización individual por correo
-                     & Foco en usuario individual
                      & Inspiración para el análisis multi-nivel (resumen + análisis) del filtro de Normalización.                                                                                                                                       \\
     \addlinespace
     \citet{somasundharam:2025} (LangChain + LLaMA-3)
                      & RAG con FAISS + trazabilidad de fuentes
                      & Consultas multi-URL de baja latencia
-                     & Foco en \textit{performance}; no en análisis interpretativo
                      & Antecedente del patrón Claim Check que inspira el repositorio común (\S~\ref{sec:arq-car-repositorio}).                                                                                                                          \\
     \bottomrule
   \end{tabularx}
@@ -439,7 +427,7 @@ Cada una de estas brechas se aborda de manera explícita desde los objetivos esp
     \addlinespace
     Gobernanza editorial \textit{human-in-the-loop}
                     & OE1, OE2                                                                                                                                         & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
-                    & Compuerta blanda en Verificación + mapeo BPMN de la intervención del experto (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}).                                                                                     \\
+                    & Compuerta blanda en Verificación + representación de la intervención del experto en el mapa de procesos (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}).                                                                                     \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -454,7 +442,7 @@ En el plano de lo consolidado, los nueve estudios analizados confirman que el pa
 
 En el plano de lo no resuelto, la Síntesis Crítica (Sección~\ref{sec:rsl-brechas}) identificó cinco brechas que los sistemas existentes no abordan de manera integral: la ausencia de estándares interoperables para anotar tópico, tono y encuadre de forma comparable entre plataformas; la fragilidad del \textit{scraping} ante cambios estructurales de los portales; la falta de trazabilidad documental entre la evidencia extraída y las afirmaciones generadas por los modelos; la escasa calibración de la incertidumbre en los \textit{scores} de análisis; y la carencia de procedimientos de gobernanza editorial \textit{human-in-the-loop}. Estas brechas configuran el espacio problemático específico desde el cual arranca esta tesina.
 
-A partir de ese punto de partida, los cuatro objetivos específicos definidos en el Capítulo~\ref{cap:intro} responden a brechas concretas detectadas en la revisión. El OE1 (módulo \textit{addon} de Odoo) institucionaliza el flujo extracción-análisis-visualización como aplicación gestionable y auditable, atendiendo a las carencias de gobernanza y trazabilidad. El OE2 (mapa de procesos BPMN) formaliza la hoja de ruta procedimental que dota de reproducibilidad y robustez a las etapas de recolección y análisis. El OE3 (caracterización del pipeline bajo el estilo Tubos y Filtros) busca consistencia de anotaciones y trazabilidad de inferencias en la capa generativa. El OE4 (caso de aplicación) somete la propuesta a validación empírica sobre un escenario concreto, cerrando el ciclo entre diseño y evidencia. En conjunto, el framework propuesto no aspira a reemplazar el patrón arquitectónico consolidado por la literatura, sino a completarlo en las dimensiones procedimentales y de rigor científico que los prototipos relevados aún no resuelven.
+A partir de ese punto de partida, los cuatro objetivos específicos definidos en el Capítulo~\ref{cap:intro} responden a brechas concretas detectadas en la revisión. El OE1 (módulo \textit{addon} de Odoo) institucionaliza el flujo extracción-análisis-visualización como aplicación gestionable y auditable, atendiendo a las carencias de gobernanza y trazabilidad. El OE2 (mapa de procesos) formaliza la hoja de ruta procedimental que dota de reproducibilidad y robustez a las etapas de recolección y análisis. El OE3 (caracterización del pipeline bajo el estilo Tubos y Filtros) busca consistencia de anotaciones y trazabilidad de inferencias en la capa generativa. El OE4 (caso de aplicación) somete la propuesta a validación empírica sobre un escenario concreto, cerrando el ciclo entre diseño y evidencia. En conjunto, el framework propuesto no aspira a reemplazar el patrón arquitectónico consolidado por la literatura, sino a completarlo en las dimensiones procedimentales y de rigor científico que los prototipos relevados aún no resuelven.
 
 El capítulo siguiente desarrolla la primera capa de esta propuesta: la aplicación de \textit{scraping} que materializa el componente de extracción del framework.
 
@@ -475,7 +463,7 @@ Sobre esa base, el aporte original de la presente tesina se concentra en tres ar
 
 La elección de Tubos y Filtros como estilo articulador del procesamiento generativo no es arbitraria. Refleja, por una parte, una tendencia documentada en la literatura sobre la integración de modelos generativos dentro de mapas de procesos tecnológicos automatizados \citep{bertagnolio2023}, donde la modularización del flujo se ha consolidado como condición para la mantenibilidad, la auditabilidad y la sustituibilidad de los componentes algorítmicos. Por otra parte, atiende de manera específica a brechas identificadas en la revisión sistemática del Capítulo~\ref{cap:rsl}, según se desarrolla en la Sección~\ref{sec:arq-estilo-justificacion}.
 
-El capítulo se organiza en cuatro secciones. La Sección~\ref{sec:arq-estilo} presenta el estilo de Tubos y Filtros: sus componentes, conectores, invariantes y modelo computacional, y justifica su elección como estilo articulador del procesamiento generativo de noticias. La Sección~\ref{sec:arq-caracterizacion} aplica ese estilo al caso concreto de la presente tesina, caracterizando el framework como un sistema de Tubos y Filtros cuya fuente son los portales digitales de noticias y cuyo sumidero es la capa de presentación de resultados, y siguiendo el esquema descriptivo del catálogo de \citet{cristia:2025}. La Sección~\ref{sec:arq-implementacion} describe la implementación concreta del framework como un módulo \textit{addon} de Odoo, distinguiendo la infraestructura preexistente del entorno institucional de los componentes desarrollados específicamente para esta tesina. Finalmente, la Sección~\ref{sec:arq-sintesis} sintetiza el capítulo y anticipa cómo los elementos arquitectónicos aquí descriptos se operativizan procesualmente en el Capítulo~\ref{cap:procesos}.
+El capítulo se organiza en tres secciones. La Sección~\ref{sec:arq-estilo} presenta el estilo de Tubos y Filtros: sus componentes, conectores, invariantes y modelo computacional, y justifica su elección como estilo articulador del procesamiento generativo de noticias. La Sección~\ref{sec:arq-caracterizacion} aplica ese estilo al caso concreto de la presente tesina, caracterizando el framework como un sistema de Tubos y Filtros cuya fuente son los portales digitales de noticias y cuyo sumidero es la capa de presentación de resultados, y siguiendo el esquema descriptivo del catálogo de \citet{cristia:2025}. Finalmente, la Sección~\ref{sec:arq-sintesis} sintetiza el capítulo y anticipa cómo los elementos arquitectónicos aquí descriptos se materializan como módulo \textit{addon} de Odoo en el Capítulo~\ref{cap:implementacion} y se operativizan procesualmente en el Capítulo~\ref{cap:procesos}.
 
 \section{El estilo Tubos y Filtros}
 \label{sec:arq-estilo}
@@ -564,7 +552,7 @@ donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\
   \item \textbf{Sintonizador}: selección de los portales a monitorear, definición de las reglas de extracción mediante expresiones regulares y asignación de la prioridad de monitoreo.
   \item \textbf{Acceso al repositorio}: escribe los registros \texttt{Noticia} (título, copete, texto y enlace de la publicación, junto con sus metadatos de procedencia; Apéndice~\ref{anexo:tipos}).
 \end{itemize}
-\textit{Especificación funcional.} Accede a los portales registrados, recorre su estructura mediante técnicas de \textit{web scraping} de tipo \textit{spider} y recupera las publicaciones que satisfacen las reglas de extracción configuradas. De cada publicación extrae los elementos relevantes, normaliza el texto y lo persiste como un registro \texttt{Noticia} en el repositorio. Emite por su puerto de salida el \textit{recordset} con la totalidad de las noticias que conforman el corpus del análisis. La descripción detallada de esta etapa, que se apoya en la herramienta de scraping preexistente del entorno institucional, se desarrolla en la Subsección~\ref{sec:arq-impl-preexistente}.
+\textit{Especificación funcional.} Accede a los portales registrados, recorre su estructura mediante técnicas de \textit{web scraping} de tipo \textit{spider} y recupera las publicaciones que satisfacen las reglas de extracción configuradas. De cada publicación extrae los elementos relevantes, normaliza el texto y lo persiste como un registro \texttt{Noticia} en el repositorio. Emite por su puerto de salida el \textit{recordset} con la totalidad de las noticias que conforman el corpus del análisis. La descripción detallada de esta etapa, que se apoya en la herramienta de scraping preexistente del entorno institucional, se desarrolla en la Sección~\ref{sec:impl-preexistente}.
 
 \paragraph{Recuperación aumentada (filtro compuesto).} Los filtros de Enriquecimiento semántico y Composición de contexto no operan de manera independiente: el primero genera las representaciones vectoriales que el segundo consume para recuperar el material empírico relevante. En conjunto implementan el patrón de \textit{recuperación aumentada} (\textit{retrieval-augmented generation}, RAG), definido por \citet{lewis:2020} como la combinación de un componente de recuperación en un espacio vectorial con un modelo generativo que consume el material recuperado como contexto para producir la salida. La taxonomía contemporánea de \citet{gao:2024} distingue tres variantes principales dentro del RAG ---\textit{naive}, \textit{advanced} y \textit{modular RAG}--- y taxonomiza las fases del pipeline en etapas \textit{pre-retrieval} (limpieza, segmentación e indexación del corpus) y \textit{post-retrieval} (reordenamiento, compresión del contexto y ensamblado del prompt). El filtro compuesto del presente framework implementa exactamente esta bipartición: Enriquecimiento semántico corresponde a la fase \textit{pre-retrieval} (indexación vectorial del corpus de noticias); Composición de contexto corresponde a la fase \textit{post-retrieval} (recuperación semántica y ensamblado del prompt con las noticias relevantes). La presente caracterización descompone el RAG canónico en dos sub-filtros ---uno de indexación semántica (Enriquecimiento) y otro de composición del contexto (Composición)--- para mantener explícitos los puntos de sustituibilidad: reemplazar el modelo de \textit{embedding} sustituye Enriquecimiento sin afectar la Composición, y viceversa. Esta frontera arquitectónica coincide, por lo tanto, con la frontera que la literatura contemporánea ha consolidado para sistemas RAG modulares. La etapa de generación propiamente dicha queda fuera del compuesto y corresponde al filtro de Invocación generativa siguiente. Sus dos sub-filtros se describen a continuación.
 
@@ -672,7 +660,7 @@ El catálogo de \citet[\S3.13.2]{cristia:2025} documenta los \textit{sintonizado
 
 Esta caracterización no es exclusiva del catálogo: tiene un precedente directo en la formulación seminal del estilo. Al resolver la interacción con el usuario en su caso de estudio del osciloscopio, \citet{garlanshaw:1994} asocian a cada filtro una \textit{control interface} ``that allows an external entity to set parameters of operation for the filter'', y modelan así los filtros como funciones de orden superior ``for which the configuration parameters determine what data transformation the filter will perform''; su virtud es que ``decouples the signal processing functions\ldots from the actual user interface''. El sintonizador reifica esa interfaz de control: desacopla la parametrización que aporta el experto del procesamiento que realiza el filtro. La misma separación entre configuración y datos reaparece en las bibliotecas modernas de aprendizaje automático ---en \textit{scikit-learn}, el constructor de un estimador ``does not see any actual data\ldots All it does is attach the given parameters to the object'' \citep{buitinck:2013}---.
 
-En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador como parámetro interno (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable. El más elaborado es el de Composición de contexto, que se materializa como un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}, y su realización concreta en el módulo se retoma en la Subsección~\ref{sec:arq-impl-materializacion}.
+En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador como parámetro interno (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable. El más elaborado es el de Composición de contexto, que se materializa como un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}, y su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
 
 Que la intervención del experto se canalice por sintonizadores ---y no por el flujo de datos--- es lo que la mantiene compatible con el estilo: el sintonizador ajusta \textit{cómo} transforma un filtro, sin alterar la red de tubos ni agregar un puerto al pipeline. La configuración así incorporada es un parámetro del filtro, no un dato que circule por la arquitectura.
 
@@ -732,20 +720,22 @@ Dos criterios transversales gobiernan el diseño de estos contratos. En primer l
 
 Leídos en conjunto, los siete tipos que circulan por los tubos forman una \textit{cadena de procedencia} que recorre el pipeline en sentido inverso: desde el \texttt{Resultado} final puede reconstruirse qué veredictos de verificación lo componen, sobre qué análisis se pronuncia cada uno, de qué respuestas crudas provienen esos análisis, con qué \textit{prompts} ---y bajo qué \textit{template} y parámetros--- se generaron, sobre qué noticias se apoyó cada composición y de qué portal fue extraída cada noticia, cuándo, y bajo qué reglas de extracción. Esta propiedad estructural del sistema de tipos materializa, a nivel del dato, la auditabilidad lineal que motivó la elección del estilo (Subsección~\ref{sec:arq-estilo-justificacion}) y resuelve la brecha de trazabilidad documental identificada en la revisión sistemática (Sección~\ref{sec:rsl-brechas}).
 
-\section{Implementación: la solapa en Odoo}
-\label{sec:arq-implementacion}
-
-\subsection{Infraestructura preexistente del entorno CAETI/CIM}
-\label{sec:arq-impl-preexistente}
-
-\subsection{Stack tecnológico}
-\label{sec:arq-impl-stack}
-
-\subsection{Materialización: mapeo de filtros y tubos al módulo Odoo}
-\label{sec:arq-impl-materializacion}
-
 \section{Síntesis del capítulo}
 \label{sec:arq-sintesis}
+
+% TODO (decisión con el director, 20-08-2026): capítulo a redactar como próxima
+% prioridad. La implementación se trata con profundidad de capítulo completo.
+\chapter{Implementación del framework en Odoo}
+\label{cap:implementacion}
+
+\section{Infraestructura preexistente del entorno CAETI/CIM}
+\label{sec:impl-preexistente}
+
+\section{Stack tecnológico}
+\label{sec:impl-stack}
+
+\section{Materialización: mapeo de filtros y tubos al módulo Odoo}
+\label{sec:impl-materializacion}
 
 \chapter{Mapa de procesos}
 \label{cap:procesos}

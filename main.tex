@@ -23,8 +23,19 @@
 \usepackage{tabularx}
 \usepackage{booktabs}
 \usepackage{pdflscape}              % páginas apaisadas para figuras anchas
+\usepackage{xltabular}              % tabularx con corte de página (registro maestro de responsabilidades)
 \usepackage[hidelinks]{hyperref}
 \usepackage{imakeidx}               % imakeidx después de hyperref para enlaces en el índice
+
+% --- Marcadores de responsabilidades transversales [A]–[F] ---
+% \resp{A} imprime [A] en rojo y enlaza al registro maestro (tab:registro-responsabilidades).
+% \respr{A}{E} imprime un rango [A]–[E]. \respleyenda imprime la leyenda de una línea para captions.
+% Definidos en la Sección sec:intro-responsabilidades; son identificadores de responsabilidades
+% transversales, no de etapas del pipeline ni de procesos del mapa.
+\colorlet{respcolor}{red}
+\DeclareRobustCommand{\resp}[1]{\hyperref[tab:registro-responsabilidades]{\textcolor{respcolor}{[#1]}}}
+\DeclareRobustCommand{\respr}[2]{\hyperref[tab:registro-responsabilidades]{\textcolor{respcolor}{[#1]--[#2]}}}
+\DeclareRobustCommand{\respleyenda}{Marcadores de responsabilidades: \resp{A} experto \(\cdot\) \resp{B} estudio \(\cdot\) \resp{C} generativa \(\cdot\) \resp{D} control editorial \(\cdot\) \resp{E} procedencia \(\cdot\) \resp{F} preexistente (Tabla~\ref{tab:registro-responsabilidades}).}
 
 \makeindex
 
@@ -173,6 +184,48 @@ El pipeline de procesamiento se fundamenta en el estilo de Tubos y Filtros \cite
 \vspace{0.3 cm}
 
 El caso de aplicación materializa el ciclo completo sobre un escenario empírico delimitado ---selección de portales, configuración del \textit{template}, ejecución del pipeline y entrega de resultados---, y permite discutir la adecuación del framework a los objetivos planteados, las limitaciones observadas y las oportunidades de trabajo futuro.
+
+\section{Responsabilidades transversales del framework}
+\label{sec:intro-responsabilidades}
+
+El objetivo general compromete al framework con tres garantías (trazabilidad del flujo de datos, control editorial por parte del experto del dominio y reproducibilidad del proceso analítico) que ningún componente satisface por sí solo: cada una se honra en varios puntos de la arquitectura, del módulo, del mapa de procesos y del caso de aplicación. Para que el lector pueda seguir cada garantía a través de los capítulos sin depender de los nombres propios de cada vista, el documento emplea seis marcadores estables, \resp{A} a \resp{F}, que identifican las responsabilidades transversales que el framework asume (Tabla~\ref{tab:intro-responsabilidades}). Los marcadores nombran obligaciones, no elementos: no son etapas del pipeline ---que se identifican por sus filtros y puertos en el Capítulo~\ref{cap:arquitectura}--- ni procesos del mapa ---numerados en el Capítulo~\ref{cap:procesos}---, y una misma responsabilidad se paga en varios de ellos. Cada marcador enlaza al registro maestro de la Tabla~\ref{tab:registro-responsabilidades}, que consolida su realización capítulo por capítulo.
+
+\begin{table}[H]
+  \centering
+  \caption{Responsabilidades transversales del framework, obligación que cada una nombra y objetivos específicos de los que deriva. Los marcadores identifican responsabilidades, no componentes ni etapas.}
+  \label{tab:intro-responsabilidades}
+  \footnotesize
+  \setlength{\tabcolsep}{4pt}
+  \begin{tabularx}{\textwidth}{@{}c >{\raggedright\arraybackslash}p{2.9cm} X l@{}}
+    \toprule
+    \textbf{Marcador} & \textbf{Responsabilidad}                                                                                                                                                                    & \textbf{Obligación que nombra} & \textbf{OE} \\
+    \midrule
+    \resp{A}          & Intervención del experto
+                      & Toda decisión de dominio la toma el experto del dominio por una vía explícita, separada del flujo de datos.
+                      & OE1, OE2                                                                                                                                                                                                                                   \\
+    \addlinespace
+    \resp{B}          & Independencia del estudio
+                      & El framework no conoce el estudio: tema, pregunta, paradigma, esquema de respuesta y criterios de validez y consolidación se declaran como datos del estudio, no como código del framework.
+                      & OE3, OE4                                                                                                                                                                                                                                   \\
+    \addlinespace
+    \resp{C}          & Frontera generativa
+                      & La dependencia de los servicios de modelos externos ---generativo y de \textit{embedding}--- queda aislada y sustituible, y su salida ingresa al sistema de manera agnóstica al proveedor.
+                      & OE1, OE3                                                                                                                                                                                                                                   \\
+    \addlinespace
+    \resp{D}          & Control editorial
+                      & Ninguna afirmación generada llega al experto sin un juicio de fidelidad, una medida de confianza y la evidencia que la sustenta; la decisión editorial última es humana.
+                      & OE1, OE4                                                                                                                                                                                                                                   \\
+    \addlinespace
+    \resp{E}          & Procedencia
+                      & Desde cualquier resultado puede reconstruirse a partir de qué datos, con qué configuración y cuándo se produjo, y nada de esa historia se elimina.
+                      & OE1, OE3                                                                                                                                                                                                                                   \\
+    \addlinespace
+    \resp{F}          & Infraestructura preexistente
+                      & Queda delimitado qué reutiliza el framework del entorno institucional preexistente y qué construye la presente tesina.
+                      & OE1                                                                                                                                                                                                                                        \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \chapter{Marco teórico y revisión sistemática de la literatura}
 \label{cap:rsl}
@@ -337,47 +390,47 @@ La Tabla~\ref{tab:comparativa-estudios} sintetiza los nueve estudios incluidos, 
     \citet{milbauer2023} (NewsSense)
                      & NLP cross-document + verificación de evidencia
                      & \textit{Sensemaking} del lector sobre noticias contradictorias
-                     & Antecedente directo del filtro de Verificación: motiva el juicio de fidelidad con sustentación documental.                                                                                                                       \\
+                     & Antecedente directo del filtro de Verificación: motiva el juicio de fidelidad con sustentación documental.                                                                                       \\
     \addlinespace
     \citet{pavlyshenko2024} (RAG + bayesiano)
                      & IAG + modelado bayesiano para cuantificar incertidumbre
                      & Elecciones US 2024
-                     & Respalda la necesidad de calibrar incertidumbre (brecha~4) con el campo \texttt{confianza} del tipo \texttt{Veredicto}.                                                                                                          \\
+                     & Respalda la necesidad de calibrar incertidumbre (brecha~4) con el campo \texttt{confianza} del tipo \texttt{Veredicto}.                                                                          \\
     \addlinespace
     \citet{haider2025} (Media Bias Detector)
                      & Pipeline de scraping + LLMs para sesgo y encuadre a escala
                      & Corpus multi-portal en desarrollo
-                     & Justifica la robustez del scraping (brecha~2) y los esquemas declarados por \textit{template}.                                                                                                                                   \\
+                     & Justifica la robustez del scraping (brecha~2) y los esquemas declarados por \textit{template}.                                                                                                   \\
     \addlinespace
     \citet{samuel2025} (ML + LLMs)
                      & Combinación de ML clásico y LLMs para trazar dinámicas emocionales
                      & Tema único: ``AI phobia''
-                     & Valida el uso de modelos generativos para el agenda-setting de segundo nivel (atributos afectivos).                                                                                                                              \\
+                     & Valida el uso de modelos generativos para el agenda-setting de segundo nivel (atributos afectivos).                                                                                              \\
     \addlinespace
     \citet{behbahanian} (GlimzAI)
                      & Pipeline end-to-end con deduplicación semántica por \textit{embeddings}
                      & Agregación de noticias general
-                     & Patrón arquitectónico cercano al filtro de Enriquecimiento semántico; diverge en la ausencia de gobernanza editorial.                                                                                                            \\
+                     & Patrón arquitectónico cercano al filtro de Enriquecimiento semántico; diverge en la ausencia de gobernanza editorial.                                                                            \\
     \addlinespace
     \citet{neupane2025} (Node.js + GPT-4o)
                      & Clustering temático + generación automática de contenido
                      & Portal autónomo
-                     & Patrón scraping → \textit{embedding} → LLM análogo al pipeline propuesto, sin verificación editorial.                                                                                                                            \\
+                     & Patrón scraping → \textit{embedding} → LLM análogo al pipeline propuesto, sin verificación editorial.                                                                                            \\
     \addlinespace
     \citet{ameer:2025} (NexGen MediaCraft)
                      & Broadcasting time-real con presentador virtual 3D
                      & Noticias en tiempo real
-                     & Muestra alcance alternativo del sumidero; la presente tesina prioriza el análisis sobre la entrega multimedia.                                                                                                                   \\
+                     & Muestra alcance alternativo del sumidero; la presente tesina prioriza el análisis sobre la entrega multimedia.                                                                                   \\
     \addlinespace
     \citet{begum:2024} (GPT-3.5 + BERTweet)
                      & Reportes diarios con resumen en dos niveles + análisis de sentimiento
                      & Personalización individual por correo
-                     & Inspiración para el análisis multi-nivel (resumen + análisis) del filtro de Normalización.                                                                                                                                       \\
+                     & Inspiración para el análisis multi-nivel (resumen + análisis) del filtro de Normalización.                                                                                                       \\
     \addlinespace
     \citet{somasundharam:2025} (LangChain + LLaMA-3)
                      & RAG con FAISS + trazabilidad de fuentes
                      & Consultas multi-URL de baja latencia
-                     & Antecedente del patrón Claim Check que inspira el repositorio común (\S~\ref{sec:arq-car-repositorio}).                                                                                                                          \\
+                     & Antecedente del patrón Claim Check que inspira el repositorio común (\S~\ref{sec:arq-car-repositorio}).                                                                                          \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -397,37 +450,37 @@ Se han identificado las siguientes brechas que el framework propuesto en esta te
   \item \textbf{Gobernanza de publicación y responsabilidad editorial:} Existen riesgos por la publicación automática de análisis sin filtros de veracidad o atribución, siendo críticos los procedimientos \textit{human-in-the-loop} ante controversias.
 \end{itemize}
 
-Cada una de estas brechas se aborda de manera explícita desde los objetivos específicos formulados en la Sección~\ref{sec:intro-objetivos}. La Tabla~\ref{tab:trazabilidad-brechas-objetivos} fija la correspondencia entre cada brecha identificada y los objetivos que la atienden, junto con el mecanismo concreto mediante el cual la propuesta la aborda.
+Cada una de estas brechas se aborda de manera explícita desde los objetivos específicos formulados en la Sección~\ref{sec:intro-objetivos}. La Tabla~\ref{tab:trazabilidad-brechas-objetivos} fija la correspondencia entre cada brecha identificada y los objetivos que la atienden, junto con el mecanismo concreto mediante el cual la propuesta la aborda y la responsabilidad transversal (Sección~\ref{sec:intro-responsabilidades}) que ese mecanismo realiza.
 
 \begin{table}[H]
   \centering
-  \caption{Trazabilidad entre brechas identificadas en la revisión sistemática y objetivos específicos que las atienden.}
+  \caption{Trazabilidad entre brechas identificadas en la revisión sistemática, objetivos específicos que las atienden y responsabilidades transversales que las realizan. \respleyenda}
   \label{tab:trazabilidad-brechas-objetivos}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.4cm} l l X@{}}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{3.2cm} l l X l@{}}
     \toprule
-    \textbf{Brecha} & \textbf{OE}                                                                                                                                      & \textbf{Capítulo}                                & \textbf{Mecanismo de abordaje} \\
+    \textbf{Brecha} & \textbf{OE}                                                                                                                                                                 & \textbf{Capítulo}                                & \textbf{Mecanismo de abordaje} & \textbf{Resp.} \\
     \midrule
     Escalabilidad y consistencia de anotaciones
-                    & OE3                                                                                                                                              & Cap.~\ref{cap:arquitectura}
-                    & Tipos de datos con esquemas declarados por \textit{template} (\S~\ref{sec:arq-car-especializaciones} y Apéndice~\ref{anexo:tipos}).                                                                                                  \\
+                    & OE3                                                                                                                                                                         & Cap.~\ref{cap:arquitectura}
+                    & Tipos de datos con esquemas declarados por \textit{template} (\S~\ref{sec:arq-car-especializaciones} y Apéndice~\ref{anexo:tipos}).                                         & \resp{B}                                                                                           \\
     \addlinespace
     Robustez del \textit{scraping}
-                    & OE3                                                                                                                                              & Cap.~\ref{cap:arquitectura}
-                    & Sustituibilidad del filtro de Extracción: puede reemplazarse sin afectar el resto del pipeline (Subsección~\ref{sec:arq-estilo-justificacion}).                                                                                      \\
+                    & OE3                                                                                                                                                                         & Cap.~\ref{cap:arquitectura}
+                    & Sustituibilidad del filtro de Extracción: puede reemplazarse sin afectar el resto del pipeline (Subsección~\ref{sec:arq-estilo-justificacion}).                             & \resp{F}                                                                                           \\
     \addlinespace
     Trazabilidad en ciencias sociales
-                    & OE1, OE3                                                                                                                                         & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
-                    & Cadena de procedencia de extremo a extremo desde \texttt{Resultado} hasta \texttt{Noticia} (Apéndice~\ref{anexo:tipos}).                                                                                                             \\
+                    & OE1, OE3                                                                                                                                                                    & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
+                    & Cadena de procedencia de extremo a extremo desde \texttt{Resultado} hasta \texttt{Noticia} (Apéndice~\ref{anexo:tipos}).                                                    & \resp{E}                                                                                           \\
     \addlinespace
     Calibración de incertidumbre
-                    & OE3                                                                                                                                              & Cap.~\ref{cap:arquitectura}
-                    & Filtro de Verificación con campo \texttt{confianza} explícito en el tipo \texttt{Veredicto} (Subsección~\ref{sec:arq-car-filtros}).                                                                                                  \\
+                    & OE3                                                                                                                                                                         & Cap.~\ref{cap:arquitectura}
+                    & Filtro de Verificación con campo \texttt{confianza} explícito en el tipo \texttt{Veredicto} (Subsección~\ref{sec:arq-car-filtros}).                                         & \resp{D}                                                                                           \\
     \addlinespace
     Gobernanza editorial \textit{human-in-the-loop}
-                    & OE1, OE2                                                                                                                                         & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
-                    & Compuerta blanda en Verificación + representación de la intervención del experto en el mapa de procesos (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}).                                                                                     \\
+                    & OE1, OE2                                                                                                                                                                    & Caps.~\ref{cap:arquitectura}, \ref{cap:procesos}
+                    & Compuerta blanda en Verificación + representación de la intervención del experto en el mapa de procesos (Subsecciones~\ref{sec:arq-car-filtros} y~\ref{sec:proc-contexto}). & \resp{A}, \resp{D}                                                                                 \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -500,11 +553,11 @@ La elección de un estilo arquitectónico para el procesamiento generativo de no
 
 El estilo de Tubos y Filtros se ajusta a este perfil de problema. El catálogo de \citet[p.~21]{cristia:2025} identifica entre los dominios canónicos de aplicación del estilo el procesamiento de cadenas, el procesamiento de señales y, en general, los sistemas cuyo flujo de información se conciba como una secuencia de transformaciones sobre un \textit{stream} de datos. El análisis automatizado de noticias mediante modelos generativos, en tanto procesamiento progresivo de texto que se inicia en la extracción y culmina en una representación analítica enriquecida, encuadra naturalmente en esta familia. \citet{garlanshaw:1994} mencionan, además, los sistemas de transformación de información y los entornos distribuidos como dominios donde el estilo ha resultado históricamente efectivo.
 
-La propiedad de \textit{sustituibilidad} de los filtros, derivada de las invariantes~1 y 2 del estilo, atiende de manera conjunta a la brecha de fragilidad del scraping y al requisito de sustitución de modelos generativos. En la medida en que ningún filtro conoce la identidad de los demás ni accede a su estado interno, la etapa de extracción puede actualizarse ---para adaptarse a un rediseño del portal monitoreado--- sin afectar a las etapas posteriores; del mismo modo, el filtro responsable de invocar al modelo generativo puede ser reemplazado por otro que utilice un proveedor distinto, o un modelo distinto del mismo proveedor, sin necesidad de reescribir el resto del pipeline. La misma propiedad habilita la sustitución del filtro de enriquecimiento semántico ---reemplazando, por ejemplo, una técnica de \textit{embedding} por otra--- sin alterar las etapas siguientes. Esta capacidad de evolución localizada resulta particularmente valiosa frente a infraestructuras cuyas dependencias externas evolucionan con frecuencia.
+La propiedad de \textit{sustituibilidad} de los filtros, derivada de las invariantes~1 y 2 del estilo, atiende de manera conjunta a la brecha de fragilidad del scraping y al requisito de sustitución de modelos generativos. En la medida en que ningún filtro conoce la identidad de los demás ni accede a su estado interno, la etapa de extracción puede actualizarse ---para adaptarse a un rediseño del portal monitoreado--- sin afectar a las etapas posteriores; del mismo modo, el filtro responsable de invocar al modelo generativo puede ser reemplazado por otro que utilice un proveedor distinto, o un modelo distinto del mismo proveedor, sin necesidad de reescribir el resto del pipeline. La misma propiedad habilita la sustitución del filtro de enriquecimiento semántico ---reemplazando, por ejemplo, una técnica de \textit{embedding} por otra--- sin alterar las etapas siguientes. Esta capacidad de evolución localizada resulta particularmente valiosa frente a infraestructuras cuyas dependencias externas evolucionan con frecuencia. En términos de las responsabilidades transversales de la Sección~\ref{sec:intro-responsabilidades}, la sustituibilidad se paga en dos costuras: la frontera con los servicios de modelos externos (\resp{C}) y la frontera con la infraestructura preexistente (\resp{F}).
 
-La \textit{auditabilidad lineal} del flujo, segunda consecuencia derivada de las invariantes del estilo, responde directamente a la brecha de trazabilidad documental identificada en la revisión: la dificultad de reconstruir el camino que sigue la evidencia desde su extracción hasta las afirmaciones que el modelo generativo produce sobre ella. Cada transformación que los datos sufren al atravesar el sistema queda localizada en un filtro identificable, con una entrada y una salida definidas y sin interacciones implícitas mediadas por estados compartidos. Para una investigación que pretenda fundamentar afirmaciones sobre la cobertura mediática o el sesgo discursivo en términos verificables, esta propiedad no es accesoria: constituye una condición de posibilidad para la revisión metodológica y para la reproducibilidad del análisis. La separación explícita entre las etapas de extracción, enriquecimiento, composición de contexto e invocación generativa permite, además, distinguir las decisiones técnicas que afectan al corpus de aquellas que afectan a la interpretación, dimensión sobre la que el experto del dominio debe poder ejercer un control directo.
+La \textit{auditabilidad lineal} del flujo, segunda consecuencia derivada de las invariantes del estilo, responde directamente a la brecha de trazabilidad documental identificada en la revisión: la dificultad de reconstruir el camino que sigue la evidencia desde su extracción hasta las afirmaciones que el modelo generativo produce sobre ella. Cada transformación que los datos sufren al atravesar el sistema queda localizada en un filtro identificable, con una entrada y una salida definidas y sin interacciones implícitas mediadas por estados compartidos. Para una investigación que pretenda fundamentar afirmaciones sobre la cobertura mediática o el sesgo discursivo en términos verificables, esta propiedad no es accesoria: constituye una condición de posibilidad para la revisión metodológica y para la reproducibilidad del análisis. La separación explícita entre las etapas de extracción, enriquecimiento, composición de contexto e invocación generativa permite, además, distinguir las decisiones técnicas que afectan al corpus de aquellas que afectan a la interpretación, dimensión sobre la que el experto del dominio debe poder ejercer un control directo. La auditabilidad lineal es, así, la propiedad del estilo sobre la que se apoya la responsabilidad de procedencia (\resp{E}).
 
-Por último, el \textit{cierre composicional} del estilo ---el hecho de que un sistema de Tubos y Filtros sea en sí mismo un filtro--- y la modularidad consiguiente atienden al requisito de diversidad de los casos analíticos. La caracterización del problema como una composición funcional de filtros habilita la construcción de pipelines especializados para distintos casos de estudio, en los que las etapas de procesamiento pueden recombinarse, agregarse o suprimirse en función del objetivo concreto del experto del dominio, sin alterar las garantías estructurales del estilo \citep{hohpe:2003}. La adopción de Tubos y Filtros es coherente, además, con la forma en que los sistemas contemporáneos de aprendizaje automático y de modelos generativos se construyen por composición de componentes modulares: bibliotecas como \textit{scikit-learn} organizan el flujo como una composición de transformaciones que constituye en sí misma una unidad reutilizable \citep{buitinck:2013}, y arquitecturas como la generación aumentada por recuperación combinan un modelo generativo con un componente de recuperación en un \textit{pipeline} entrenado de extremo a extremo \citep{lewis:2020}. Esta convergencia no se limita al ámbito de la ingeniería clásica de software: los surveys más recientes sobre agentes basados en modelos de lenguaje ---\citet{wang:2024, xi:2023}--- describen los sistemas representativos ---AutoGen \citep{wu:2023}, ChatDev \citep{qian:2023}, Generative Agents \citep{park:2023}--- como composiciones de etapas especializadas comunicadas mediante mensajes, con puntos explícitos de parametrización análogos a los sintonizadores del framework y reemplazabilidad entre implementaciones; es decir, rasgos que se corresponden con las invariantes canónicas del estilo \citep{garlanshaw:1994}. Incluso en un plano más bajo del pipeline, el patrón fundacional \textit{ReAct} \citep{yao:2023} ---alternancia explícita entre razonamiento interno y acción externa sobre el entorno--- es una instancia elemental del mismo principio de composición de etapas separadas que el presente framework aplica a escala de sistema. Del mismo modo, la literatura contemporánea sobre procesamiento de noticias documenta pipelines automatizados con filtros explícitos: el marco de predicción en tiempo real del impacto de noticias financieras sobre los mercados de \citet{chen:2023} organiza el tratamiento del flujo noticioso como una cadena de etapas de procesamiento desacopladas, mostrando que el patrón de Tubos y Filtros es una elección técnica consolidada para la orquestación de componentes de tratamiento de datos heterogéneos en el dominio mediático.
+Por último, el \textit{cierre composicional} del estilo ---el hecho de que un sistema de Tubos y Filtros sea en sí mismo un filtro--- y la modularidad consiguiente atienden al requisito de diversidad de los casos analíticos. La caracterización del problema como una composición funcional de filtros habilita la construcción de pipelines especializados para distintos casos de estudio, en los que las etapas de procesamiento pueden recombinarse, agregarse o suprimirse en función del objetivo concreto del experto del dominio, sin alterar las garantías estructurales del estilo \citep{hohpe:2003}; es la propiedad que sostiene la independencia del framework respecto del estudio (\resp{B}). La adopción de Tubos y Filtros es coherente, además, con la forma en que los sistemas contemporáneos de aprendizaje automático y de modelos generativos se construyen por composición de componentes modulares: bibliotecas como \textit{scikit-learn} organizan el flujo como una composición de transformaciones que constituye en sí misma una unidad reutilizable \citep{buitinck:2013}, y arquitecturas como la generación aumentada por recuperación combinan un modelo generativo con un componente de recuperación en un \textit{pipeline} entrenado de extremo a extremo \citep{lewis:2020}. Esta convergencia no se limita al ámbito de la ingeniería clásica de software: los surveys más recientes sobre agentes basados en modelos de lenguaje ---\citet{wang:2024, xi:2023}--- describen los sistemas representativos ---AutoGen \citep{wu:2023}, ChatDev \citep{qian:2023}, Generative Agents \citep{park:2023}--- como composiciones de etapas especializadas comunicadas mediante mensajes, con puntos explícitos de parametrización análogos a los sintonizadores del framework y reemplazabilidad entre implementaciones; es decir, rasgos que se corresponden con las invariantes canónicas del estilo \citep{garlanshaw:1994}. Incluso en un plano más bajo del pipeline, el patrón fundacional \textit{ReAct} \citep{yao:2023} ---alternancia explícita entre razonamiento interno y acción externa sobre el entorno--- es una instancia elemental del mismo principio de composición de etapas separadas que el presente framework aplica a escala de sistema. Del mismo modo, la literatura contemporánea sobre procesamiento de noticias documenta pipelines automatizados con filtros explícitos: el marco de predicción en tiempo real del impacto de noticias financieras sobre los mercados de \citet{chen:2023} organiza el tratamiento del flujo noticioso como una cadena de etapas de procesamiento desacopladas, mostrando que el patrón de Tubos y Filtros es una elección técnica consolidada para la orquestación de componentes de tratamiento de datos heterogéneos en el dominio mediático.
 
 Conviene anticipar que el diseño que se adopta no constituye una instancia pura del estilo, sino una variante \textit{heterogénea} que combina la red de tubos y filtros con un repositorio compartido. Cada uno de los dos ingredientes de esta variante cuenta con respaldo independiente en la literatura: la admisión de un repositorio compartido junto a la red de tubos configura una \textit{arquitectura heterogénea} en el sentido de \citet{garlanshaw:1994}, mientras que el mecanismo de transportar por el conector una referencia al contenido ---y no la carga útil--- corresponde al patrón \textit{Claim Check} de \citet{hohpe:2003}, tratado además como patrón de integración de primer orden en la literatura revisada por pares \citep{ritter:2014}. La combinación específica de ambos ---tubos que transportan \textit{claim checks} mientras los datos residen en un almacén separado--- no constituye, hasta donde alcanza esta revisión, un patrón consolidado en la literatura académica, sino una síntesis propia de este trabajo; su adopción como práctica de ingeniería está documentada, no obstante, en catálogos de patrones de la industria, como el del \textit{Microsoft Azure Architecture Center} \citep{azure-pipesfilters}. La caracterización detallada de esta variante, su fundamento y su compatibilidad con los invariantes del estilo se desarrollan en las Subsecciones~\ref{sec:arq-car-repositorio} y~\ref{sec:arq-car-verificacion}.
 
@@ -522,7 +575,7 @@ El diagrama canónico de la Figura~\ref{fig:arq-pipeline} resume la configuraci�
   \begin{figure}
     \centering
     \includegraphics[width=\linewidth]{Diagrama-Arquitectura.png}
-    \caption{Diagrama canónico del framework propuesto como sistema de Tubos y Filtros. La fuente son los portales digitales de noticias y el sumidero es la capa de presentación de resultados (tableros y reportes). Los filtros se comunican mediante tubos tipados que transportan \textit{recordsets} ---conjuntos de referencias a registros---, cuyos puertos se numeran y se detallan en la tabla de referencia inferior; el contenido completo de esos registros reside en el repositorio común. Siguiendo la convención del estilo, las conexiones al entorno se representan con línea discontinua y los tubos entre filtros con línea continua ---ambos sin punta, dado que el flujo se asume de izquierda a derecha---, en tanto que los sintonizadores ---modulares, propios de cada filtro configurable--- se grafican con flecha originada en un círculo y el acceso al repositorio con flecha bidireccional. El recuadro de trazo discontinuo que engloba los filtros de Enriquecimiento semántico y Composición de contexto indica que ambos conforman un filtro compuesto, denominado Recuperación aumentada.}
+    \caption{Diagrama canónico del framework propuesto como sistema de Tubos y Filtros. La fuente son los portales digitales de noticias y el sumidero es la capa de presentación de resultados (tableros y reportes). Los filtros se comunican mediante tubos tipados que transportan \textit{recordsets} ---conjuntos de referencias a registros---, cuyos puertos se numeran y se detallan en la tabla de referencia inferior; el contenido completo de esos registros reside en el repositorio común. Siguiendo la convención del estilo, las conexiones al entorno se representan con línea discontinua y los tubos entre filtros con línea continua ---ambos sin punta, dado que el flujo se asume de izquierda a derecha---, en tanto que los sintonizadores ---modulares, propios de cada filtro configurable--- se grafican con flecha originada en un círculo y el acceso al repositorio con flecha bidireccional. El recuadro de trazo discontinuo que engloba los filtros de Enriquecimiento semántico y Composición de contexto indica que ambos conforman un filtro compuesto, denominado Recuperación aumentada. Los marcadores en rojo bajo cada filtro, junto a la fuente y sobre el repositorio señalan las responsabilidades transversales que cada elemento realiza. \respleyenda}
     \label{fig:arq-pipeline}
   \end{figure}
 \end{landscape}
@@ -551,6 +604,7 @@ donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\
   \item \textbf{Puerto de salida} (2): \texttt{Noticia[]}.
   \item \textbf{Sintonizador}: selección de los portales a monitorear, definición de las reglas de extracción mediante expresiones regulares y asignación de la prioridad de monitoreo.
   \item \textbf{Acceso al repositorio}: escribe los registros \texttt{Noticia} (título, copete, texto y enlace de la publicación, junto con sus metadatos de procedencia; Apéndice~\ref{anexo:tipos}).
+  \item \textbf{Responsabilidades}: \resp{A} ---la selección de portales y reglas es decisión del experto---; \resp{F} ---el filtro se apoya en el scraper preexistente del entorno institucional---.
 \end{itemize}
 \textit{Especificación funcional.} Accede a los portales registrados, recorre su estructura mediante técnicas de \textit{web scraping} de tipo \textit{spider} y recupera las publicaciones que satisfacen las reglas de extracción configuradas. De cada publicación extrae los elementos relevantes, normaliza el texto y lo persiste como un registro \texttt{Noticia} en el repositorio. Emite por su puerto de salida el \textit{recordset} con la totalidad de las noticias que conforman el corpus del análisis. La descripción detallada de esta etapa, que se apoya en la herramienta de scraping preexistente del entorno institucional, se desarrolla en la Sección~\ref{sec:impl-preexistente}.
 
@@ -561,6 +615,7 @@ donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\
   \item \textbf{Puerto de entrada} (3): \texttt{Noticia[]}.
   \item \textbf{Puerto de salida} (4): \texttt{Embedding[]}.
   \item \textbf{Acceso al repositorio}: lee el texto de las noticias recibidas y escribe los registros \texttt{Embedding} ---la representación vectorial asociada a cada una---.
+  \item \textbf{Responsabilidades}: \resp{C} ---el modelo de \textit{embedding} es una dependencia externa sustituible cuya identidad no viaja en el contrato---.
 \end{itemize}
 \textit{Especificación funcional.} Para cada noticia del \textit{recordset} de entrada, recupera su contenido textual del repositorio y computa su representación vectorial mediante el modelo de \textit{embedding} configurado, persistiéndola como un registro \texttt{Embedding} que referencia a la noticia que codifica. Preserva la cardinalidad ---emite un \texttt{Embedding} por noticia--- pero transforma el tipo que circula: su salida no es el conjunto de noticias sino el de sus representaciones semánticas, disponibles para las operaciones de recuperación que realiza el filtro siguiente. Este filtro no expone sintonizadores al experto del dominio: su configuración ---el modelo de \textit{embedding} y la estrategia de fragmentación--- es de carácter técnico y la fija el implementador como parámetro interno. Conviene distinguir la \textit{generación} del \textit{embedding}, que ocurre aquí sin intervención del experto, de su posterior \textit{uso} en la recuperación, que sí admite parametrización de dominio y se realiza en el filtro de Composición de contexto.
 
@@ -570,6 +625,7 @@ donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\
   \item \textbf{Puerto de salida} (6): \texttt{Prompt[]}.
   \item \textbf{Sintonizador}: selección del \textit{template} de \textit{prompt}, customización de las variables de contexto, ingreso de texto libre, ajuste de los parámetros del modelo generativo (temperatura, longitud de salida) y de los parámetros de recuperación (cantidad de documentos a recuperar y umbral de similitud).
   \item \textbf{Acceso al repositorio}: lee los vectores recibidos y las noticias que estos referencian ---para la recuperación--- y los \textit{templates} disponibles; escribe los registros \texttt{Prompt}.
+  \item \textbf{Responsabilidades}: \resp{A} ---núcleo de la intervención del experto---; \resp{B} ---el estudio ingresa como dato a través del \textit{template}---.
 \end{itemize}
 \textit{Especificación funcional.} Constituye el núcleo de la intervención del experto del dominio. A partir del \textit{template} seleccionado y de las variables de contexto configuradas, realiza la recuperación contextual (\textit{retrieval}): a partir de los \texttt{Embedding} recibidos consulta el repositorio para obtener las noticias semánticamente relevantes según similitud vectorial, e integra ese material empírico con el \textit{template}, las aclaraciones de texto libre y los parámetros definidos para componer el \textit{prompt} completo destinado al modelo generativo. La cardinalidad puede transformarse en esta etapa: a partir del \textit{recordset} recibido, el filtro produce uno o varios \textit{prompts} según la estrategia analítica ---un único \textit{prompt} agregado sobre el corpus, o un \textit{prompt} por unidad de análisis---. Persiste los registros \texttt{Prompt} y emite el \textit{recordset} correspondiente. El diseño del panel de \textit{templates} que da soporte a este sintonizador se desarrolla en la Subsección~\ref{sec:arq-car-sintonizadores}.
 
@@ -578,6 +634,7 @@ donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\
   \item \textbf{Puerto de entrada} (7): \texttt{Prompt[]}.
   \item \textbf{Puerto de salida} (8): \texttt{RespuestaIAG[]}.
   \item \textbf{Acceso al repositorio}: lee los \textit{prompts} y escribe las respuestas crudas del modelo.
+  \item \textbf{Responsabilidades}: \resp{C} ---aísla la dependencia del servicio generativo externo---.
 \end{itemize}
 \textit{Especificación funcional.} Para cada \textit{prompt} del \textit{recordset} de entrada, establece la conexión con la interfaz de programación (API) del modelo generativo configurado, ejecuta la petición y recibe la respuesta producida. Persiste cada respuesta cruda como un registro \texttt{RespuestaIAG} y emite el \textit{recordset} resultante. La selección del proveedor, del modelo y de las credenciales de acceso a la API es configuración técnica del implementador, por lo que el filtro no expone sintonizadores al experto. El aislamiento de esta etapa en un filtro propio ---cuyo único cometido es la interacción con el servicio generativo externo--- es lo que materializa la propiedad de sustituibilidad analizada en la Subsección~\ref{sec:arq-estilo-justificacion}: cambiar de proveedor o de modelo se reduce a reemplazar este filtro, sin impacto sobre el resto del pipeline.
 
@@ -586,6 +643,7 @@ donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\
   \item \textbf{Puerto de entrada} (9): \texttt{RespuestaIAG[]}.
   \item \textbf{Puerto de salida} (10): \texttt{Análisis[]}.
   \item \textbf{Acceso al repositorio}: lee las respuestas crudas y escribe los análisis estructurados.
+  \item \textbf{Responsabilidades}: \resp{B} ---valida contra el esquema declarado por el estudio, sin conocerlo---; \resp{C} ---absorbe el formato de salida del proveedor, manteniendo la etapa agnóstica---.
 \end{itemize}
 \textit{Especificación funcional.} Transforma la salida del modelo generativo ---típicamente texto en un lenguaje de marcado--- en una estructura de datos del dominio apta para su tratamiento posterior. Para cada respuesta cruda del \textit{recordset} de entrada, interpreta su formato ---aísla el fragmento estructurado de la prosa circundante y lo convierte de texto en objeto---, valida su conformidad con la estructura esperada ---el esquema declarado por el \textit{template} del estudio, que el filtro alcanza siguiendo la cadena de referencias que va de la respuesta a su \textit{prompt} y de éste a su \textit{template}, sin requerir por ello configuración de dominio propia---, canonicaliza los valores hacia los tipos del dominio y persiste el resultado como un registro \texttt{Análisis}. La validación opera como una compuerta: la respuesta que no conforma el esquema no se persiste como \texttt{Análisis} ---la política ante la no conformidad (reintentar la invocación, reparar, descartar) es configuración técnica del implementador---, de modo que las etapas posteriores consumen exclusivamente estructuras válidas. Emite el \textit{recordset} de análisis estructurados. Esta separación entre la obtención de la respuesta (filtro anterior) y su decodificación aísla el manejo del formato de salida del modelo, de modo que un cambio en dicho formato no afecte a las etapas previas.
 
@@ -597,6 +655,7 @@ El término encierra un compromiso arquitectónico que conviene explicitar. En e
   \item \textbf{Puerto de salida} (12): \texttt{Veredicto[]}.
   \item \textbf{Sintonizador}: definición del criterio de validez ---qué se considera un análisis fiel a la evidencia--- y selección del ejecutor de la verificación (Subsección~\ref{sec:arq-car-sintonizadores}).
   \item \textbf{Acceso al repositorio}: lee cada análisis estructurado y, siguiendo la cadena de referencias, el material empírico que lo sustenta ---las noticias que su \textit{prompt} incorporó por recuperación semántica---; escribe los registros \texttt{Veredicto}.
+  \item \textbf{Responsabilidades}: \resp{A} ---criterio de validez y ejecutor los fija el experto---; \resp{B} ---el criterio es dato del estudio---; \resp{D} ---compuerta blanda: juzga, cuantifica y señala sin suprimir---.
 \end{itemize}
 \textit{Especificación funcional.} Contrasta cada \texttt{Análisis} con la evidencia empírica de la que dice derivar y emite un juicio sobre su fidelidad. Para cada análisis del \textit{recordset} de entrada, recupera del repositorio las noticias que su \textit{prompt} incorporó por recuperación semántica y evalúa en qué medida las afirmaciones del análisis están efectivamente sostenidas por ese material ---señalando, en particular, las afirmaciones no ancladas en la evidencia, esto es, las alucinaciones del modelo generativo---. Persiste el resultado como un registro \texttt{Veredicto} que referencia al análisis juzgado, califica su estado ---válido, observado o no sustentado---, cuantifica la confianza asociada y enumera los fragmentos de evidencia que respaldan o contradicen cada afirmación. Preserva la cardinalidad ---emite un \texttt{Veredicto} por análisis--- pero transforma el tipo que circula: aguas abajo ya no viaja el análisis sino el juicio sobre su fidelidad, del que aquél pende por referencia.
 
@@ -613,6 +672,7 @@ Una última caracterización es importante. La literatura contemporánea sobre s
   \item \textbf{Puerto de salida} (14): \texttt{Resultado}.
   \item \textbf{Sintonizador}: revisión del analista, definición de los criterios de consolidación ---incluida la política de tratamiento de los análisis observados por la verificación--- y de las variables de comparación contra las cuales se evalúan los resultados.
   \item \textbf{Acceso al repositorio}: lee los veredictos y, por referencia, los análisis que estos juzgan, y escribe el resultado consolidado del estudio.
+  \item \textbf{Responsabilidades}: \resp{A} ---revisión del analista---; \resp{B} ---los criterios de consolidación son datos del estudio---; \resp{D} ---aplica la política editorial sobre los análisis observados---.
 \end{itemize}
 \textit{Especificación funcional.} Consolida el \textit{recordset} de veredictos ---y los análisis verificados que estos referencian--- en un único registro \texttt{Resultado} que representa el producto del estudio. Documenta el recorrido del proceso, organiza los datos de manera coherente, aplica la política de consolidación definida por el analista ---que determina cómo se integran los análisis observados por la verificación---, compara los análisis con las variables definidas y produce la agregación que da sentido al análisis del \textit{agenda-setting} a escala de corpus. Es en este filtro donde la cardinalidad se reduce de un conjunto de veredictos a un resultado único consolidado, que se entrega a la capa de presentación ---el sumidero del sistema--- para su visualización en tableros y reportes.
 
@@ -660,7 +720,7 @@ El catálogo de \citet[\S3.13.2]{cristia:2025} documenta los \textit{sintonizado
 
 Esta caracterización no es exclusiva del catálogo: tiene un precedente directo en la formulación seminal del estilo. Al resolver la interacción con el usuario en su caso de estudio del osciloscopio, \citet{garlanshaw:1994} asocian a cada filtro una \textit{control interface} ``that allows an external entity to set parameters of operation for the filter'', y modelan así los filtros como funciones de orden superior ``for which the configuration parameters determine what data transformation the filter will perform''; su virtud es que ``decouples the signal processing functions\ldots from the actual user interface''. El sintonizador reifica esa interfaz de control: desacopla la parametrización que aporta el experto del procesamiento que realiza el filtro. La misma separación entre configuración y datos reaparece en las bibliotecas modernas de aprendizaje automático ---en \textit{scikit-learn}, el constructor de un estimador ``does not see any actual data\ldots All it does is attach the given parameters to the object'' \citep{buitinck:2013}---.
 
-En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador como parámetro interno (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable. El más elaborado es el de Composición de contexto, que se materializa como un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}, y su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
+En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio ---y son, por ello, los puntos donde se realiza la responsabilidad de intervención del experto, \resp{A}---: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador como parámetro interno (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable. El más elaborado es el de Composición de contexto, que se materializa como un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}, y su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
 
 Que la intervención del experto se canalice por sintonizadores ---y no por el flujo de datos--- es lo que la mantiene compatible con el estilo: el sintonizador ajusta \textit{cómo} transforma un filtro, sin alterar la red de tubos ni agregar un puerto al pipeline. La configuración así incorporada es un parámetro del filtro, no un dato que circule por la arquitectura.
 
@@ -697,31 +757,103 @@ El pipeline transporta por los tubos \textit{recordsets} tipados cuyo contenido 
 
 \begin{table}[H]
   \centering
-  \caption{Tipos de datos del pipeline y cardinalidades.}
+  \caption{Tipos de datos del pipeline, cardinalidades y responsabilidades transversales que cada contrato realiza. \respleyenda}
   \label{tab:tipos-resumen}
   \footnotesize
-  \begin{tabularx}{\textwidth}{@{}l l l l X@{}}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\textwidth}{@{}l l l c X >{\raggedright\arraybackslash}p{1.3cm}@{}}
     \toprule
-    \textbf{Tipo}     & \textbf{Producido por}  & \textbf{Tubo}     & \textbf{Card.} & \textbf{Contenido principal}                                       \\
+    \textbf{Tipo}     & \textbf{Producido por}  & \textbf{Tubo}     & \textbf{Card.} & \textbf{Contenido principal}                                       & \textbf{Resp.}              \\
     \midrule
-    Noticia           & Extracción              & 2$\to$3           & $N$            & Título, texto, link, medio, fecha, reglas                          \\
-    Embedding         & Enriquecimiento         & 4$\to$5 (interno) & $N$            & Vector + ref. a noticia                                            \\
-    Prompt            & Composición de contexto & 6$\to$7           & $M$            & Texto del prompt, parámetros, refs. a noticias y \textit{template} \\
-    RespuestaIAG      & Invocación              & 8$\to$9           & $M$            & Respuesta cruda del modelo + ref. al prompt                        \\
-    Análisis          & Decodificación          & 10$\to$11         & $M$            & Estructura analítica validada + ref. a respuesta                   \\
-    Veredicto         & Verificación            & 12$\to$13         & $M$            & Estado, confianza, sustento + ref. al análisis                     \\
-    Resultado         & Normalización           & 14 (salida)       & 1              & Producto consolidado + refs. a veredictos                          \\
-    \textit{Template} & (repositorio)           & ---               & ---            & Objetivo, instrucciones, esquema de respuesta                      \\
+    Noticia           & Extracción              & 2$\to$3           & $N$            & Título, texto, link, medio, fecha, reglas                          & \resp{E} \resp{F}           \\
+    Embedding         & Enriquecimiento         & 4$\to$5 (interno) & $N$            & Vector + ref. a noticia                                            & \resp{C} \resp{E}           \\
+    Prompt            & Composición de contexto & 6$\to$7           & $M$            & Texto del prompt, parámetros, refs. a noticias y \textit{template} & \resp{B} \resp{E}           \\
+    RespuestaIAG      & Invocación              & 8$\to$9           & $M$            & Respuesta cruda del modelo + ref. al prompt                        & \resp{C} \resp{E}           \\
+    Análisis          & Decodificación          & 10$\to$11         & $M$            & Estructura analítica validada + ref. a respuesta                   & \resp{B} \resp{E}           \\
+    Veredicto         & Verificación            & 12$\to$13         & $M$            & Estado, confianza, sustento + ref. al análisis                     & \resp{D} \resp{E}           \\
+    Resultado         & Normalización           & 14 (salida)       & 1              & Producto consolidado + refs. a veredictos                          & \resp{B}\,\resp{D} \resp{E} \\
+    \textit{Template} & (repositorio)           & ---               & ---            & Objetivo, instrucciones, esquema de respuesta                      & \resp{A} \resp{B}           \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
 Dos criterios transversales gobiernan el diseño de estos contratos. En primer lugar, cada tipo contiene únicamente la carga útil que algún filtro posterior consume, junto con la procedencia del dato ---cuándo se produjo y a partir de qué registros---; toda clave adicional volvería al contrato más exigente de lo que el pipeline requiere. En segundo lugar, donde el contenido depende del caso analítico ---\texttt{Análisis}, \texttt{Resultado}---, el framework fija el sobre (procedencia y carga estructurada) y delega el esquema interno a la definición del \textit{template} del estudio. La aplicación uniforme de ambos criterios, así como la especificación detallada de cada tipo, se presentan en el Apéndice~\ref{anexo:tipos}.
 
-Leídos en conjunto, los siete tipos que circulan por los tubos forman una \textit{cadena de procedencia} que recorre el pipeline en sentido inverso: desde el \texttt{Resultado} final puede reconstruirse qué veredictos de verificación lo componen, sobre qué análisis se pronuncia cada uno, de qué respuestas crudas provienen esos análisis, con qué \textit{prompts} ---y bajo qué \textit{template} y parámetros--- se generaron, sobre qué noticias se apoyó cada composición y de qué portal fue extraída cada noticia, cuándo, y bajo qué reglas de extracción. Esta propiedad estructural del sistema de tipos materializa, a nivel del dato, la auditabilidad lineal que motivó la elección del estilo (Subsección~\ref{sec:arq-estilo-justificacion}) y resuelve la brecha de trazabilidad documental identificada en la revisión sistemática (Sección~\ref{sec:rsl-brechas}).
+Leídos en conjunto, los siete tipos que circulan por los tubos forman una \textit{cadena de procedencia} que recorre el pipeline en sentido inverso: desde el \texttt{Resultado} final puede reconstruirse qué veredictos de verificación lo componen, sobre qué análisis se pronuncia cada uno, de qué respuestas crudas provienen esos análisis, con qué \textit{prompts} ---y bajo qué \textit{template} y parámetros--- se generaron, sobre qué noticias se apoyó cada composición y de qué portal fue extraída cada noticia, cuándo, y bajo qué reglas de extracción. Esta propiedad estructural del sistema de tipos materializa, a nivel del dato, la auditabilidad lineal que motivó la elección del estilo (Subsección~\ref{sec:arq-estilo-justificacion}) y resuelve la brecha de trazabilidad documental identificada en la revisión sistemática (Sección~\ref{sec:rsl-brechas}); es la realización, en la capa de datos, de la responsabilidad de procedencia \resp{E}. Que todos los tipos del flujo la compartan ---y sólo el \textit{template}, que no circula, quede fuera--- se refleja en la columna de responsabilidades de la Tabla~\ref{tab:tipos-resumen}.
 
 \section{Síntesis del capítulo}
 \label{sec:arq-sintesis}
+
+% TODO: redactar la síntesis narrativa del capítulo. El registro maestro de responsabilidades
+% ya está anclado acá porque es el destino de todos los \resp{...} del documento; las columnas
+% de los Capítulos 4 y 6 se completan cuando esos capítulos existan.
+
+La Tabla~\ref{tab:registro-responsabilidades} consolida el registro maestro de las responsabilidades transversales introducidas en la Sección~\ref{sec:intro-responsabilidades}: para cada marcador, la obligación que nombra y los elementos que la realizan en la arquitectura de este capítulo, en el módulo de Odoo (Capítulo~\ref{cap:implementacion}), en el mapa de procesos (Capítulo~\ref{cap:procesos}) y en el caso de aplicación (Capítulo~\ref{cap:ejemplo}). Los marcadores conservan su identidad a través de las vistas mientras cambia su realización: la misma responsabilidad es un sintonizador en la arquitectura, un formulario en el módulo, una actividad con actor en el mapa de procesos y una decisión documentada en el caso. El registro es la fuente única a la que remite cada marcador del documento; su función es hacer inspeccionable la traza desde las garantías comprometidas en el objetivo general hasta el lugar donde cada una se cumple, no acreditar por sí mismo que se cumplan.
+
+  % TODO: cuando se redacten los Capítulos 4 y 6, cambiar sus columnas p{1.9cm} por X.
+  {
+    \footnotesize
+    \setlength{\tabcolsep}{3pt}
+    \begin{xltabular}{\textwidth}{@{}c >{\raggedright\arraybackslash}p{1.7cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{1.9cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{1.9cm}@{}}
+      \caption{Registro maestro de responsabilidades transversales: realización de cada marcador en la arquitectura, el módulo, el mapa de procesos y el caso de aplicación. Las celdas marcadas \textit{(por completar)} corresponden a capítulos en redacción.}
+      \label{tab:registro-responsabilidades} \\
+      \toprule
+      \textbf{M.} & \textbf{Responsabilidad} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Módulo Odoo (Cap.~\ref{cap:implementacion})} & \textbf{Procesos (Cap.~\ref{cap:procesos})} & \textbf{Caso (Cap.~\ref{cap:ejemplo})} \\
+      \midrule
+      \endfirsthead
+      \multicolumn{6}{@{}l}{\footnotesize\textit{Tabla~\ref{tab:registro-responsabilidades} (continuación)}} \\
+      \toprule
+      \textbf{M.} & \textbf{Responsabilidad} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Módulo Odoo (Cap.~\ref{cap:implementacion})} & \textbf{Procesos (Cap.~\ref{cap:procesos})} & \textbf{Caso (Cap.~\ref{cap:ejemplo})} \\
+      \midrule
+      \endhead
+      \midrule
+      \multicolumn{6}{r@{}}{\footnotesize\textit{continúa en la página siguiente}} \\
+      \endfoot
+      \bottomrule
+      \endlastfoot
+      \resp{A} & Intervención del experto
+      & Sintonizadores de Extracción, Composición, Verificación y Normalización (\S~\ref{sec:arq-car-sintonizadores}); invocados sólo desde la capa de presentación; \textit{template} como configuración editada.
+      & \textit{(por completar)} % TODO Cap. 4: formularios y vistas de configuración
+      & Actividades con actor Experto de dominio: 02.01, 02.02, 02.05, 03.03--03.05; actor Investigador o analista: 04.03.
+      & \textit{(por completar)} % TODO Cap. 6: configuración inicial y template
+      \\
+      \addlinespace
+      \resp{B} & Independencia del estudio
+      & \texttt{Template} (objetivo, esquema de respuesta); Decodificación valida contra el esquema del estudio sin configuración propia; sobre fijo y esquema delegado en \texttt{Análisis}, \texttt{Veredicto.sustento} y \texttt{Resultado} (Apéndice~\ref{anexo:tipos}, criterio~3).
+      & \textit{(por completar)} % TODO Cap. 4: modelo template con esquema; ausencia de columnas de dominio en los modelos
+      & Proceso 03: 03.01 creación de \textit{templates}, 03.03 selección, 03.04 customización; 03.06 composición.
+      & \textit{(por completar)} % TODO Cap. 6: el caso como instancia; qué declaró el estudio y qué no cambió el framework
+      \\
+      \addlinespace
+      \resp{C} & Frontera generativa
+      & Invocación y Decodificación como filtros propios; Enriquecimiento sustituible; los contratos omiten proveedor y modelo (Apéndice~\ref{anexo:tipos}, criterio~2).
+      & \textit{(por completar)} % TODO Cap. 4: cliente de API y modelo de embedding como configuración técnica
+      & Proceso 04: 04.01 procesamiento IAG, 04.02 decoder; proceso 02: 02.04 \textit{embedding}.
+      & \textit{(por completar)} % TODO Cap. 6: proveedor y modelo empleados; costo computacional (OE4)
+      \\
+      \addlinespace
+      \resp{D} & Control editorial
+      & Verificación como compuerta blanda; \texttt{Veredicto} (estado, confianza, sustento); política de consolidación de los análisis observados en Normalización.
+      & \textit{(por completar)} % TODO Cap. 4: modelo veredicto y vista de revisión
+      & 04.03 normalización (comparación y análisis de resultados); procesos 05 y 06.
+      & \textit{(por completar)} % TODO Cap. 6: calidad y fidelidad de los resultados (OE4)
+      \\
+      \addlinespace
+      \resp{E} & Procedencia
+      & Auditabilidad lineal (\S~\ref{sec:arq-estilo-justificacion}); monotonía del repositorio; claves de referencia y \texttt{fecha\_registro} en los siete tipos; cadena \texttt{Resultado} \(\to\) \texttt{Noticia} (\S~\ref{sec:arq-car-contratos}).
+      & \textit{(por completar)} % TODO Cap. 4: relaciones Many2one entre modelos
+      & 04.03: documentación del recorrido completo del proceso.
+      & \textit{(por completar)} % TODO Cap. 6: reconstrucción del resultado hasta las noticias
+      \\
+      \addlinespace
+      \resp{F} & Infraestructura preexistente
+      & Extracción sobre el scraper preexistente; repositorio sobre PostgreSQL y el ORM de Odoo (\S~\ref{sec:arq-car-repositorio}).
+      & \textit{(por completar)} % TODO Cap. 4: §impl-preexistente; modelos wsf_noticias_*
+      & Proceso 02: 02.03 (Aplicación de Scraping).
+      & \textit{(por completar)} % TODO Cap. 6: ejecución del scraping
+      \\
+    \end{xltabular}
+  }
 
 % TODO (decisión con el director, 20-08-2026): capítulo a redactar como próxima
 % prioridad. La implementación se trata con profundidad de capítulo completo.
@@ -761,6 +893,9 @@ Leídos en conjunto, los siete tipos que circulan por los tubos forman una \text
 
 
     \textbf{Salida:} Resultados producidos por la IAG, que pueden ser en forma de narrativas, tablas, gráficos u otras representaciones visuales, dependiendo de los objetivos requeridos.
+
+
+    \textbf{Responsabilidades:} \respr{A}{F} ---el ciclo completo realiza las seis responsabilidades transversales (Sección~\ref{sec:intro-responsabilidades}); cada proceso de soporte señala, junto a sus actores, las que le corresponden---.
   }%
 }
 
@@ -775,6 +910,10 @@ De los procesos antes mencionados, a continuación se describen los procesos de 
 \newpage
 \section{Scraping}
 \label{sec:proc-scraping}
+% TODO [B]: el objetivo, alcance y entrada de este proceso están redactados para el caso electoral
+% ("resultados electorales, encuestas", "tipo de elección"). Por la responsabilidad [B], la
+% descripción del proceso debe ser agnóstica del estudio (como Extracción en el Cap. 3) y lo
+% electoral debe migrar al Cap. 6.
 \begin{figure}[h]
   \centering
   \includegraphics[height=4in]{Diagrama 02-Scrapping.png}
@@ -789,6 +928,8 @@ De los procesos antes mencionados, a continuación se describen los procesos de 
     \textbf{Entrada:} Portales digitales regionales relevantes y variables claves como el rango de fechas y el tipo de elección.
 
     \textbf{Salida:} Datos procesados y transformados utilizando técnicas de NLP embedding, que permitirán su representación en forma numérica. Además, se aplicarán técnicas de encoding para almacenar los datos en un formato adecuado, teniendo en cuenta su posterior análisis y la implementación de algoritmos de inteligencia artificial.
+
+    \textbf{Responsabilidades:} \resp{A} (01, 02, 05), \resp{C} (04), \resp{F} (03).
   }%
 }
 
@@ -796,7 +937,7 @@ De los procesos antes mencionados, a continuación se describen los procesos de 
 
 \textbf{01. Selección de portales de interés}
 
-Actor: Experto de dominio.
+Actor: Experto de dominio \resp{A}.
 
 Actividad: Seleccionar los portales que serán scrapeados por la herramienta. Esta elección se basa en criterios de idoneidad, credibilidad, número de visitas de usuarios y región geográfica específica. El experto evaluará cuidadosamente cada portal para determinar su relevancia y confiabilidad en cuanto a los datos que se desean obtener. Esta selección se basa en el conocimiento y experiencia del experto en el dominio específico y busca garantizar que los portales elegidos aporten información valiosa y representativa para el análisis posterior del proceso de Scraping.
 
@@ -804,7 +945,7 @@ Actividad: Seleccionar los portales que serán scrapeados por la herramienta. Es
 
 \textbf{02. Selección de métricas competentes}
 
-Actor: Experto de dominio.
+Actor: Experto de dominio \resp{A}.
 
 Actividad: Acotar la información que será recopilada por la aplicación de Scraping. Esto implica seleccionar las métricas y datos relevantes que se guardarán durante el proceso de extracción. Además de las palabras clave y los títulos importantes, el experto puede considerar la inclusión de otros elementos, como:
 
@@ -817,21 +958,21 @@ El experto debe tener en cuenta que la selección de métricas competentes es fu
 
 \textbf{03. Proceso de scraping}
 
-Actor: Aplicación de Scraping.
+Actor: Aplicación de Scraping \resp{F}.
 
 Actividad: Recorrer los portales seleccionados y guardar la información relevante. Utiliza técnicas automatizadas para navegar por las páginas web, identificar los datos definidos previamente y extraerlos. La información se almacena en un formato adecuado para su posterior procesamiento y análisis.
 \vspace{0.5cm}
 
 \textbf{04. NLP Embedding}
 
-Actor: Aplicación de Scraping.
+Actor: Aplicación de Scraping \resp{F}.
 
 Actividad: La aplicación utilizará técnicas de NLP (Natural Language Processing) Embedding para transformar los datos de texto recolectados en representaciones numéricas de alta dimensionalidad. Esto implica asignar un vector numérico a cada palabra o frase, capturando su significado y contexto semántico. El objetivo es organizar y estructurar de manera que las palabras similares se encuentren en un espacio vectorial cercano,  permitiendo un análisis más eficiente y preciso en etapas posteriores del proceso. El NLP Embedding ayuda a la aplicación a comprender y procesar el texto de manera más sofisticada, facilitando la identificación de patrones, temas o tendencias en los datos extraídos.
 \vspace{0.5cm}
 
 \textbf{05. Embedding Personalizado}
 
-Actor: Experto de dominio.
+Actor: Experto de dominio \resp{A}.
 
 Actividad: Acotar o mejorar el embedding clásico aplicado a la data estructurada, de manera que pueda ser procesada de manera más efectiva por una inteligencia artificial generativa. El experto puede ajustar parámetros, aplicar técnicas avanzadas de embedding o incluso desarrollar nuevos enfoques para adaptar el embedding al contexto específico de la investigación.
 Puede involucrar la definición de reglas adicionales, ajustes finos en los pesos asignados a ciertos elementos o la inclusión de información adicional que sea relevante para el análisis. Este subproceso puede ser realizado de forma manual por el experto o, en algunos casos, ser apoyado por herramientas de automatización desarrolladas específicamente para este propósito.
@@ -866,6 +1007,8 @@ El proceso de encoding puede involucrar técnicas como la codificación one-hot,
     \textbf{Entrada:} Requerimientos blandos de expertos de dominio y datos empíricos de las noticias
 
     \textbf{Salida:} Prompt completo para la IAG
+
+    \textbf{Responsabilidades:} \resp{A} (03, 04, 05), \resp{B} (01, 03, 04, 06).
   }%
 }
 
@@ -917,7 +1060,7 @@ Actividad: Proporcionar una interfaz gráfica que habilite el ajuste de las vari
 
 \textbf{03. Selección de template}
 
-Actor: Experto de dominio.
+Actor: Experto de dominio \resp{A}.
 
 Actividad: Seleccionar un template inicial para el análisis.
 
@@ -925,7 +1068,7 @@ Actividad: Seleccionar un template inicial para el análisis.
 
 \textbf{04. Customización de variables de contexto}
 
-Actor: Experto de dominio.
+Actor: Experto de dominio \resp{A}.
 
 Actividad: Configuración de las variables necesarias para el \textit{template} seleccionado. En este paso, el experto podrá usar una batería de herramientas de interfaz gráfica para personalizar su contexto, por ejemplo: fechas desde-hasta de publicaciones, palabras clave, combinación de conceptos, etc.
 
@@ -944,7 +1087,7 @@ Además de estos filtros contextuales iniciales, esta etapa también incluye la 
 
 \textbf{05. Ingreso de texto libre}
 
-Actor: Experto de dominio.
+Actor: Experto de dominio \resp{A}.
 
 Actividad: El experto podrá ingresar libremente aclaraciones o ejemplos que querrá incluir en el prompt para dejar en claro cual es su idea de análisis. Con el fin de guiar de manera efectiva el proceso de generación, resulta útil incluir ejemplos o escenarios específicos en los prompts. Estos ejemplos pueden ilustrar los tipos de interacciones o respuestas deseadas que la IAG debería generar. Al incorporarlos la IAG puede aprender y emular el comportamiento deseado.
 
@@ -955,7 +1098,7 @@ En un estudio previo todos los participantes mostraron una fuerte preferencia po
 
 \textbf{06. Procesamiento}
 
-Actor: Módulo de Odoo.
+Actor: Módulo de Odoo \resp{B}.
 
 Actividad: Estructurizar el prompt que sera entregado a la IAG utilizando las entradas del experto y los datos empíricos de las noticias. Se espera la salida de una string formateada en algún lenguaje de marcado que sea interpretado por la IAG.
 
@@ -968,9 +1111,13 @@ Actividad: Estructurizar el prompt que sera entregado a la IAG utilizando las en
   \includegraphics[height=3.5in]{Diagrama 04-IAG.png}
 \end{figure}
 
+\noindent\textbf{Responsabilidades:} \resp{C} (01, 02), \resp{A}, \resp{D} y \resp{E} (03).
+
+\vspace{0.5cm}
+
 \textbf{01. Procesamiento IAG}
 
-Actor: Aplicación de Inteligencia Artificial Generativa.
+Actor: Aplicación de Inteligencia Artificial Generativa \resp{C}.
 
 Actividad: Utilizando los datos previamente descriptos, el prompt adecuadamente construido y una conexión estable con la API del modelo generativo seleccionado, se ejecuta la petición correspondiente. El objetivo principal de esta actividad es generar resultados creativos y originales a partir de la inteligencia artificial generativa.
 
@@ -978,7 +1125,7 @@ Actividad: Utilizando los datos previamente descriptos, el prompt adecuadamente 
 
 \textbf{02. Decoder}
 
-Actor: Aplicación de Decodificación.
+Actor: Aplicación de Decodificación \resp{C}.
 
 Actividad: Preparar la información generada por la IAG para su posterior reutilización en otros contextos o plantillas.
 
@@ -986,7 +1133,7 @@ Actividad: Preparar la información generada por la IAG para su posterior reutil
 
 \textbf{03. Normalización}
 
-Actor: Investigador o analista de datos.
+Actor: Investigador o analista de datos \resp{A}, \resp{D}, \resp{E}.
 
 Actividad: Realizar un raconto final de todo el camino recorrido durante el proceso, desde los datos iniciales hasta la generación de la salida del modelo generativo. El objetivo de esta actividad es realizar una normalización de los datos y resultados obtenidos para poder realizar comparaciones, evaluaciones y análisis posteriores de manera coherente y sistemática.
 
@@ -1075,9 +1222,9 @@ Cada tipo se especifica como un registro de pares \texttt{clave: tipo}, en una n
 Tres criterios, aplicados de manera uniforme, gobiernan qué claves integran cada contrato y cuáles se excluyen deliberadamente.
 
 \begin{enumerate}
-  \item \textbf{Contrato mínimo.} Cada tipo contiene únicamente la carga útil que algún filtro posterior consume y la procedencia del dato ---cuándo se produjo y a partir de qué registros---. Toda clave adicional volvería al contrato más exigente de lo que el pipeline requiere, dificultando la sustitución de los filtros que lo producen.
-  \item \textbf{La procedencia viaja; la identidad del productor, no.} Registrar a partir de qué dato se produjo un registro es procedencia, y sostiene la auditabilidad; registrar con qué recurso técnico se lo produjo ---el modelo de \textit{embedding}, el proveedor generativo--- describiría la identidad del filtro productor, que el estilo veda conocer a los restantes filtros (Subsección~\ref{sec:arq-estilo-invariantes}). Cambiar ese recurso equivale a sustituir el filtro, no a alterar los datos que emite.
-  \item \textbf{Los esquemas de dominio se delegan al estudio.} Donde el contenido depende del caso analítico ---\texttt{Análisis} y \texttt{Resultado}---, el framework fija el sobre (procedencia y carga estructurada) y delega el esquema interno a la definición del estudio, declarada en el \textit{template} (Sección~\ref{anexo:tipo-template}). Fijar claves de dominio en el contrato casaría al framework con un caso de estudio particular, contra el requisito de diversidad analítica (Subsección~\ref{sec:arq-estilo-justificacion}).
+  \item \textbf{Contrato mínimo} (\resp{E}). Cada tipo contiene únicamente la carga útil que algún filtro posterior consume y la procedencia del dato ---cuándo se produjo y a partir de qué registros---. Toda clave adicional volvería al contrato más exigente de lo que el pipeline requiere, dificultando la sustitución de los filtros que lo producen.
+  \item \textbf{La procedencia viaja; la identidad del productor, no} (\resp{C}, \resp{E}). Registrar a partir de qué dato se produjo un registro es procedencia, y sostiene la auditabilidad; registrar con qué recurso técnico se lo produjo ---el modelo de \textit{embedding}, el proveedor generativo--- describiría la identidad del filtro productor, que el estilo veda conocer a los restantes filtros (Subsección~\ref{sec:arq-estilo-invariantes}). Cambiar ese recurso equivale a sustituir el filtro, no a alterar los datos que emite.
+  \item \textbf{Los esquemas de dominio se delegan al estudio} (\resp{B}). Donde el contenido depende del caso analítico ---\texttt{Análisis} y \texttt{Resultado}---, el framework fija el sobre (procedencia y carga estructurada) y delega el esquema interno a la definición del estudio, declarada en el \textit{template} (Sección~\ref{anexo:tipo-template}). Fijar claves de dominio en el contrato casaría al framework con un caso de estudio particular, contra el requisito de diversidad analítica (Subsección~\ref{sec:arq-estilo-justificacion}).
 \end{enumerate}
 
 \section{\texorpdfstring{\texttt{Noticia}}{Noticia}}
@@ -1196,7 +1343,7 @@ Veredicto {
 \end{lstlisting}
 \end{minipage}
 
-El tipo reifica el juicio de fidelidad que produce Verificación: cada registro asocia un análisis ---por referencia--- con la valoración de en qué medida sus afirmaciones están sostenidas por la evidencia empírica de la que dicen derivar (Subsección~\ref{sec:arq-car-filtros}). La clave \texttt{estado} porta el dictamen canónico ---válido, observado o no sustentado---; \texttt{confianza} lo cuantifica, reificando a nivel del dato la calibración de incertidumbre que la revisión sistemática identificó como brecha (Sección~\ref{sec:rsl-brechas}). Que ambas claves acompañen al veredicto, y que ninguno de los análisis se descarte, es lo que materializa la \textit{compuerta blanda}: el filtro califica y señala, pero no suprime, y deja la decisión editorial última al analista. La clave \texttt{sustento} aplica el tercer criterio de diseño ---delega al estudio el esquema de dominio---: su estructura interna ---qué fragmentos se citan y cómo se los pondera--- depende del criterio de validez configurado en el sintonizador de Verificación, no del framework. Por el segundo criterio, en cambio, el contrato omite deliberadamente la identidad del ejecutor de la verificación ---el procedimiento automático, el revisor humano asistido o el conjunto de agentes que confrontan sus juicios---: registrar con qué recurso se produjo el veredicto describiría la identidad del filtro productor, cuya sustitución es precisamente lo que la agnosticidad del ejecutor habilita (Subsección~\ref{sec:arq-estilo-justificacion}), del mismo modo que \texttt{Embedding} omite el modelo que computó el vector y \texttt{RespuestaIAG}, el proveedor generativo.
+El tipo reifica el juicio de fidelidad que produce Verificación: cada registro asocia un análisis ---por referencia--- con la valoración de en qué medida sus afirmaciones están sostenidas por la evidencia empírica de la que dicen derivar (Subsección~\ref{sec:arq-car-filtros}). La clave \texttt{estado} porta el dictamen canónico ---válido, observado o no sustentado---; \texttt{confianza} lo cuantifica, reificando a nivel del dato la calibración de incertidumbre que la revisión sistemática identificó como brecha (Sección~\ref{sec:rsl-brechas}). Que ambas claves acompañen al veredicto, y que ninguno de los análisis se descarte, es lo que materializa la \textit{compuerta blanda} (\resp{D}): el filtro califica y señala, pero no suprime, y deja la decisión editorial última al analista. La clave \texttt{sustento} aplica el tercer criterio de diseño ---delega al estudio el esquema de dominio---: su estructura interna ---qué fragmentos se citan y cómo se los pondera--- depende del criterio de validez configurado en el sintonizador de Verificación, no del framework. Por el segundo criterio, en cambio, el contrato omite deliberadamente la identidad del ejecutor de la verificación ---el procedimiento automático, el revisor humano asistido o el conjunto de agentes que confrontan sus juicios---: registrar con qué recurso se produjo el veredicto describiría la identidad del filtro productor, cuya sustitución es precisamente lo que la agnosticidad del ejecutor habilita (Subsección~\ref{sec:arq-estilo-justificacion}), del mismo modo que \texttt{Embedding} omite el modelo que computó el vector y \texttt{RespuestaIAG}, el proveedor generativo.
 
 \section{\texorpdfstring{\texttt{Resultado}}{Resultado}}
 \label{anexo:tipo-resultado}
@@ -1219,7 +1366,7 @@ Como \texttt{Análisis}, el tipo fija el sobre y delega el esquema: la forma del
 \section{\texorpdfstring{\texttt{Template}}{Template}}
 \label{anexo:tipo-template}
 
-A diferencia de los siete tipos anteriores, el \textit{template} no circula por los tubos: es la entidad del repositorio común que ancla la definición del estudio, creada y editada por el experto del dominio a través del panel de \textit{templates} (Subsección~\ref{sec:arq-car-sintonizadores}) e incorporada al flujo por referencia ---cada \texttt{Prompt} la ancla directamente y cada \texttt{Análisis} la alcanza por la cadena de referencias---.
+A diferencia de los siete tipos anteriores, el \textit{template} no circula por los tubos: es la entidad del repositorio común que ancla la definición del estudio (\resp{B}), creada y editada por el experto del dominio (\resp{A}) a través del panel de \textit{templates} (Subsección~\ref{sec:arq-car-sintonizadores}) e incorporada al flujo por referencia ---cada \texttt{Prompt} la ancla directamente y cada \texttt{Análisis} la alcanza por la cadena de referencias---.
 
 \noindent\begin{minipage}{\linewidth}
   \begin{lstlisting}[style=tipoanexo]
@@ -1260,7 +1407,7 @@ Por el cierre composicional del estilo (Subsección~\ref{sec:arq-estilo-componen
 \section{La cadena de procedencia}
 \label{anexo:tipos-procedencia}
 
-Leídas en conjunto, las claves de procedencia de los siete tipos forman una cadena continua de referencias que recorre el pipeline en sentido inverso:
+Leídas en conjunto, las claves de procedencia de los siete tipos forman una cadena continua de referencias que recorre el pipeline en sentido inverso ---la realización, a nivel del dato, de la responsabilidad de procedencia \resp{E}---:
 
 \begin{center}
   \texttt{Resultado} \(\to\) \texttt{Veredicto} \(\to\) \texttt{Análisis} \(\to\) \texttt{RespuestaIAG} \(\to\) \texttt{Prompt} \(\to\) \texttt{Noticia} (y \textit{template})

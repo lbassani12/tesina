@@ -993,6 +993,39 @@ El modelo tiene, además, campos que ningún filtro del pipeline consume: la pol
 
 Lo anterior permite cerrar la delimitación que la responsabilidad \resp{F} exige, en tres niveles. Se \textit{reutiliza}, sin modificación, el filtro de Extracción con su sintonizador y su disparo; el modelo de resultados como realización del tipo \texttt{Noticia}; el repositorio común, que es la base de datos de la plataforma; y los grupos de seguridad y el menú raíz del \textit{addon} institucional. Se \textit{reemplaza} la capa semántica inicial por el pipeline de seis filtros que el resto del capítulo describe, dejando intactos los valores que aquélla persiste. Y \textit{no se modifica} el \textit{addon} institucional: el módulo declara la dependencia y hereda un único modelo para un fin cosmético; toda otra interacción ocurre a través del contrato \texttt{Noticia}.
 
+Esa delimitación no queda confiada a la prosa: es verificable en cuatro declaraciones del módulo, que la Figura~\ref{fig:impl-frontera} reúne y que constituyen la totalidad de su superficie de contacto con el \textit{addon} institucional. El manifiesto declara la dependencia, con lo que la plataforma garantiza el orden de carga sin que el módulo copie ni intervenga el código ajeno. La herencia del modelo de resultados no agrega columnas ni redefine método alguno: fija el campo de presentación para que las referencias desde los tipos del pipeline resulten legibles, y es el fin cosmético al que el párrafo anterior alude. El menú propio cuelga del menú raíz institucional, y los permisos de todos los modelos del módulo se otorgan sobre los grupos que el \textit{addon} preexistente ya define, en lugar de crear un esquema de seguridad paralelo. Que la extensión completa se agote en cuatro renglones ---y que ninguno de ellos escriba sobre el \textit{addon} institucional--- es lo que permite sostener la afirmación de la responsabilidad \resp{F} sin apelar a la buena fe del lector: el inventario íntegro de archivos del módulo es el de la Figura~\ref{fig:impl-arbol}, y \texttt{noticia.py} es el único que nombra a \texttt{wsfnoticias}.
+
+\lstdefinestyle{implbloque}{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  framerule=0.4pt,
+  xleftmargin=1em,
+  xrightmargin=1em,
+}
+
+\begin{figure}[H]
+  \centering
+\begin{lstlisting}[style=implbloque]
+# __manifest__.py --- declara la dependencia, no copia el addon
+'depends': ['base', 'wsfnoticias'],
+
+# models/noticia.py --- único toque sobre el addon institucional
+class Noticia(models.Model):
+    _inherit = 'wsf_noticias_resultados'
+    _rec_name = 'titulo'
+
+# views/menus.xml --- el menú propio cuelga del menú institucional
+<menuitem id="menu_iag_root" parent="wsfnoticias.wsf_noticias_root"/>
+
+# security/ir.model.access.csv --- reutiliza los grupos existentes
+access_iag_estudio_analista,...,wsfnoticias.noticias_analista,1,1,1,1
+\end{lstlisting}
+  \caption{Superficie de contacto completa entre el módulo \texttt{noticias\_iag} y el \textit{addon} institucional \texttt{wsfnoticias}: la declaración de dependencia, la herencia del modelo de resultados, el anclaje del menú y la reutilización de los grupos de seguridad. Se abrevia la fila del archivo de permisos: el módulo declara una por cada modelo y grupo, con combinaciones que varían según el modelo ---los tipos del flujo se otorgan al analista con lectura y creación, pero sin escritura ni borrado--- y que la Sección~\ref{sec:impl-invariantes} retoma al verificar la monotonía del repositorio.}
+  \label{fig:impl-frontera}
+\end{figure}
+
 \section{Stack tecnológico}
 \label{sec:impl-stack}
 
@@ -1018,19 +1051,9 @@ Esta sección desarrolla la correspondencia que la Tabla~\ref{tab:impl-correspon
 
 La Figura~\ref{fig:impl-arbol} presenta la estructura de archivos del módulo anotada contra los elementos de la arquitectura, y funciona como mapa de las subsecciones que siguen: cada filtro, cada tipo del flujo y cada servicio nombrado allí se desarrolla más adelante en el orden del pipeline. La organización obedece a la regla de correspondencia enunciada en la introducción del capítulo, y su asimetría más visible es deliberada: los filtros ocupan un archivo cada uno, mientras que los siete tipos del flujo comparten uno solo. La razón es que el filtro es la unidad sustituible del estilo ---un \textit{addon} tercero hereda \texttt{iag.filtro.invocacion} y reemplaza su operación sin tocar nada más---, en tanto que los tipos no se sustituyen sino que se declaran, y comparten el mixin y las restricciones de monotonía que la Subsección~\ref{sec:impl-mat-patron} describe.
 
-\lstdefinestyle{arbol}{
-  basicstyle=\ttfamily\footnotesize,
-  columns=fullflexible,
-  keepspaces=true,
-  frame=single,
-  framerule=0.4pt,
-  xleftmargin=1em,
-  xrightmargin=1em,
-}
-
 \begin{figure}[H]
   \centering
-\begin{lstlisting}[style=arbol]
+\begin{lstlisting}[style=implbloque]
 noticias_iag/
 |-- __manifest__.py               # depende de wsfnoticias
 |-- models/

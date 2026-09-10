@@ -965,23 +965,23 @@ Que el resto del pipeline pueda apoyarse sobre el filtro reutilizado depende de 
 
 \begin{table}[H]
   \centering
-  \caption{Correspondencia entre las claves del contrato \texttt{Noticia} y los campos del modelo preexistente \texttt{wsf\_noticias\_resultados}. Las claves marcadas con \texttt{?} son opcionales en el contrato.}
+  \caption{Correspondencia entre las claves del contrato \texttt{Noticia} y los campos del modelo preexistente \texttt{wsf\_noticias\_resultados}. Cada clave se realiza en un campo homónimo del modelo, salvo la última. Las claves marcadas con \texttt{?} son opcionales en el contrato.}
   \label{tab:impl-noticia-mapeo}
   \footnotesize
   \setlength{\tabcolsep}{4pt}
-  \begin{tabularx}{\textwidth}{@{}l l l X@{}}
+  \begin{tabularx}{\textwidth}{@{}l l X@{}}
     \toprule
-    \textbf{Clave del contrato} & \textbf{Campo}           & \textbf{Tipo Odoo} & \textbf{Observación}                                                                                  \\
+    \textbf{Clave del contrato} & \textbf{Tipo Odoo} & \textbf{Observación}                                                                                  \\
     \midrule
-    \texttt{titulo}             & \texttt{titulo}          & Char               & El scraper elimina las comillas del título.                                                           \\
-    \texttt{copete?}            & \texttt{copete}          & Char               & Se llena sólo por la vía del índice del sitio; vacío por la vía RSS.                                  \\
-    \texttt{texto}              & \texttt{texto}           & Text               &                                                                                                       \\
-    \texttt{link}               & \texttt{link}            & Char               & Restricción de unicidad en la base de datos: la clave única que el contrato exige.                    \\
-    \texttt{medio}              & \texttt{medio}           & Many2one           & Referencia al contacto (\textit{partner}) del portal; su configuración vive en el modelo de portales. \\
-    \texttt{departamento}       & \texttt{departamento}    & Char               & Copiado del portal en el momento de la extracción; es una etiqueta del portal, no del contenido.      \\
-    \texttt{fecha\_hora?}       & \texttt{fecha\_hora}     & Datetime           & Fecha de publicación según la biblioteca de extracción; puede faltar.                                 \\
-    \texttt{fecha\_registro}    & \texttt{fecha\_registro} & Datetime           & La escribe el scraper al grabar.                                                                      \\
-    \texttt{reglas\_aplicadas}  & \texttt{regla2}          & Char               & Nombres de las reglas satisfechas, separados por coma.                                                \\
+    \texttt{titulo}             & Char               & El scraper elimina las comillas del título.                                                           \\
+    \texttt{copete?}            & Char               & Se llena sólo por la vía del índice del sitio; vacío por la vía RSS.                                  \\
+    \texttt{texto}              & Text               &                                                                                                       \\
+    \texttt{link}               & Char               & Restricción de unicidad en la base de datos: la clave única que el contrato exige.                    \\
+    \texttt{medio}              & Many2one           & Referencia al contacto (\textit{partner}) del portal; su configuración vive en el modelo de portales. \\
+    \texttt{departamento}       & Char               & Copiado del portal en el momento de la extracción; es una etiqueta del portal, no del contenido.      \\
+    \texttt{fecha\_hora?}       & Datetime           & Fecha de publicación según la biblioteca de extracción; puede faltar.                                 \\
+    \texttt{fecha\_registro}    & Datetime           & La escribe el scraper al grabar.                                                                      \\
+    \texttt{reglas\_aplicadas}  & Char               & Único campo cuyo nombre difiere: se llama \texttt{regla2}. Guarda los nombres de las reglas satisfechas, separados por coma. \\
     \bottomrule
   \end{tabularx}
 \end{table}

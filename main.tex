@@ -1028,7 +1028,7 @@ La Figura~\ref{fig:impl-arbol} presenta la estructura de archivos del módulo an
   xrightmargin=1em,
 }
 
-\begin{figure}[htbp]
+\begin{figure}[H]
   \centering
 \begin{lstlisting}[style=arbol]
 noticias_iag/
@@ -1058,7 +1058,7 @@ noticias_iag/
 |-- data/templates.xml            # templates de ejemplo
 `-- tests/test_pipeline.py        # 27 pruebas automatizadas
 \end{lstlisting}
-  \caption{Estructura de archivos del \textit{addon} \texttt{noticias\_iag}, anotada con el elemento de la arquitectura que cada uno realiza. Los seis filtros construidos por el módulo ocupan un archivo cada uno bajo \texttt{models/filtros/}, identificados por los puertos que conectan en la Figura~\ref{fig:arq-pipeline}; los tipos del flujo, el estudio y el \textit{template} son modelos persistentes bajo \texttt{models/}; los servicios de \texttt{services/} son infraestructura compartida que ningún filtro expone como puerto. Se omiten los archivos de inicialización de paquete, los recursos estáticos y el entorno de desarrollo. La estructura corresponde a la versión del módulo descripta en este capítulo.}
+  \caption{Estructura de archivos del \textit{addon} \texttt{noticias\_iag}, anotada con el elemento de la arquitectura que cada archivo realiza; los filtros se identifican por los puertos que conectan en la Figura~\ref{fig:arq-pipeline}. Se omiten los archivos de inicialización de paquete, los recursos estáticos y el entorno de desarrollo.}
   \label{fig:impl-arbol}
 \end{figure}
 

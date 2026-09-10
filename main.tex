@@ -1016,6 +1016,52 @@ El stack sobre el que se realiza el módulo está determinado en su mayor parte 
 
 Esta sección desarrolla la correspondencia que la Tabla~\ref{tab:impl-correspondencia} enunció. Comienza por lo que todos los filtros comparten ---la interfaz que los define como filtros, el modo en que reciben y emiten \textit{recordsets}, y el mecanismo con que se los sustituye---, sigue con el estudio, que instancia la red de tubos y la recorre, y recién entonces trata cada filtro. Para cada uno se sigue un esqueleto fijo: el contrato que el Capítulo~\ref{cap:arquitectura} le fijó, el modelo o servicio que lo realiza, la superficie desde la que se lo configura y el rol que puede accionarla, y las responsabilidades que esa realización honra. Cierran la sección las dos superficies de configuración tomadas en conjunto y el sumidero.
 
+La Figura~\ref{fig:impl-arbol} presenta la estructura de archivos del módulo anotada contra los elementos de la arquitectura, y funciona como mapa de las subsecciones que siguen: cada filtro, cada tipo del flujo y cada servicio nombrado allí se desarrolla más adelante en el orden del pipeline. La organización obedece a la regla de correspondencia enunciada en la introducción del capítulo, y su asimetría más visible es deliberada: los filtros ocupan un archivo cada uno, mientras que los siete tipos del flujo comparten uno solo. La razón es que el filtro es la unidad sustituible del estilo ---un \textit{addon} tercero hereda \texttt{iag.filtro.invocacion} y reemplaza su operación sin tocar nada más---, en tanto que los tipos no se sustituyen sino que se declaran, y comparten el mixin y las restricciones de monotonía que la Subsección~\ref{sec:impl-mat-patron} describe.
+
+\lstdefinestyle{arbol}{
+  basicstyle=\ttfamily\footnotesize,
+  columns=fullflexible,
+  keepspaces=true,
+  frame=single,
+  framerule=0.4pt,
+  xleftmargin=1em,
+  xrightmargin=1em,
+}
+
+\begin{figure}[htbp]
+  \centering
+\begin{lstlisting}[style=arbol]
+noticias_iag/
+|-- __manifest__.py               # depende de wsfnoticias
+|-- models/
+|   |-- filtros/
+|   |   |-- base.py               # iag.filtro: la interfaz
+|   |   |-- enriquecimiento.py    # filtro  3->4
+|   |   |-- composicion.py        # filtro  5->6
+|   |   |-- invocacion.py         # filtro  7->8
+|   |   |-- decodificacion.py     # filtro  9->10
+|   |   |-- verificacion.py       # filtro 11->12
+|   |   `-- normalizacion.py      # filtro 13->14
+|   |-- tipos.py                  # los siete tipos y su mixin
+|   |-- estudio.py                # iag.estudio: pipeline y runner
+|   |-- template.py               # iag.template
+|   |-- resultado_fila.py         # proyección del sumidero
+|   |-- noticia.py                # hereda wsf_noticias_resultados
+|   `-- res_config_settings.py    # configuración técnica
+|-- services/
+|   |-- proveedor.py              # frontera generativa: adaptadores
+|   |-- esquema.py                # validación y canonicalización
+|   |-- render.py                 # ensamblador único del prompt
+|   `-- vectores.py               # similitud coseno
+|-- views/                        # superficies del experto
+|-- security/ir.model.access.csv  # permisos analista/operador
+|-- data/templates.xml            # templates de ejemplo
+`-- tests/test_pipeline.py        # 27 pruebas automatizadas
+\end{lstlisting}
+  \caption{Estructura de archivos del \textit{addon} \texttt{noticias\_iag}, anotada con el elemento de la arquitectura que cada uno realiza. Los seis filtros construidos por el módulo ocupan un archivo cada uno bajo \texttt{models/filtros/}, identificados por los puertos que conectan en la Figura~\ref{fig:arq-pipeline}; los tipos del flujo, el estudio y el \textit{template} son modelos persistentes bajo \texttt{models/}; los servicios de \texttt{services/} son infraestructura compartida que ningún filtro expone como puerto. Se omiten los archivos de inicialización de paquete, los recursos estáticos y el entorno de desarrollo. La estructura corresponde a la versión del módulo descripta en este capítulo.}
+  \label{fig:impl-arbol}
+\end{figure}
+
 \subsection{El patrón común de los filtros}
 \label{sec:impl-mat-patron}
 

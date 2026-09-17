@@ -586,7 +586,7 @@ Esta subsección caracteriza cada uno de los siete filtros ---dos de los cuales,
 
 Todos los filtros comparten un mismo patrón de operación, consecuencia del uso del repositorio común: reciben por su puerto de entrada un \textit{recordset}, recuperan del repositorio el contenido asociado a esas referencias, aplican su transformación, persisten los resultados y emiten por su puerto de salida un nuevo \textit{recordset} que referencia los registros producidos. Salvo el filtro de Extracción ---que es un filtro activo, disparado por las acciones planificadas de la plataforma según la prioridad de monitoreo asignada a cada portal---, los restantes operan a demanda dentro de la ejecución de un análisis, consumiendo los datos disponibles en su puerto de entrada.
 
-Este patrón admite una formulación más precisa, que extiende la notación funcional con que el catálogo describe a los filtros. En el estilo puro, un filtro del pipeline es una función \(f : T[c] \to T'[c']\) de su puerto de entrada en su puerto de salida \citep[p.~24]{cristia:2025}. En la variante heterogénea aquí adoptada, en cambio, la transformación del contenido ocurre en el repositorio común, de modo que el estado que se transforma es el par flujo--repositorio:
+Este patrón admite una formulación más precisa, que extiende la notación funcional con que el catálogo describe a los filtros. \citet[p.~24]{cristia:2025} conciben un filtro como una función de sus puertos de entrada en sus puertos de salida, \(F : \Gamma^n \to \Gamma^m\), donde \(n\) y \(m\) son la cantidad de puertos de entrada y de salida y \(\Gamma\) el tipo de dato con que trabajan. En el presente diseño esa firma se particulariza por las dos especializaciones adoptadas (Subsección~\ref{sec:arq-car-especializaciones}): por la de \textit{pipeline}, cada filtro tiene un único puerto de cada lado, de modo que \(n = m = 1\); por la de tubos tipados, el tipo de la entrada y el de la salida difieren. El dato de cada puerto es, además, un \textit{recordset}, y su firma \(T[c]\) declara el tipo \(T\) de los registros referenciados y su cardinalidad \(c\) (Subsección~\ref{sec:arq-car-tubos}). Un filtro del pipeline en el estilo puro es, entonces, una función \(f : T[c] \to T'[c']\) de su puerto de entrada en su puerto de salida. Conviene no confundir los exponentes \(n\) y \(m\) del catálogo, que cuentan puertos, con las cardinalidades \(N\) y \(M\) de la Subsección~\ref{sec:arq-car-tubos}, que cuentan registros. En la variante heterogénea aquí adoptada, en cambio, la transformación del contenido ocurre en el repositorio común, de modo que el estado que se transforma es el par flujo--repositorio:
 \[
   f : (T[c],\ \mathit{Rep}) \to (T'[c'],\ \mathit{Rep}')
   \qquad \text{con } \mathit{Rep}' = \mathit{Rep} \cup \Delta_f,
@@ -971,16 +971,16 @@ Que el resto del pipeline pueda apoyarse sobre el filtro reutilizado depende de 
   \setlength{\tabcolsep}{4pt}
   \begin{tabularx}{\textwidth}{@{}l l X@{}}
     \toprule
-    \textbf{Clave del contrato} & \textbf{Tipo Odoo} & \textbf{Observación}                                                                                  \\
+    \textbf{Clave del contrato} & \textbf{Tipo Odoo} & \textbf{Observación}                                                                                                         \\
     \midrule
-    \texttt{titulo}             & Char               & El scraper elimina las comillas del título.                                                           \\
-    \texttt{copete?}            & Char               & Se llena sólo por la vía del índice del sitio; vacío por la vía RSS.                                  \\
-    \texttt{texto}              & Text               &                                                                                                       \\
-    \texttt{link}               & Char               & Restricción de unicidad en la base de datos: la clave única que el contrato exige.                    \\
-    \texttt{medio}              & Many2one           & Referencia al contacto (\textit{partner}) del portal; su configuración vive en el modelo de portales. \\
-    \texttt{departamento}       & Char               & Copiado del portal en el momento de la extracción; es una etiqueta del portal, no del contenido.      \\
-    \texttt{fecha\_hora?}       & Datetime           & Fecha de publicación según la biblioteca de extracción; puede faltar.                                 \\
-    \texttt{fecha\_registro}    & Datetime           & La escribe el scraper al grabar.                                                                      \\
+    \texttt{titulo}             & Char               & El scraper elimina las comillas del título.                                                                                  \\
+    \texttt{copete?}            & Char               & Se llena sólo por la vía del índice del sitio; vacío por la vía RSS.                                                         \\
+    \texttt{texto}              & Text               &                                                                                                                              \\
+    \texttt{link}               & Char               & Restricción de unicidad en la base de datos: la clave única que el contrato exige.                                           \\
+    \texttt{medio}              & Many2one           & Referencia al contacto (\textit{partner}) del portal; su configuración vive en el modelo de portales.                        \\
+    \texttt{departamento}       & Char               & Copiado del portal en el momento de la extracción; es una etiqueta del portal, no del contenido.                             \\
+    \texttt{fecha\_hora?}       & Datetime           & Fecha de publicación según la biblioteca de extracción; puede faltar.                                                        \\
+    \texttt{fecha\_registro}    & Datetime           & La escribe el scraper al grabar.                                                                                             \\
     \texttt{reglas\_aplicadas}  & Char               & Único campo cuyo nombre difiere: se llama \texttt{regla2}. Guarda los nombres de las reglas satisfechas, separados por coma. \\
     \bottomrule
   \end{tabularx}
@@ -1007,7 +1007,7 @@ Esa delimitación no queda confiada a la prosa: es verificable en cuatro declara
 
 \begin{figure}[H]
   \centering
-\begin{lstlisting}[style=implbloque]
+  \begin{lstlisting}[style=implbloque]
 # __manifest__.py --- declara la dependencia, no copia el addon
 'depends': ['base', 'wsfnoticias'],
 
@@ -1053,7 +1053,7 @@ La Figura~\ref{fig:impl-arbol} presenta la estructura de archivos del módulo an
 
 \begin{figure}[H]
   \centering
-\begin{lstlisting}[style=implbloque]
+  \begin{lstlisting}[style=implbloque]
 noticias_iag/
 |-- __manifest__.py               # depende de wsfnoticias
 |-- models/
@@ -1160,11 +1160,6 @@ Las siete subsecciones que siguen recorren los filtros en el orden del pipeline.
 
 \paragraph{Decisión de implementación.} El módulo no construyó un extractor propio ni un envoltorio sobre el institucional, y esa ausencia es deliberada. Envolver la Extracción en un modelo \texttt{iag.filtro.extraccion} habría dado uniformidad a la tabla de etapas, pero a costa de introducir una dependencia hacia el interior del \textit{addon} institucional ---sus métodos de extracción, su secuencia de monitoreo--- que la delimitación de la Sección~\ref{sec:impl-pre-delimitacion} excluye. La dependencia queda, en cambio, reducida al contrato \texttt{Noticia} y a tres lecturas para la selección del corpus: los contactos de los portales y las reglas del \textit{addon} institucional, que el estudio consulta para ofrecer los criterios, y la valoración manual del operador, que se consulta únicamente para excluir las publicaciones archivadas. Es la mínima superficie de contacto compatible con reutilizar el filtro, y es lo que permite afirmar que un extractor distinto que produjera registros con las nueve claves del contrato sustituiría al actual sin tocar el módulo.
 
-\section{Los invariantes esenciales en la implementación}
-\label{sec:impl-invariantes}
-
-\section{Pruebas automatizadas como evidencia}
-\label{sec:impl-pruebas}
 
 \section{Síntesis del capítulo}
 \label{sec:impl-sintesis}

@@ -58,3 +58,6 @@ Thumbs.db
 
 # --- Contexto privado para asistentes (Claude, Cursor, etc.) ---
 CLAUDE.md
+
+# Bib filtrado del paper CoNaIISI (generado por conaiisi2026/make_bib.py)
+conaiisi2026/refs-paper.bib

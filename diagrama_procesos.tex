@@ -1,0 +1,142 @@
+% =====================================================================
+%  Mapa de procesos del ciclo de un estudio (Figura del Capítulo 5)
+%  Notación inspirada en BPMN: tres calles (actores), siete procesos
+%  (bandas horizontales numeradas), actividades, compuerta, eventos.
+%
+%  Source of truth del diagrama. Para regenerar el PNG que usa main.tex:
+%      lualatex diagrama_procesos.tex
+%      pdftoppm -png -singlefile -r 200 diagrama_procesos.pdf Diagrama-Procesos
+%
+%  El primer comando produce diagrama_procesos.pdf (ignorado por git);
+%  el segundo produce Diagrama-Procesos.png (versionado, referenciado
+%  por \includegraphics en main.tex).
+% =====================================================================
+\documentclass[tikz,border=6pt]{standalone}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish,es-tabla,es-noindentfirst]{babel}
+\usetikzlibrary{shapes.geometric,positioning,arrows.meta,calc,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\footnotesize,
+  act/.style={draw, thick, rectangle, rounded corners=3pt, minimum height=0.82cm,
+    align=center, fill=white, inner sep=2.5pt, text width=3.3cm},
+  actS/.style={act, fill=black!7},
+  actI/.style={act, text width=2.65cm},
+  actN/.style={act, text width=2.5cm},
+  actIt/.style={act, text width=1.35cm},
+  actP/.style={act, text width=2.15cm},
+  evt/.style={draw, thick, circle, minimum size=0.4cm, inner sep=0pt, fill=white},
+  evtfin/.style={evt, line width=2.2pt},
+  gw/.style={draw, thick, diamond, aspect=1.2, minimum size=0.95cm, inner sep=0pt, fill=white, font=\small},
+  flujo/.style={-{Latex[length=2.2mm,width=1.8mm]}, thick},
+  asoc/.style={-{Latex[length=2.2mm,width=1.8mm]}, thick, dash pattern=on 3pt off 2pt, draw=black!65},
+  etiq/.style={font=\scriptsize, fill=white, inner sep=1.2pt, align=center},
+  tubo/.style={font=\scriptsize\ttfamily, inner sep=1pt, anchor=west},
+  fase/.style={font=\small\bfseries},
+  hdr/.style={font=\small\bfseries},
+]
+% ---- geometría: columnas ----
+%   F  (procesos)       0.0 .. 0.9   centro 0.45
+%   E  (experto)        0.9 .. 5.5   centro 3.35
+%   S  (sistema)        5.5 .. 10.1  centro 7.8
+%   I  (implementador) 10.1 .. 13.1  centro 11.6
+\def\xF{0.45} \def\xE{3.35} \def\xS{7.8} \def\xI{11.6}
+\def\yTop{0} \def\yHdr{-0.7} \def\yBot{-16.85}
+% ---- filas (paso 1,15) ----
+\def\rA{-1.3}  \def\rB{-2.45}  \def\rC{-3.6}   \def\rD{-4.75}  \def\rE{-5.9}
+\def\rF{-7.05} \def\rG{-8.2}   \def\rH{-9.35}  \def\rI{-10.5}  \def\rJ{-11.65}
+\def\rK{-12.8} \def\rL{-13.95} \def\rM{-15.1}  \def\rN{-16.25}
+
+% ---- fondos ----
+\begin{scope}[on background layer]
+  \fill[black!12] (0,\yTop) rectangle (13.1,\yHdr);
+  \fill[black!4]  (0,\yHdr) rectangle (0.9,\yBot);
+\end{scope}
+
+% ---- calles ----
+\draw[thick] (0,\yTop) rectangle (13.1,\yBot);
+\draw[thick] (0.9,\yTop) -- (0.9,\yBot);
+\draw[thick] (5.5,\yTop) -- (5.5,\yBot);
+\draw[thick] (10.1,\yTop) -- (10.1,\yBot);
+\draw[thick] (0,\yHdr) -- (13.1,\yHdr);
+\node[hdr] at (\xE,-0.35) {Experto del dominio};
+\node[hdr] at (\xS,-0.35) {Sistema};
+\node[hdr] at (\xI,-0.35) {Implementador};
+
+% ---- separadores de procesos y numeración ----
+\foreach \y in {-1.875,-4.175,-6.475,-13.375,-14.525,-15.675}{
+  \draw[thin, dash pattern=on 2pt off 2pt, black!55] (0,\y) -- (13.1,\y);
+}
+\node[fase] at (\xF,-1.29)  {01};
+\node[fase] at (\xF,-3.025) {02};
+\node[fase] at (\xF,-5.325) {03};
+\node[fase] at (\xF,-9.925) {04};
+\node[fase] at (\xF,-13.95) {05};
+\node[fase] at (\xF,-15.1)  {06};
+\node[fase] at (\xF,-16.26) {07};
+
+% ---- calle del experto ----
+\node[evt] (ini) at (1.5,\rA) {};
+\node[actN] (E1)  at (3.85,\rA) {\textbf{01.01, 01.03} Formular la pregunta; crear el estudio};
+\node[act]  (E3)  at (\xE,\rB)  {\textbf{02.01} Sintonizar la Extracción: portales y reglas};
+\node[act]  (E4)  at (\xE,\rC)  {\textbf{02.03} Seleccionar y confirmar el corpus};
+\node[act]  (E5)  at (\xE,\rD)  {\textbf{03.01} Crear o editar el \textit{template}};
+\node[act]  (E6)  at (\xE,\rE)  {\textbf{03.02--03.04} Sintonizar Composición, Verificación y Normalización};
+\node[act]  (E8)  at (\xE,\rF)  {\textbf{04.01} Ejecutar el pipeline};
+\node[act]  (E9)  at (\xE,\rJ)  {\textbf{04.07} Emitir veredictos (revisor humano)};
+\node[act]  (E10) at (\xE,\rL)  {\textbf{05.02} Leer el resultado; auditar la procedencia};
+\node[gw]   (G)   at (3.9,\rM)  {$\times$};
+\node[font=\scriptsize\bfseries, anchor=south west, inner sep=1pt] at ($(G.north)+(0.12,-0.02)$) {06.01};
+\node[actIt] (E11) at (2.0,\rM) {\textbf{06.02} Nueva iteración};
+\node[actP] (E12) at (3.6,\rN)  {\textbf{07.01} Presentar los resultados};
+\node[evtfin] (fin) at (5.12,\rN) {};
+
+% ---- calle del sistema ----
+\node[actS] (S0) at (\xS,\rB) {\textbf{02.02} Extracción (continua, cada 80 minutos)};
+\node[actS] (S1) at (\xS,\rF) {\textbf{04.02} Enriquecimiento semántico};
+\node[actS] (S2) at (\xS,\rG) {\textbf{04.03} Composición de contexto};
+\node[actS] (S3) at (\xS,\rH) {\textbf{04.04} Invocación generativa};
+\node[actS] (S4) at (\xS,\rI) {\textbf{04.05} Decodificación};
+\node[actS] (S5) at (\xS,\rJ) {\textbf{04.06} Verificación (juez o espera al revisor)};
+\node[actS] (S6) at (\xS,\rK) {\textbf{04.08} Normalización};
+\node[actS] (S7) at (\xS,\rL) {\textbf{05.01} Ficha del estudio y tablero};
+
+% ---- calle del implementador ----
+\node[actI] (I1) at (\xI,\rA) {\textbf{01.02} Configuración técnica del servicio de modelos};
+
+% ---- flujo de secuencia: experto ----
+\draw[flujo] (ini) -- (E1);
+\draw[flujo] (E1.south) -- (E1.south |- E3.north);
+\draw[flujo] (E3) -- (E4);
+\draw[flujo] (E4) -- (E5) node[tubo, midway, xshift=2pt] {Noticia[N]};
+\draw[flujo] (E5) -- (E6);
+\draw[flujo] (E6) -- (E8);
+\draw[flujo] (E8) -- (S1);
+% ---- flujo de secuencia: sistema (con el tipo del tubo emitido) ----
+\draw[flujo] (S1) -- (S2) node[tubo, midway, xshift=2pt] {Embedding[N]};
+\draw[flujo] (S2) -- (S3) node[tubo, midway, xshift=2pt] {Prompt[M]};
+\draw[flujo] (S3) -- (S4) node[tubo, midway, xshift=2pt] {RespuestaIAG[M]};
+\draw[flujo] (S4) -- (S5) node[tubo, midway, xshift=2pt] {Análisis[M']};
+\draw[flujo] (S5) -- (S6) node[tubo, midway, xshift=2pt] {Veredicto[M']};
+\draw[flujo] (S6) -- (S7) node[tubo, midway, xshift=2pt] {Resultado};
+% ---- verificación humana: espera y retorno ----
+\draw[flujo] (S5) -- (E9) node[etiq, midway, above] {ejecutor\\humano};
+\draw[flujo] (E9.south) |- (S6.west) node[etiq, pos=0.75, above] {Continuar};
+% ---- lectura, decisión, iteración, fin ----
+\draw[flujo] (S7) -- (E10);
+\draw[flujo] (E10.south) -- (E10.south |- G.north) -- (G.north);
+\draw[flujo] (G) -- (E11) node[etiq, midway, above] {no};
+\draw[flujo] (G) -- (E12.north -| G.south) node[etiq, midway, right] {sí};
+\draw[flujo] (E12) -- (fin);
+\draw[flujo] (E11.west) -- (1.1,\rM) -- (1.1,\rC) -- (E4.west)
+  node[etiq, rotate=90, pos=0.5] {};
+\node[etiq, rotate=90] at (1.1,-9.35) {estudio derivado};
+% ---- asociaciones (configuración y datos) ----
+\draw[asoc] (E3) -- (S0) node[etiq, midway, above] {sintonía};
+\draw[asoc] (S0.south) |- (E4.east) node[etiq, pos=0.72, above] {lo ya extraído};
+\draw[asoc] (I1.south) |- (S1.east);
+\node[etiq, rotate=90] at (\xI,-4.55) {copiada al estudio al iniciar};
+\end{tikzpicture}
+\end{document}

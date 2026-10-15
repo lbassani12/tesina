@@ -168,7 +168,7 @@ El módulo se integra como \textit{addon} sobre la suite \textit{Odoo Community}
 
 \vspace{0.3 cm}
 
-Este objetivo formaliza la hoja de ruta procedimental que organiza el trabajo del experto del dominio y del sistema, y constituye el puente entre la caracterización arquitectónica (Capítulo~\ref{cap:arquitectura}) y la operación concreta del framework. Las actividades se representan mediante diagramas inspirados en la notación BPMN y se documentan con sus objetivos, alcance, entradas y salidas.
+Este objetivo formaliza la hoja de ruta procedimental que organiza el trabajo del experto del dominio y del sistema, y constituye el puente entre la caracterización arquitectónica (Capítulo~\ref{cap:arquitectura}) y la operación concreta del framework. Las actividades se representan en un diagrama inspirado en la notación BPMN, y cada proceso se documenta con su propósito, sus actores, sus entradas y sus salidas.
 
 \vspace{0.3 cm}
 
@@ -512,7 +512,7 @@ El capítulo siguiente desarrolla la primera capa de esta propuesta: la aplicaci
 \chapter{Arquitectura}
 \label{cap:arquitectura}
 
-Este capítulo presenta la arquitectura de la infraestructura propuesta. A diferencia del Capítulo~\ref{cap:procesos}, donde los procesos se describen de manera agnóstica a la implementación, aquí se aborda la dimensión técnica: las decisiones de estilo arquitectónico, los componentes que materializan cada capa del sistema y el stack tecnológico sobre el que se construye.
+Este capítulo presenta la arquitectura de la infraestructura propuesta. Aborda la dimensión técnica ---la vista procedimental, quién hace qué y en qué orden, se desarrolla en el Capítulo~\ref{cap:procesos}---: las decisiones de estilo arquitectónico, los componentes que materializan cada capa del sistema y el stack tecnológico sobre el que se construye.
 
 La propuesta no se concibe en el vacío. Esta tesina se inscribe en una línea de investigación interdisciplinaria desarrollada por el Centro de Altos Estudios en Tecnología Informática (CAETI) de la Universidad Abierta Interamericana en articulación con el Centro de Investigaciones en Mediatizaciones (CIM) de la Universidad Nacional de Rosario, en cuyo marco se ha venido construyendo una infraestructura técnica para la extracción y análisis de noticias de portales digitales mediante inteligencia artificial generativa. Esa infraestructura preexistente provee el sustrato sobre el cual esta tesina opera: una plataforma Odoo Community con módulos para la configuración y monitoreo de portales digitales, una herramienta de scraping basada en spiders parametrizables que combina librerías como BeautifulSoup, Selenium y Newspaper3k, y una capa inicial de procesamiento mediante \textit{retrieval-augmented generation} (RAG) y modelos de lenguaje de gran escala \citep{raimondo:2024}. Su caracterización detallada, y la delimitación precisa de qué se reutiliza de ella, se desarrollan en la Sección~\ref{sec:impl-preexistente}.
 
@@ -726,7 +726,7 @@ Esta caracterización no es exclusiva del catálogo: tiene un precedente directo
 
 En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio ---y son, por ello, los puntos donde se realiza la responsabilidad de intervención del experto, \resp{A}---: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador, al margen de todo sintonizador (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable.
 
-El más elaborado es el de Composición de contexto, y es el único que se realiza sobre dos superficies de configuración distintas. La primera es un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}. La segunda es el formulario de sintonía del estudio, donde el experto selecciona la plantilla, liga valores a las variables que ésta declara, agrega las aclaraciones de texto libre y fija los parámetros de recuperación y del modelo generativo. La partición responde a que ambas configuraciones tienen ciclos de vida distintos: el \textit{template} es una entidad persistente del repositorio común, reutilizable entre estudios y ajena a la monotonía del flujo (Apéndice~\ref{anexo:tipo-template}), mientras que los valores sintonizados pertenecen a una corrida y quedan fijados con ella; editar la plantilla dentro del estudio obligaría a bifurcar una copia por corrida y disolvería la reutilización que el panel persigue. Que la sintonía se reparta en dos formularios no la aleja del estilo: el sintonizador se define por lo que parametriza y por el momento en que el filtro lo lee ---una única vez, al invocarse---, no por la descomposición que adopte la capa de presentación; es, precisamente, el desacople entre el procesamiento y la interfaz de usuario que \citet{garlanshaw:1994} señalan como virtud de la interfaz de control. La práctica corriente de la ingeniería de \textit{prompts} converge con esa separación: se recomienda declarar variables en la plantilla y ligar sus valores por fuera, conservar el \textit{prompt} en un artefacto separado del código, y documentar cada intento contra una plantilla nombrada y versionada, registrando por corrida el modelo, la temperatura, la longitud de salida y los parámetros de recuperación \citep{prompt-eng:2024}. Su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
+El más elaborado es el de Composición de contexto, y es el único que se realiza sobre dos superficies de configuración distintas. La primera es un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Partir de una plantilla y no de un \textit{prompt} en blanco responde, además, a una dificultad documentada: \citet{zamfirescu2023} observan que los usuarios sin formación en inteligencia artificial diseñan sus \textit{prompts} de manera oportunista antes que sistemática, y derivan de ello la necesidad de herramientas que estructuren ese diseño. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}. La segunda es el formulario de sintonía del estudio, donde el experto selecciona la plantilla, liga valores a las variables que ésta declara, agrega las aclaraciones de texto libre y fija los parámetros de recuperación y del modelo generativo. La partición responde a que ambas configuraciones tienen ciclos de vida distintos: el \textit{template} es una entidad persistente del repositorio común, reutilizable entre estudios y ajena a la monotonía del flujo (Apéndice~\ref{anexo:tipo-template}), mientras que los valores sintonizados pertenecen a una corrida y quedan fijados con ella; editar la plantilla dentro del estudio obligaría a bifurcar una copia por corrida y disolvería la reutilización que el panel persigue. Que la sintonía se reparta en dos formularios no la aleja del estilo: el sintonizador se define por lo que parametriza y por el momento en que el filtro lo lee ---una única vez, al invocarse---, no por la descomposición que adopte la capa de presentación; es, precisamente, el desacople entre el procesamiento y la interfaz de usuario que \citet{garlanshaw:1994} señalan como virtud de la interfaz de control. La práctica corriente de la ingeniería de \textit{prompts} converge con esa separación: se recomienda declarar variables en la plantilla y ligar sus valores por fuera, conservar el \textit{prompt} en un artefacto separado del código, y documentar cada intento contra una plantilla nombrada y versionada, registrando por corrida el modelo, la temperatura, la longitud de salida y los parámetros de recuperación \citep{prompt-eng:2024}. Su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
 
 Que la intervención del experto se canalice por sintonizadores ---y no por el flujo de datos--- es lo que la mantiene compatible con el estilo: el sintonizador ajusta \textit{cómo} transforma un filtro, sin alterar la red de tubos ni agregar un puerto al pipeline. La configuración así incorporada es un parámetro del filtro, no un dato que circule por la arquitectura.
 
@@ -820,42 +820,42 @@ La Tabla~\ref{tab:registro-responsabilidades} consolida el registro maestro de l
       \resp{A} & Intervención del experto
       & Sintonizadores de Extracción, Composición, Verificación y Normalización (\S~\ref{sec:arq-car-sintonizadores}); invocados sólo desde la capa de presentación; \textit{template} como configuración editada.
       & Solapas \textit{Corpus}, \textit{Composición}, \textit{Verificación} y \textit{Normalización} del estudio y panel de \textit{templates}, para el grupo de analistas; cada solapa pasa a sólo lectura al ejecutarse su filtro (\S~\ref{sec:impl-mat-estudio}); formulario del revisor humano (\S~\ref{sec:impl-mat-verificacion}).
-      & Actividades con actor Experto de dominio: 02.01, 02.02, 02.05, 03.03--03.05; actor Investigador o analista: 04.03.
+      & Actividades del experto: 01.01 y 01.03, 02.01 y 02.03, 03.01--03.04, 04.07, 06.01--06.02 (Tabla~\ref{tab:proc-correspondencia}).
       & \textit{(por completar)} % TODO Cap. 6: configuración inicial y template
       \\
       \addlinespace
       \resp{B} & Independencia del estudio
       & \texttt{Template} (objetivo, esquema de respuesta); Decodificación valida contra el esquema del estudio sin configuración propia; sobre fijo y esquema delegado en \texttt{Análisis}, \texttt{Veredicto.sustento} y \texttt{Resultado} (Apéndice~\ref{anexo:tipos}, criterio~3).
       & \texttt{iag.template} con objetivo, instrucciones, variables y esquema; sintonizadores como campos del estudio, entregados a cada filtro como diccionario; ningún modelo del módulo tiene columnas de dominio; Decodificación alcanza el esquema por la cadena respuesta \(\to\) \textit{prompt} \(\to\) \textit{template} (\S~\ref{sec:impl-mat-decodificacion}).
-      & Proceso 03: 03.01 creación de \textit{templates}, 03.03 selección, 03.04 customización; 03.06 composición.
+      & 03.01--03.04: el estudio se declara como \textit{template} y sintonizadores; 04.03 y 04.05 lo consumen sin configuración de dominio.
       & \textit{(por completar)} % TODO Cap. 6: el caso como instancia; qué declaró el estudio y qué no cambió el framework
       \\
       \addlinespace
       \resp{C} & Frontera generativa
       & Invocación y Decodificación como filtros propios; Enriquecimiento sustituible; los contratos omiten proveedor y modelo (Apéndice~\ref{anexo:tipos}, criterio~2).
       & Servicio \texttt{iag.proveedor} con adaptadores simulado y compatible con OpenAI (\S~\ref{sec:impl-stack}); adaptador, modelos, credenciales, modo de salida estructurada y política de no conformidad como parámetros del sistema editables sólo por el implementador y copiados, sin credenciales, en cada estudio.
-      & Proceso 04: 04.01 procesamiento IAG, 04.02 decoder; proceso 02: 02.04 \textit{embedding}.
+      & 01.02: configuración técnica del implementador, única actividad de su calle; 04.02, 04.04 y 04.05.
       & \textit{(por completar)} % TODO Cap. 6: proveedor y modelo empleados; costo computacional (OE4)
       \\
       \addlinespace
       \resp{D} & Control editorial
       & Verificación como compuerta blanda; \texttt{Veredicto} (estado, confianza, sustento); política de consolidación de los análisis observados en Normalización.
       & \texttt{iag.veredicto} con estado, confianza y sustento por afirmación; juez generativo o formulario del revisor, con degradación a \textit{observado} y confianza cero; política sobre los observados y condición de inclusión en Normalización; el \texttt{Resultado} referencia los \(M'\) veredictos (\S\S~\ref{sec:impl-mat-verificacion}, \ref{sec:impl-mat-normalizacion}).
-      & 04.03 normalización (comparación y análisis de resultados); procesos 05 y 06.
+      & 03.03 criterio y ejecutor; 04.06--04.07 juez o revisor; 04.08; 05.01--05.02; 07.01.
       & \textit{(por completar)} % TODO Cap. 6: calidad y fidelidad de los resultados (OE4)
       \\
       \addlinespace
       \resp{E} & Procedencia
       & Auditabilidad lineal (\S~\ref{sec:arq-estilo-justificacion}); monotonía del repositorio; claves de referencia y \texttt{fecha\_registro} en los siete tipos; cadena \texttt{Resultado} \(\to\) \texttt{Noticia} (\S~\ref{sec:arq-car-contratos}).
       & Claves de procedencia obligatorias con restricción de borrado y mixin que impide eliminar; copia de la configuración técnica, tiempos e informes de cada filtro en el estudio; ficha del estudio (\S\S~\ref{sec:impl-mat-patron}, \ref{sec:impl-mat-estudio}).
-      & 04.03: documentación del recorrido completo del proceso.
+      & 02.03 confirmación del corpus; 04.01 copia de la configuración técnica; 04.08; 05.01--05.02 ficha y auditoría; 06.02 estudio enlazado.
       & \textit{(por completar)} % TODO Cap. 6: reconstrucción del resultado hasta las noticias
       \\
       \addlinespace
       \resp{F} & Infraestructura preexistente
       & Extracción sobre el scraper preexistente; repositorio sobre PostgreSQL y el ORM de Odoo (\S~\ref{sec:arq-car-repositorio}).
       & Dependencia declarada, herencia cosmética de \texttt{wsf\_noticias\_resultados}, menú y grupos reutilizados: cuatro declaraciones son toda la superficie de contacto (\S~\ref{sec:impl-pre-delimitacion}, Figura~\ref{fig:impl-frontera}); extractor reutilizado sin modificación.
-      & Proceso 02: 02.03 (Aplicación de Scraping).
+      & 02.01--02.02 sobre el \textit{addon} institucional; el operador queda fuera del ciclo (\S~\ref{sec:proc-notacion}).
       & \textit{(por completar)} % TODO Cap. 6: ejecución del scraping
       \\
     \end{xltabular}
@@ -1429,297 +1429,211 @@ Con ello el capítulo responde a la pregunta que lo abrió ---si el módulo real
 \chapter{Mapa de procesos}
 \label{cap:procesos}
 
-\section{Proceso general}
-\label{sec:proc-general}
+Los dos capítulos anteriores respondieron, para cada filtro del pipeline, qué transforma y cómo lo realiza el módulo. Ninguno de los dos respondió en qué orden ocurre todo eso a lo largo de un estudio completo, quién actúa en cada punto y dónde se decide volver a empezar. Esa es la vista que este capítulo agrega, en cumplimiento del objetivo específico OE2: el ciclo de análisis modelado como un mapa de procesos, con sus actores, sus entradas y salidas, y su correspondencia con los filtros del Capítulo~\ref{cap:arquitectura} y con las superficies del Capítulo~\ref{cap:implementacion}.
 
-\begin{figure}[h]
+El capítulo es deliberadamente breve y no repite lo que las otras dos vistas ya fijaron. Los contratos de datos, los sintonizadores y las decisiones de implementación se citan por referencia; lo que aquí se describe es exclusivamente el orden, el reparto de las actividades entre los actores y las condiciones que permiten pasar de un proceso al siguiente. Se compone de un único diagrama, la Figura~\ref{fig:proc-ciclo}, que presenta el ciclo completo de un estudio en tres calles; de la descripción de los siete procesos que ese diagrama recorre (Sección~\ref{sec:proc-ciclo}); y de una tabla de correspondencia que ubica cada actividad frente al elemento de la arquitectura y a la realización que le corresponden (Sección~\ref{sec:proc-correspondencia}). La síntesis final completa la columna de este capítulo en el registro maestro de responsabilidades.
+
+\section{Notación y actores}
+\label{sec:proc-notacion}
+
+El mapa adopta un subconjunto de la notación BPMN \citep{omg:bpmn2013}: calles (\textit{lanes}) que reparten las actividades según quién las ejecuta, actividades representadas como rectángulos de esquinas redondeadas, eventos de inicio y de fin como círculos, una compuerta exclusiva como rombo y flujos de secuencia como flechas continuas; las flechas discontinuas señalan asociaciones que no son flujo de control ---la configuración que una actividad deja disponible para otra, o los datos que una consume de otra---. El objetivo específico habla de una notación \textit{inspirada} en BPMN, y la precisión es intencional: el mapa no es un modelo ejecutable, no emplea flujos de mensaje ni eventos intermedios, y no reclama conformidad con el estándar. Toma de la notación lo que la vista procedimental necesita ---el reparto por actor y el orden--- y nada más.
+
+Las tres calles corresponden a los tres roles que la implementación distingue (Sección~\ref{sec:impl-materializacion}). El \textit{experto del dominio} es el miembro del grupo de analistas del \textit{addon} institucional: tiene permiso pleno sobre portales, reglas, \textit{templates} y estudios, emite veredictos cuando actúa como revisor y es el único actor que toma decisiones de dominio. El \textit{implementador} es el administrador de la plataforma: fija la configuración técnica del servicio de modelos desde un menú al que sólo ese grupo accede, y no interviene en ningún estudio en particular. El \textit{sistema} es el framework mismo ---los siete filtros, el \textit{runner} del estudio y el sumidero---, que actúa cuando el experto se lo indica o, en el caso de la Extracción, por su cuenta. Un cuarto rol preexistente, el \textit{operador} del \textit{addon} institucional, lee publicaciones y puede archivarlas, pero no participa del ciclo de análisis; por eso no tiene calle, y su único efecto sobre el mapa aparece como criterio de exclusión en la selección del corpus.
+
+Los procesos se numeran del 01 al 07 y las actividades con el número de su proceso seguido de un ordinal, de modo que una actividad se cita como 03.02. Son estos códigos, y no los nombres de los filtros, los que el registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}) emplea para la columna de este capítulo.
+
+\section{El ciclo del estudio}
+\label{sec:proc-ciclo}
+
+\begin{figure}[p]
   \centering
-  \includegraphics[width=5.4in]{procesoBPMN.png}
+  \includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{Diagrama-Procesos.png}
+  \caption{Mapa de procesos del ciclo de un estudio, en notación inspirada en BPMN. Las columnas son las calles de los tres actores; las bandas horizontales, numeradas a la izquierda, son los siete procesos: 01 definición del estudio, 02 constitución del corpus, 03 definición del contexto, 04 procesamiento generativo, 05 lectura del resultado, 06 refinamiento iterativo y 07 presentación de resultados. Las flechas continuas son flujo de secuencia y las discontinuas, asociaciones de configuración o de datos. Las actividades del sistema en el proceso 04 son los filtros del pipeline de la Figura~\ref{fig:arq-pipeline}, con el tipo del tubo que cada uno emite. La compuerta del proceso 06 pregunta si el resultado responde a la pregunta del estudio; de no ser así, un estudio derivado reingresa en la actividad 02.03.}
+  \label{fig:proc-ciclo}
 \end{figure}
 
-\noindent\fbox{%
-  \parbox{\textwidth}{%
-    \textbf{Objetivo:} Diseñar e implementar un framework basado en el estilo arquitectónico de Tubos y Filtros que automatice el análisis de noticias de portales digitales mediante inteligencia artificial generativa, manteniendo trazabilidad del flujo de datos, control editorial por parte del experto del dominio y reproducibilidad del proceso analítico.
+La Figura~\ref{fig:proc-ciclo} se lee de arriba hacia abajo. Las bandas horizontales son los siete procesos y las tres columnas, las calles de los actores. El ciclo tiene un único evento de inicio ---la pregunta del experto--- y un único evento de fin ---la presentación de los resultados---, y entre ambos un solo ciclo de control: la compuerta del proceso 06, que devuelve el flujo a la constitución del corpus a través de un estudio derivado. La espera de la verificación humana en el proceso 04 no es un ciclo sino una detención: el flujo sale del sistema hacia el experto y regresa por la misma actividad. Dos rasgos de la figura conviene señalar antes de recorrerla. La calle del sistema queda vacía hasta el proceso 04 con una sola excepción, la Extracción, que corre de manera continua y desacoplada del ciclo (Subsección~\ref{sec:impl-pre-extraccion}): el experto no la dispara, sino que selecciona sobre lo que ella ya depositó. Y la calle del experto queda vacía durante el proceso 04 salvo cuando él mismo es el revisor: el procesamiento generativo es, por diseño, la parte del ciclo en la que el experto no interviene, porque toda su intervención quedó canalizada por los sintonizadores antes de ejecutarlo (Subsección~\ref{sec:arq-car-sintonizadores}).
 
+Cada proceso se describe a continuación con su propósito, su entrada y su salida, y la lista de sus actividades con el actor que las ejecuta. Las referencias a filtros, sintonizadores y superficies remiten a los capítulos anteriores y no se repiten aquí.
 
-    \textbf{Alcance:} Desarrollar un framework que permita recopilar requerimientos de expertos (01), recopilar datos del mundo real utilizando técnicas de \textit{scraping} (02), definir el contexto del análisis mediante el uso de \textit{prompt engineering} (03), obtener la salida de la IAG (04), realizar una visualización previa de los resultados (05), refinar la salida a través de la retroalimentación del análisis, ajustando y mejorando el contexto de manera iterativa; adaptándose progresivamente a las necesidades del experto a cargo (06), y presentar los resultados obtenidos (07).
-
-
-
-    \textbf{Entrada:} Datos empíricos de las noticias junto con información de contexto, requerimientos de análisis y tipo de salida deseada.
-
-
-    \textbf{Salida:} Resultados producidos por la IAG, que pueden ser en forma de narrativas, tablas, gráficos u otras representaciones visuales, dependiendo de los objetivos requeridos.
-
-
-    \textbf{Responsabilidades:} \respr{A}{F} ---el ciclo completo realiza las seis responsabilidades transversales (Sección~\ref{sec:intro-responsabilidades}); cada proceso de soporte señala, junto a sus actores, las que le corresponden---.
-  }%
-}
-
-\vspace{0.5cm}
-
-De los procesos antes mencionados, a continuación se describen los procesos de soporte Nro. 02 -\textbf{Scraping}, 03 - \textbf{Definición de Contexto} y 04- \textbf{Procesamiento IAG}.
-
-\newpage
-\section{Recopilación de requerimientos}
+\subsection{Proceso 01: definición del estudio}
 \label{sec:proc-requerimientos}
 
-\newpage
-\section{Scraping}
+Fija qué se va a estudiar y asegura que el entorno técnico esté en condiciones de hacerlo. \textit{Entrada:} una pregunta de investigación sobre la cobertura de los portales. \textit{Salida:} un estudio en estado borrador y una configuración técnica vigente.
+
+\begin{itemize}
+  \item \textbf{01.01 Formulación de la pregunta y los criterios} (experto). Fuera del sistema, el experto decide el tema, el período, los portales de interés, el paradigma con que leerá las noticias, la variable por la que querrá comparar los resultados y la forma que espera de cada análisis. Es la única actividad del ciclo sin correlato en el código, y la responsabilidad \resp{B} explica por qué: nada de lo que aquí se decide se programa; todo ingresa como dato en el proceso 03.
+  \item \textbf{01.02 Configuración técnica} (implementador). Desde el menú de configuración del módulo fija el adaptador y la dirección del servicio de modelos, las credenciales, el modelo generativo y el modelo de \textit{embedding}, el tiempo de espera, el modo de salida estructurada, la política ante la no conformidad y los largos máximos de texto. Se realiza una vez por instalación, o cuando cambia el servicio, y no por estudio; cada estudio toma una copia de esa configuración, sin las credenciales, al iniciar su corrida (Subsección~\ref{sec:impl-mat-estudio}).
+  \item \textbf{01.03 Creación del estudio} (experto). Da de alta el estudio con un nombre y las notas que documentan la pregunta. El estudio nace en estado borrador, con sus tubos vacíos.
+\end{itemize}
+
+\subsection{Proceso 02: constitución del corpus}
 \label{sec:proc-scraping}
-% TODO [B]: el objetivo, alcance y entrada de este proceso están redactados para el caso electoral
-% ("resultados electorales, encuestas", "tipo de elección"). Por la responsabilidad [B], la
-% descripción del proceso debe ser agnóstica del estudio (como Extracción en el Cap. 3) y lo
-% electoral debe migrar al Cap. 6.
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=4in]{Diagrama 02-Scrapping.png}
-\end{figure}
 
-\noindent\fbox{%
-  \parbox{\textwidth}{%
-    \textbf{Objetivo:} Recolectar datos relevantes de resultados electorales, encuestas y percepción de la gente en portales digitales regionales. Además, se busca automatizar este proceso para hacerlo más eficiente y facilitar el análisis posterior de los datos extraídos.
+Reúne en el estudio las noticias sobre las que se va a trabajar. \textit{Entrada:} los portales y las reglas que el experto considera pertinentes, y el repositorio con lo que la Extracción ya depositó. \textit{Salida:} el \textit{recordset} \texttt{Noticia[N]} confirmado como corpus del estudio, en estado \textit{corpus seleccionado}.
 
-    \textbf{Alcance:} Selección de los portales digitales regionales más pertinentes para la obtención de datos. Por otro lado, se diseñarán formularios que permitan al experto especificar variables clave, como el rango de fechas y el tipo de elección (provincial o nacional).
+\begin{itemize}
+  \item \textbf{02.01 Sintonía de la Extracción} (experto). Desde los formularios de portales, reglas y términos del \textit{addon} institucional, registra los portales con su prioridad de monitoreo y define las reglas por disyunción, conjunción y negación de términos. Es la primera superficie del sintonizador de Extracción y precede en el tiempo al estudio, a veces por semanas: como la Extracción sólo vigila el presente de los portales (Subsección~\ref{sec:impl-pre-extraccion}), el corpus posible de un estudio es lo que se extrajo mientras las reglas pertinentes estuvieron activas.
+  \item \textbf{02.02 Extracción} (sistema). Una acción planificada de la plataforma recorre cada ochenta minutos los portales activos de una prioridad, aplica las reglas y persiste cada publicación que las satisface como un registro \texttt{Noticia}. Es continua y no la dispara el experto; en el mapa aparece como actividad del sistema sin flujo de secuencia entrante.
+  \item \textbf{02.03 Selección y confirmación del corpus} (experto). En la solapa \textit{Corpus} del estudio fija los criterios ---rango de fechas, sobre la fecha de registro o la de publicación; portales; reglas que motivaron el ingreso; exclusión de las publicaciones que un operador archivó; límite de cantidad---, obtiene una vista previa, quita o agrega noticias a mano y confirma. La confirmación congela la tabla como \texttt{Noticia[N]}, registra la fecha y guarda aparte las noticias excluidas a mano, y deja los criterios de sólo lectura. Es la segunda superficie del sintonizador de Extracción (Subsección~\ref{sec:impl-mat-estudio}).
+\end{itemize}
 
-    \textbf{Entrada:} Portales digitales regionales relevantes y variables claves como el rango de fechas y el tipo de elección.
-
-    \textbf{Salida:} Datos procesados y transformados utilizando técnicas de NLP embedding, que permitirán su representación en forma numérica. Además, se aplicarán técnicas de encoding para almacenar los datos en un formato adecuado, teniendo en cuenta su posterior análisis y la implementación de algoritmos de inteligencia artificial.
-
-    \textbf{Responsabilidades:} \resp{A} (01, 02, 05), \resp{C} (04), \resp{F} (03).
-  }%
-}
-
-\textbf{Inicio}
-
-\textbf{01. Selección de portales de interés}
-
-Actor: Experto de dominio \resp{A}.
-
-Actividad: Seleccionar los portales que serán scrapeados por la herramienta. Esta elección se basa en criterios de idoneidad, credibilidad, número de visitas de usuarios y región geográfica específica. El experto evaluará cuidadosamente cada portal para determinar su relevancia y confiabilidad en cuanto a los datos que se desean obtener. Esta selección se basa en el conocimiento y experiencia del experto en el dominio específico y busca garantizar que los portales elegidos aporten información valiosa y representativa para el análisis posterior del proceso de Scraping.
-
-\vspace{0.5cm}
-
-\textbf{02. Selección de métricas competentes}
-
-Actor: Experto de dominio \resp{A}.
-
-Actividad: Acotar la información que será recopilada por la aplicación de Scraping. Esto implica seleccionar las métricas y datos relevantes que se guardarán durante el proceso de extracción. Además de las palabras clave y los títulos importantes, el experto puede considerar la inclusión de otros elementos, como:
-
-Categorías de información específicas relacionadas con los resultados electorales, encuestas o percepciones de la gente.
-Rango de fechas a recorrer para obtener datos históricos o analizar tendencias a lo largo del tiempo.
-Variables demográficas o geográficas relevantes para segmentar y comprender mejor los datos recolectados.
-Otros criterios específicos basados en el objetivo y alcance de la investigación.
-El experto debe tener en cuenta que la selección de métricas competentes es fundamental para garantizar la calidad y relevancia de los datos extraídos durante el proceso de Scraping.
-\vspace{0.5cm}
-
-\textbf{03. Proceso de scraping}
-
-Actor: Aplicación de Scraping \resp{F}.
-
-Actividad: Recorrer los portales seleccionados y guardar la información relevante. Utiliza técnicas automatizadas para navegar por las páginas web, identificar los datos definidos previamente y extraerlos. La información se almacena en un formato adecuado para su posterior procesamiento y análisis.
-\vspace{0.5cm}
-
-\textbf{04. NLP Embedding}
-
-Actor: Aplicación de Scraping \resp{F}.
-
-Actividad: La aplicación utilizará técnicas de NLP (Natural Language Processing) Embedding para transformar los datos de texto recolectados en representaciones numéricas de alta dimensionalidad. Esto implica asignar un vector numérico a cada palabra o frase, capturando su significado y contexto semántico. El objetivo es organizar y estructurar de manera que las palabras similares se encuentren en un espacio vectorial cercano,  permitiendo un análisis más eficiente y preciso en etapas posteriores del proceso. El NLP Embedding ayuda a la aplicación a comprender y procesar el texto de manera más sofisticada, facilitando la identificación de patrones, temas o tendencias en los datos extraídos.
-\vspace{0.5cm}
-
-\textbf{05. Embedding Personalizado}
-
-Actor: Experto de dominio \resp{A}.
-
-Actividad: Acotar o mejorar el embedding clásico aplicado a la data estructurada, de manera que pueda ser procesada de manera más efectiva por una inteligencia artificial generativa. El experto puede ajustar parámetros, aplicar técnicas avanzadas de embedding o incluso desarrollar nuevos enfoques para adaptar el embedding al contexto específico de la investigación.
-Puede involucrar la definición de reglas adicionales, ajustes finos en los pesos asignados a ciertos elementos o la inclusión de información adicional que sea relevante para el análisis. Este subproceso puede ser realizado de forma manual por el experto o, en algunos casos, ser apoyado por herramientas de automatización desarrolladas específicamente para este propósito.
-
-El objetivo de este subproceso es optimizar el embedding de manera personalizada y adaptada al dominio de estudio, lo que puede conducir a una mejora significativa en la calidad y precisión de los resultados generados por la inteligencia artificial generativa.
-\vspace{0.5cm}
-
-\textbf{06. Encoding}
-
-Actor: Aplicación de Clustering.
-
-Actividad: Convertir la información recopilada en un formato adecuado para la clusterización. El encoding consiste en representar los datos de manera numérica para poder aplicar algoritmos de clusterización y agruparlos en categorías o conjuntos similares. Esto implica asignar un valor numérico a cada dato o característica relevante que se utilizará en el proceso de agrupación.
-El proceso de encoding puede involucrar técnicas como la codificación one-hot, donde cada valor posible se convierte en una columna binaria independiente, o la codificación ordinal, donde se asignan valores numéricos a las categorías en función de un orden específico. El objetivo es proporcionar una representación numérica que capture las características y relaciones relevantes de los datos para facilitar su agrupación y análisis.
-
-
-
-
-\newpage
-\section{Definición de Contexto}
+\subsection{Proceso 03: definición del contexto}
 \label{sec:proc-contexto}
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=5.1in]{Diagrama 03-Contexto.png}
-\end{figure}
 
-\noindent\fbox{%
-  \parbox{\textwidth}{%
-    \textbf{Objetivo:} Generar el prompt completo que se le va a dar como entrada a la IAG a partir de la integración entre los templates creados de antemano y la intervención del experto de dominio. Este último podrá ajustar variables de entrada y definir el formato de salida esperado para el análisis.
-
-    \textbf{Alcance:} Todas las interfaces gráficas necesarias para la toma de datos de los expertos
-
-    \textbf{Entrada:} Requerimientos blandos de expertos de dominio y datos empíricos de las noticias
-
-    \textbf{Salida:} Prompt completo para la IAG
-
-    \textbf{Responsabilidades:} \resp{A} (03, 04, 05), \resp{B} (01, 03, 04, 06).
-  }%
-}
-
-\newpage
-
-\textbf{Inicio}
-
-\textbf{01. Creación de Prompt Templates}
-
-Actor: Implementador de la aplicación.
-
-Actividad: Proporcionar una interfaz gráfica que habilite la selección de prompt templates para el experto de dominio. La elección de seleccionar un template en lugar de crear un prompt desde cero se realizó con el objetivo de evitar el ``Síndrome de la Página en Blanco'' (\textit{Blank Page Syndrome}), el efecto en el que los usuarios, al encontrarse frente a una página en blanco, no saben por dónde comenzar \citep{zamfirescu2023}.
-
-Los templates van a utilizar una lista de instrucciones básicas con características que queremos que todos cumplan basándonos en investigaciones previas sobre cómo crear un prompt adecuado \citep{zamfirescu2023, prompt-eng:2024}. Ej:
+Declara el estudio como dato: qué se le pide al modelo generativo sobre cada unidad de análisis, con qué criterio se juzga lo que responde y cómo se consolidan los juicios. \textit{Entrada:} el estudio con su corpus confirmado y la biblioteca de \textit{templates}. \textit{Salida:} los tres sintonizadores del estudio fijados; el estudio queda listo para ejecutarse.
 
 \begin{itemize}
-  \item Los prompts deben ser concisos, claros y fáciles de entender. Se debe evitar el lenguaje complejo y la información innecesaria.
-  \item Usar verbos de acción como Actuar, Analizar, Clasificar, Describir, Extraer, Generar, Parsear, Resumir, etc.
-  \item Uso de Instrucciones (qué hacer) en lugar de Restricciones (qué evitar).
-  \item Proporcionar ejemplos de interacciones deseadas en los prompts (One-shot y Few-shot): El one-shot prompting proporciona un solo ejemplo, mientras que el few-shot prompting proporciona múltiples ejemplos. Múltiples ejemplos en few-shot prompting aumentan la probabilidad de que el modelo siga el patrón. Los ejemplos incluidos deben ser relevantes para la tarea, diversos, de alta calidad y bien escritos. Incluir casos extremos (edge cases).
-  \item Escribir prompts que se asemejen (en cierta medida) a código fuente.
+  \item \textbf{03.01 Creación o edición del \textit{template}} (experto). En el panel de \textit{templates} crea o ajusta una plantilla: nombre, objetivo del análisis, instrucciones con variables de contexto, variables con su valor por defecto, esquema de la respuesta esperada ---validado al guardar--- y previsualización del \textit{prompt} resultante. El \textit{template} es reutilizable entre estudios y se archiva en lugar de eliminarse. La actividad se omite cuando ya existe una plantilla adecuada.
+  \item \textbf{03.02 Sintonía de la Composición} (experto). En la solapa \textit{Composición} selecciona el \textit{template}, liga un valor a cada variable, agrega las aclaraciones de texto libre y fija la estrategia de composición, la cantidad de noticias y el umbral de similitud de la recuperación, y la temperatura y la longitud de salida del modelo generativo.
+  \item \textbf{03.03 Sintonía de la Verificación} (experto). En la solapa \textit{Verificación} redacta el criterio de validez ---por defecto, que cada afirmación del análisis esté sostenida por fragmentos literales de las noticias--- y elige el ejecutor: el juez generativo o un revisor humano.
+  \item \textbf{03.04 Sintonía de la Normalización} (experto). En la solapa \textit{Normalización} fija la política sobre los análisis observados, la agrupación ---una clave de procedencia del corpus o una variable propia, cuya tabla puede poblarse desde el corpus y completarse a mano---, una condición de inclusión opcional y las claves del esquema que se consolidan.
 \end{itemize}
 
-La personalización de \textit{prompts} dentro del sistema propuesto no solo se basa en las combinaciones de ajustes que el experto pueda introducir, sino también en la comprensión de las distintas técnicas de \textit{prompting} que permiten optimizar el comportamiento del modelo. En este sentido, los \textit{templates} pueden variar tanto en los resultados esperados como en su estructura, dependiendo del tipo de información que procesen —por ejemplo, texto, imágenes, o una combinación de ambos— y del modelo utilizado (como ChatGPT para texto o DALL·E 2 para imágenes).
+Las dos últimas sintonías admiten fijarse más tarde, hasta el momento en que su filtro se ejecuta ---la solapa pasa a sólo lectura recién entonces---; el mapa las ubica aquí porque es donde el experto declara el estudio completo antes de correrlo, y porque así el proceso 04 queda libre de decisiones de dominio.
 
-Una forma efectiva de categorizar y configurar estos \textit{templates} es mediante la aplicación de estrategias de \textit{prompting} diferenciadas. Distinguir entre estos tipos proporciona un marco conceptual claro para diseñar \textit{prompts} con intención y eficacia \citep{prompt-eng:2024}:
-
-\begin{itemize}
-  \item \textbf{System Prompting:} Establece el contexto general y el propósito de la tarea. Sirve para definir las capacidades fundamentales del modelo y cómo debe comportarse en términos estructurales. Por ejemplo, se puede usar para solicitar que las respuestas sigan un formato específico, como una estructura en JSON o una tabla.
-
-  \item \textbf{Contextual Prompting:} Proporciona información específica o de fondo que es relevante para la tarea. Este tipo de \textit{prompting} ayuda al modelo a interpretar correctamente la situación, como cuando se incluyen directamente en el \textit{prompt} datos empíricos provenientes de noticias, investigaciones u otras fuentes confiables.
-
-  \item \textbf{Role Prompting:} Asigna una identidad o rol al modelo, moldeando el estilo y tono de la salida. Aunque es menos central para tareas de análisis objetivo, puede ser útil cuando se requiere una narrativa con un enfoque determinado, como la voz de un periodista, un analista político o un divulgador científico.
-\end{itemize}
-
-Así, la construcción de \textit{prompts} eficaces no solo depende del contenido a procesar o del modelo empleado, sino también del diseño intencional del contexto comunicativo. Integrar estos enfoques permite al experto desarrollar \textit{templates} más robustos, flexibles y alineados con los objetivos analíticos del sistema, favoreciendo un mayor control sobre la salida generada por los modelos de lenguaje.
-
-Agregaremos a la interfaz gráfica una forma intuitiva de seleccionar las distintas configuraciones mencionadas.
-
-\vspace{0.5cm}
-
-\textbf{02. Implementación UI de formularios para fine tuning}
-
-Actor: Implementador de la aplicación.
-
-Actividad: Proporcionar una interfaz gráfica que habilite el ajuste de las variables libres que no quedaron definidas en los templates anteriores.
-
-\vspace{0.5cm}
-
-\textbf{03. Selección de template}
-
-Actor: Experto de dominio \resp{A}.
-
-Actividad: Seleccionar un template inicial para el análisis.
-
-\vspace{0.5cm}
-
-\textbf{04. Customización de variables de contexto}
-
-Actor: Experto de dominio \resp{A}.
-
-Actividad: Configuración de las variables necesarias para el \textit{template} seleccionado. En este paso, el experto podrá usar una batería de herramientas de interfaz gráfica para personalizar su contexto, por ejemplo: fechas desde-hasta de publicaciones, palabras clave, combinación de conceptos, etc.
-
-Además de estos filtros contextuales iniciales, esta etapa también incluye la configuración de parámetros clave que afectan el comportamiento del modelo de lenguaje \citep{prompt-eng:2024}.
-\begin{itemize}
-  \item \textbf{Temperature:} Controla el grado de aleatoriedad en la generación de texto. Un valor más bajo (cercano a 0) hace que el modelo sea más determinístico y predecible, lo que resulta útil para tareas fácticas o consistentes, como el análisis de noticias. Valores más altos incrementan la diversidad de la salida, lo cual puede ser útil en tareas creativas. Esta variable ya ha sido contemplada en la tabla del proceso de \textit{scraping}, y forma parte de la definición operativa del contexto para la Inteligencia Artificial Generativa (IAG).
-
-  \item \textbf{Top-K y Top-P:} Son técnicas que restringen la predicción del siguiente token a un subconjunto de tokens con mayor probabilidad. \textit{Top-K} limita la elección a los K tokens más probables, mientras que \textit{Top-P} (también conocido como \textit{nucleus sampling}) considera los tokens cuya probabilidad acumulada alcanza un umbral P. Ambos parámetros permiten modular la aleatoriedad y control de la generación.
-
-  \item \textbf{Output Length:} Define la cantidad máxima de tokens a generar por parte del modelo. Cuantos más tokens se generen, mayor será el cómputo requerido, lo que impacta en el tiempo de respuesta y los recursos utilizados. Esta longitud puede controlarse directamente en el sistema o bien incluirse como una instrucción dentro del \textit{prompt}. La tesina ya hace referencia al ``Token Limit'' dentro de las tablas de ejemplo de \textit{prompts}.
-
-  \item \textbf{Uso de variables:} Para aumentar la reutilización y adaptabilidad de los \textit{templates}, es recomendable incorporar variables dinámicas en los \textit{prompts}. Estas permiten insertar datos contextuales (como fechas, actores, ubicaciones o temas) sin necesidad de reescribir el \textit{prompt} completo cada vez. Esta estrategia, también mencionada previamente en la tesina, optimiza el proceso de personalización y facilita la integración del sistema en flujos de trabajo automatizados.
-\end{itemize}
-
-\vspace{0.5cm}
-
-\textbf{05. Ingreso de texto libre}
-
-Actor: Experto de dominio \resp{A}.
-
-Actividad: El experto podrá ingresar libremente aclaraciones o ejemplos que querrá incluir en el prompt para dejar en claro cual es su idea de análisis. Con el fin de guiar de manera efectiva el proceso de generación, resulta útil incluir ejemplos o escenarios específicos en los prompts. Estos ejemplos pueden ilustrar los tipos de interacciones o respuestas deseadas que la IAG debería generar. Al incorporarlos la IAG puede aprender y emular el comportamiento deseado.
-
-En un estudio previo todos los participantes mostraron una fuerte preferencia por la instrucción directa en lugar de proporcionar ejemplos en línea, y cuando se les animó a dar ejemplos, la mayoría de los participantes lo hicieron y señalaron su efectividad en la mejora de resultados \citep{zamfirescu2023}.
-
-
-\vspace{0.5cm}
-
-\textbf{06. Procesamiento}
-
-Actor: Módulo de Odoo \resp{B}.
-
-Actividad: Estructurizar el prompt que sera entregado a la IAG utilizando las entradas del experto y los datos empíricos de las noticias. Se espera la salida de una string formateada en algún lenguaje de marcado que sea interpretado por la IAG.
-
-\newpage
-\section{Procesamiento IAG}
+\subsection{Proceso 04: procesamiento generativo}
 \label{sec:proc-iag}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[height=3.5in]{Diagrama 04-IAG.png}
-\end{figure}
-
-\noindent\textbf{Responsabilidades:} \resp{C} (01, 02), \resp{A}, \resp{D} y \resp{E} (03).
-
-\vspace{0.5cm}
-
-\textbf{01. Procesamiento IAG}
-
-Actor: Aplicación de Inteligencia Artificial Generativa \resp{C}.
-
-Actividad: Utilizando los datos previamente descriptos, el prompt adecuadamente construido y una conexión estable con la API del modelo generativo seleccionado, se ejecuta la petición correspondiente. El objetivo principal de esta actividad es generar resultados creativos y originales a partir de la inteligencia artificial generativa.
-
-\vspace{0.5cm}
-
-\textbf{02. Decoder}
-
-Actor: Aplicación de Decodificación \resp{C}.
-
-Actividad: Preparar la información generada por la IAG para su posterior reutilización en otros contextos o plantillas.
-
-\vspace{0.5cm}
-
-\textbf{03. Normalización}
-
-Actor: Investigador o analista de datos \resp{A}, \resp{D}, \resp{E}.
-
-Actividad: Realizar un raconto final de todo el camino recorrido durante el proceso, desde los datos iniciales hasta la generación de la salida del modelo generativo. El objetivo de esta actividad es realizar una normalización de los datos y resultados obtenidos para poder realizar comparaciones, evaluaciones y análisis posteriores de manera coherente y sistemática.
-
-La normalización implica varias tareas, como:
+Recorre la red de tubos desde \texttt{Noticia[N]} hasta \texttt{Resultado}. \textit{Entrada:} el estudio con corpus y sintonizadores. \textit{Salida:} el \texttt{Resultado} del estudio, en estado \textit{consolidado}.
 
 \begin{itemize}
-  \item Documentación detallada: documentar todo el proceso en un informe o documento, donde se especifican todas las etapas, herramientas utilizadas, parámetros, ajustes y cualquier otro detalle relevante. Esta documentación sirve como referencia para futuros análisis y también permite una mayor transparencia y reproducibilidad del proceso.
-  \item Organización de los datos: organizar datos recopilados, los parámetros utilizados, el prompt generado y cualquier otra información relevante en una estructura coherente y accesible. Esto facilita la revisión y comparación de los datos en etapas posteriores.
-  \item Comparación con variables: al definirse variables específicas, el investigador realiza una comparación de la salida generada por el modelo con estas variables. Esto permite evaluar qué tan bien se ajusta la salida a las expectativas y criterios establecidos, y también identificar posibles desviaciones o inconsistencias.
-  \item Análisis de resultados: analizar en función de los criterios y objetivos deseados. Esto puede incluir la evaluación de la coherencia del texto generado, la calidad de las respuestas, la relevancia semántica o cualquier otro aspecto específico relacionado con el proyecto de investigación.
-
+  \item \textbf{04.01 Ejecución del pipeline} (experto). Con los botones \textit{Ejecutar siguiente filtro} o \textit{Ejecutar todo} del estudio. Al iniciarse la primera etapa el estudio copia la configuración técnica vigente, y cada etapa persiste su delta antes de avanzar, de modo que cada estado intermedio es un punto de control desde el que la corrida se reanuda.
+  \item \textbf{04.02 Enriquecimiento semántico} (sistema). Emite \texttt{Embedding[N]}.
+  \item \textbf{04.03 Composición de contexto} (sistema). Emite \texttt{Prompt[M]}.
+  \item \textbf{04.04 Invocación generativa} (sistema). Emite \texttt{RespuestaIAG[M]}; una respuesta fallida se persiste vacía y la corrida continúa.
+  \item \textbf{04.05 Decodificación} (sistema). Emite \texttt{Análisis[M']}; los descartes y las reparaciones quedan contados en el informe de la etapa.
+  \item \textbf{04.06 Verificación} (sistema). Con el juez generativo emite \texttt{Veredicto[M']}. Con el revisor humano no crea registros: el estudio pasa al estado \textit{en verificación} y la calle del sistema espera.
+  \item \textbf{04.07 Revisión humana} (experto, sólo con ejecutor humano). Desde el formulario de veredicto, encadenado análisis por análisis, emite para cada uno un estado, una confianza y un sustento. El botón \textit{Continuar (veredictos emitidos)} exige un veredicto por análisis, llena el tubo con el último de cada uno y devuelve el flujo al sistema.
+  \item \textbf{04.08 Normalización} (sistema). Emite el \texttt{Resultado} y lleva el estudio al estado \textit{consolidado}.
 \end{itemize}
 
-\newpage
+El orden de las actividades del sistema es el de la tabla de etapas del estudio (Subsección~\ref{sec:impl-mat-estudio}), y por eso el mapa no lo documenta por su cuenta: es el pipeline de la Figura~\ref{fig:arq-pipeline} recorrido en el tiempo. Lo que el mapa agrega es la detención de 04.06 y la actividad 04.07, que la arquitectura modela como un ejecutor alternativo de un mismo filtro y que en la vista procedimental son una salida del sistema hacia el experto y un retorno.
 
-\section{Visualización previa}
+\subsection{Proceso 05: lectura del resultado}
 \label{sec:proc-visualizacion}
 
-\newpage
-\section{Refinamiento iterativo}
+Pone el resultado y su historia frente al experto. \textit{Entrada:} el \texttt{Resultado}. \textit{Salida:} el juicio del experto sobre si ese resultado responde a la pregunta del estudio.
+
+\begin{itemize}
+  \item \textbf{05.01 Proyección del resultado} (sistema). El formulario del resultado presenta las tablas de contingencia por clave con sus medidas y su marca de concentración; el tablero ofrece la tabla dinámica y el gráfico de la plataforma sobre la proyección de sólo lectura del resultado; la ficha del estudio, generada exclusivamente de lo persistido, documenta la corrida: cardinalidades por tubo, descartes y reparaciones, tiempos e incidencias, y la configuración técnica copiada.
+  \item \textbf{05.02 Lectura y auditoría} (experto). Lee el resultado y el tablero; verifica en la ficha y en la solapa \textit{Corrida} con qué configuración y con qué incidencias se produjo; y, cuando una cifra lo requiere, navega desde el resultado hacia los veredictos, los análisis, las respuestas, los \textit{prompts} y las noticias que lo sustentan, por los botones de cada tubo o por el menú de auditoría. Esa navegación es la consulta de ancestros sobre el grafo de procedencia (Apéndice~\ref{anexo:tipos-procedencia}).
+\end{itemize}
+
+\subsection{Proceso 06: refinamiento iterativo}
 \label{sec:proc-refinamiento}
 
-\newpage
-\section{Presentación de resultados}
+Decide si el estudio terminó o si hace falta otra pasada y, en tal caso, la prepara sin perder la anterior. \textit{Entrada:} el juicio del experto. \textit{Salida:} un estudio derivado en estado borrador, que reingresa en el proceso 02, o el pase al proceso 07.
+
+\begin{itemize}
+  \item \textbf{06.01 Decisión} (experto). Es la compuerta de la figura. Los motivos para iterar son juicios del experto y el framework no decide por él; los que la ficha y el resultado hacen visibles son claves marcadas como poco informativas, una proporción alta de análisis observados o descartados, un corpus que no cubre el período o los portales buscados, o un \textit{template} que pide distinciones que el modelo generativo no realiza.
+  \item \textbf{06.02 Nueva iteración} (experto). El botón homónimo crea un estudio enlazado al de origen, que hereda los criterios del corpus, el \textit{template}, los valores de las variables y los tres sintonizadores, pero ninguno de los tubos ni la documentación de la corrida. El experto ajusta lo que motivó la iteración y el estudio derivado reingresa en 02.03 ---el corpus se vuelve a confirmar, aun con los mismos criterios, porque la Extracción puede haber depositado noticias nuevas--- y recorre la red desde el principio. Los estudios de una misma línea quedan enlazados en ambas direcciones, de modo que la historia de la iteración es consultable.
+\end{itemize}
+
+La iteración no es un ciclo del pipeline sino del proceso de uso, tal como el Capítulo~\ref{cap:arquitectura} lo dejó establecido al declarar acíclico el flujo de datos (Subsección~\ref{sec:arq-car-conjunto}): cada vuelta es una corrida completa sobre una instancia nueva de la red de tubos. El botón \textit{Volver a borrador} del estudio es otra cosa y no forma parte del mapa: reinicia la misma corrida sin eliminar registro alguno, y existe para rehacer una corrida que falló por causas técnicas, no para refinar un resultado.
+
+\subsection{Proceso 07: presentación de resultados}
 \label{sec:proc-presentacion}
 
-\newpage
+Comunica el producto del estudio. \textit{Entrada:} un estudio consolidado cuyo resultado el experto aceptó. \textit{Salida:} el producto analítico comunicado.
+
+\begin{itemize}
+  \item \textbf{07.01 Presentación de los resultados} (experto). El material es el tablero, con las vistas de tabla dinámica y gráfico de la plataforma; el formulario del resultado; y la ficha del estudio como documentación de la corrida. Los operadores del \textit{addon} institucional tienen permiso de lectura sobre estudios, resultados y veredictos. Lo que el framework no hace, por la decisión documentada en la Subsección~\ref{sec:impl-mat-normalizacion}, es redactar una narrativa: la interpretación de las tablas es del experto, con el juicio de fidelidad y la evidencia a la vista.
+\end{itemize}
+
+\section{Correspondencia entre procesos, filtros y realización}
+\label{sec:proc-correspondencia}
+
+La Tabla~\ref{tab:proc-correspondencia} ubica cada actividad del mapa frente al elemento de la arquitectura y a la realización del módulo que le corresponden, y consigna las responsabilidades transversales que esa actividad realiza. Es la tercera columna del hilo que la Tabla~\ref{tab:impl-correspondencia} inició entre la arquitectura y el módulo.
+
+{
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{xltabular}{\textwidth}{@{}l >{\raggedright\arraybackslash}p{2.75cm} >{\raggedright\arraybackslash}p{1.55cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{0.75cm}@{}}
+  \caption{Correspondencia entre las actividades del mapa de procesos, los elementos de la arquitectura (Capítulo~\ref{cap:arquitectura}) y su realización en el módulo (Capítulo~\ref{cap:implementacion}). \respleyenda}
+  \label{tab:proc-correspondencia} \\
+  \toprule
+  \textbf{Act.} & \textbf{Actividad} & \textbf{Actor} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Realización (Cap.~\ref{cap:implementacion})} & \textbf{Resp.} \\
+  \midrule
+  \endfirsthead
+  \multicolumn{6}{@{}l}{\footnotesize\textit{Tabla~\ref{tab:proc-correspondencia} (continuación)}} \\
+  \toprule
+  \textbf{Act.} & \textbf{Actividad} & \textbf{Actor} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Realización (Cap.~\ref{cap:implementacion})} & \textbf{Resp.} \\
+  \midrule
+  \endhead
+  \midrule
+  \multicolumn{6}{r@{}}{\footnotesize\textit{continúa en la página siguiente}} \\
+  \endfoot
+  \bottomrule
+  \endlastfoot
+  \multicolumn{6}{@{}l}{\textit{01 Definición del estudio}} \\
+  \addlinespace[2pt]
+  01.01 & Formulación de la pregunta y los criterios & Experto & Fuera del pipeline; lo decidido ingresa como dato por los sintonizadores. & Sin correlato en el módulo. & \resp{A} \\
+  \addlinespace
+  01.02 & Configuración técnica & Implementador & Configuración técnica de Enriquecimiento, Invocación y Decodificación, al margen de todo sintonizador (\S~\ref{sec:arq-car-sintonizadores}). & Menú \textit{Configuración}; parámetros del sistema copiados en cada estudio (\S~\ref{sec:impl-mat-estudio}). & \resp{C} \\
+  \addlinespace
+  01.03 & Creación del estudio & Experto & Instancia de la red de tubos. & Formulario de \texttt{iag.estudio}, estado borrador (\S~\ref{sec:impl-mat-estudio}). & \resp{A} \\
+  \addlinespace[4pt]
+  \multicolumn{6}{@{}l}{\textit{02 Constitución del corpus}} \\
+  \addlinespace[2pt]
+  02.01 & Sintonía de la Extracción & Experto & Sintonizador de Extracción, primera superficie. & Formularios de portales, reglas y términos de \texttt{wsfnoticias} (\S~\ref{sec:impl-pre-extraccion}). & \resp{A}\par\resp{F} \\
+  \addlinespace
+  02.02 & Extracción & Sistema & Filtro Extracción, puertos 1$\to$2, \texttt{Noticia[N]}. & Acción planificada del \textit{addon} institucional (\S~\ref{sec:impl-pre-extraccion}). & \resp{F} \\
+  \addlinespace
+  02.03 & Selección y confirmación del corpus & Experto & Sintonizador de Extracción, segunda superficie; llena el tubo 2$\to$3. & Solapa \textit{Corpus}; botones \textit{Buscar} y \textit{Confirmar corpus} (\S~\ref{sec:impl-mat-estudio}). & \resp{A}\par\resp{E} \\
+  \addlinespace[4pt]
+  \multicolumn{6}{@{}l}{\textit{03 Definición del contexto}} \\
+  \addlinespace[2pt]
+  03.01 & Creación o edición del \textit{template} & Experto & \texttt{Template} (Apéndice~\ref{anexo:tipo-template}); primera superficie del sintonizador de Composición. & Panel de \textit{templates}, \texttt{iag.template} (\S~\ref{sec:impl-mat-composicion}). & \resp{A}\par\resp{B} \\
+  \addlinespace
+  03.02 & Sintonía de la Composición & Experto & Sintonizador de Composición, segunda superficie. & Solapa \textit{Composición} del estudio. & \resp{A}\par\resp{B} \\
+  \addlinespace
+  03.03 & Sintonía de la Verificación & Experto & Sintonizador de Verificación. & Solapa \textit{Verificación} del estudio. & \resp{A}\par\resp{B}\par\resp{D} \\
+  \addlinespace
+  03.04 & Sintonía de la Normalización & Experto & Sintonizador de Normalización. & Solapa \textit{Normalización}; botón \textit{Poblar desde el corpus}. & \resp{A}\par\resp{B}\par\resp{D} \\
+  \addlinespace[4pt]
+  \multicolumn{6}{@{}l}{\textit{04 Procesamiento generativo}} \\
+  \addlinespace[2pt]
+  04.01 & Ejecución del pipeline & Experto & Activación de la red de tubos. & Botones \textit{Ejecutar siguiente filtro} y \textit{Ejecutar todo}; \textit{runner} y tabla de etapas (\S~\ref{sec:impl-mat-estudio}). & \resp{E} \\
+  \addlinespace
+  04.02 & Enriquecimiento semántico & Sistema & Filtro, puertos 3$\to$4, \texttt{Embedding[N]}. & \texttt{iag.filtro.}\allowbreak\texttt{enriquecimiento}. & \resp{C} \\
+  \addlinespace
+  04.03 & Composición de contexto & Sistema & Filtro, puertos 5$\to$6, \texttt{Prompt[M]}. & \texttt{iag.filtro.}\allowbreak\texttt{composicion}. & \resp{B} \\
+  \addlinespace
+  04.04 & Invocación generativa & Sistema & Filtro, puertos 7$\to$8, \texttt{RespuestaIAG[M]}. & \texttt{iag.filtro.}\allowbreak\texttt{invocacion}; servicio \texttt{iag.proveedor}. & \resp{C} \\
+  \addlinespace
+  04.05 & Decodificación & Sistema & Filtro, puertos 9$\to$10, \texttt{Análisis[M']}; compuerta. & \texttt{iag.filtro.}\allowbreak\texttt{decodificacion}. & \resp{B}\par\resp{C} \\
+  \addlinespace
+  04.06 & Verificación & Sistema & Filtro, puertos 11$\to$12, \texttt{Veredicto[M']}; compuerta blanda. & \texttt{iag.filtro.}\allowbreak\texttt{verificacion} con el juez; estado \textit{en verificación} con el revisor. & \resp{D} \\
+  \addlinespace
+  04.07 & Revisión humana & Experto & Ejecutor humano de Verificación. & Formulario de veredicto; botón \textit{Continuar (veredictos emitidos)} (\S~\ref{sec:impl-mat-verificacion}). & \resp{A}\par\resp{D} \\
+  \addlinespace
+  04.08 & Normalización & Sistema & Filtro, puertos 13$\to$14, \texttt{Resultado}. & \texttt{iag.filtro.}\allowbreak\texttt{normalizacion}. & \resp{D}\par\resp{E} \\
+  \addlinespace[4pt]
+  \multicolumn{6}{@{}l}{\textit{05 Lectura del resultado}} \\
+  \addlinespace[2pt]
+  05.01 & Proyección del resultado & Sistema & Sumidero: capa de presentación. & Formulario del resultado; tablero sobre \texttt{iag.resultado.fila}; ficha del estudio. & \resp{D}\par\resp{E} \\
+  \addlinespace
+  05.02 & Lectura y auditoría & Experto & Consulta de ancestros sobre el grafo de procedencia (Apéndice~\ref{anexo:tipos-procedencia}). & Solapas \textit{Resultado}, \textit{Corrida} y \textit{Ficha}; botones por tubo; menú de auditoría. & \resp{D}\par\resp{E} \\
+  \addlinespace[4pt]
+  \multicolumn{6}{@{}l}{\textit{06 Refinamiento iterativo}} \\
+  \addlinespace[2pt]
+  06.01 & Decisión & Experto & Fuera del pipeline: la iteración es proceso de uso (\S~\ref{sec:arq-car-conjunto}). & Sin correlato en el módulo. & \resp{A} \\
+  \addlinespace
+  06.02 & Nueva iteración & Experto & Nueva instancia de la red de tubos. & Botón \textit{Nueva iteración}: estudio enlazado que hereda criterios y sintonizadores (\S~\ref{sec:impl-mat-estudio}). & \resp{A}\par\resp{E} \\
+  \addlinespace[4pt]
+  \multicolumn{6}{@{}l}{\textit{07 Presentación de resultados}} \\
+  \addlinespace[2pt]
+  07.01 & Presentación de los resultados & Experto & Sumidero. & Tablero y ficha del estudio; lectura por los operadores. & \resp{D} \\
+\end{xltabular}
+}
+
+La tabla permite verificar la correspondencia que el objetivo específico OE2 exige, y lo hace en dos sentidos. Del lado del sistema, los siete filtros del Capítulo~\ref{cap:arquitectura} aparecen cada uno exactamente una vez ---02.02 y 04.02 a 04.08, con 04.07 como la contraparte humana de un mismo filtro--- y ninguna actividad del sistema queda sin filtro: entre los filtros del pipeline y las actividades del sistema hay una correspondencia uno a uno. Del lado del experto, los cuatro sintonizadores aparecen como actividades propias ---02.01 y 02.03 para Extracción, que es el sintonizador de dos superficies; 03.02, 03.03 y 03.04 para los tres restantes---, y la configuración técnica como la única actividad del implementador. Las actividades que no tienen contraparte en la arquitectura son 01.01, 01.03, 04.01, 05.02, 06.01, 06.02 y 07.01, y no deberían tenerla: son el proceso de uso que el Capítulo~\ref{cap:arquitectura} dejó fuera del pipeline por decisión explícita, al declarar acíclico el flujo de datos y relegar la iteración del experto a lo que ocurre entre corridas. El mapa agrega exactamente eso ---el orden, los actores y la iteración--- y nada más; es la verificación de que las tres vistas describen el mismo sistema.
+
 \section{Síntesis del capítulo}
 \label{sec:proc-sintesis}
+
+El capítulo modeló el ciclo de análisis como un mapa de siete procesos y veintidós actividades repartidas en tres calles, y lo hizo sobre un único diagrama y una única tabla. La vista procedimental respondió lo que las otras dos no responden: que el experto interviene antes del procesamiento generativo y después de él, pero no durante, salvo como revisor; que el implementador interviene una vez, por fuera de todo estudio; que la Extracción corre por su cuenta y el estudio selecciona sobre lo que ella depositó; y que la iteración es un estudio nuevo, enlazado al anterior, y no una vuelta del pipeline. Con ello completa la columna de este capítulo en el registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}): cada marcador se realiza en el mapa como una o varias actividades con actor, y la Tabla~\ref{tab:proc-correspondencia} es la fuente de esa columna. El Capítulo~\ref{cap:ejemplo} recorre este mismo ciclo una vez, sobre un corpus del entorno institucional, y es allí donde cada actividad del mapa se documenta con los valores concretos que tomó.
 
 \chapter{Ejemplo de aplicación}
 \label{cap:ejemplo}

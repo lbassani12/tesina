@@ -53,7 +53,7 @@
 - `main` = versión canónica (mergean Lucio/Alejandro).
 - Ramas de revisión: `revNNN/NN-tema` con PRs atómicos por tema.
 - Informes y gestión: `correcciones/` (REV-NNN, DECISIONES-REV-NNN, RUTA-NNN, ORIENTACION-LUCIO).
-- **Bloqueo activo (29-10-2026):** el usuario GitHub `wsf` no tiene permiso de push en `lbassani12/tesina` (403). **Acción requerida:** que Lucio invite a `wsf` como colaborador (Settings → Collaborators and teams). Mientras tanto, los cambios de Hermes quedan en ramas locales sin poder abrir PRs.
+- **Workflow definido (29-10-2026, decisión del director):** el trabajo de revisión se hace sobre el fork `wsf/tesina_lucio` (remote `origin`), con `lbassani12/tesina` como `upstream` de lectura. Los cambios se entregan como PRs `wsf:revNNN/NN-tema → lbassani12:main`. Lucio (o Alejandro con permiso) mergea.
 
 ## 5. Hallazgos REV-002 (anexos completos, 29-10-2026)
 
@@ -73,7 +73,7 @@
 ## 6. Decisiones pendientes del director
 
 1. **Estrategia cap. 6:** ✅ **Decidida (29-10-2026):** (a) corrida nueva controlada por protocolo; Estudios 32/59 como referencia comparativa. Ver `PROTOCOLO-CAP6.md`.
-2. **Permiso de push:** invitar a `wsf` como colaborador de `lbassani12/tesina` (o definir workflow fork+PR).
+2. **Permisos de push:** ✅ **Resuelta (29-10-2026):** se trabaja sobre el fork `wsf/tesina_lucio` con PRs hacia `lbassani12/tesina`.
 3. **Alcance del experimento:** un caso simple vs dos templates/casos comparativos (aprovechando el buffer).
 
 ## 7. Riesgos

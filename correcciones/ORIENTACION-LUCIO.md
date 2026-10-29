@@ -4,7 +4,7 @@
 |---|---|
 | **Propósito** | Registrar toda decisión de orientación entre Hermes y Lucio, para que el director (Alejandro Sartorio) pueda auditarlas e influir en la orientación |
 | **Formato** | Una entrada por decisión sustantiva, numerada y fechada |
-| **Cuándo registrar** | En la misma sesión en que ocurre la decisión (no diferir) |
+| **Cuándo registrar** | En la misma sesión en que ocurre la decisión (no diferir). También se registran los pedidos fuera del alcance de la tesina que se rechacen por la regla de oro (elección: "fuera de alcance — no resuelto") |
 | **Reporte** | Cron diario 20:00 → Telegram de Alejandro (user 1007231414) con las entradas nuevas |
 | **Validación** | Las entradas marcadas "pendiente" requieren OK del director antes de aplicar la decisión |
 

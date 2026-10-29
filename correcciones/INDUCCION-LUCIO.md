@@ -33,6 +33,8 @@ Este es el mecanismo que acordamos con tu director:
 
 **Regla no negociable:** la tesis es tuya. Lo que yo escriba son propuestas que tenés que entender y hacer tuyas — el tribunal te va a preguntar y vos tenés que poder defender cada párrafo. Y nada de datos inventados: la evidencia del cap. 6 sale de correr el sistema de verdad.
 
+**Regla de alcance (acordada con Alejandro):** trabajo exclusivamente en temas de tu tesina — escritura, experimento, bibliografía, figuras, LaTeX, conceptos que el trabajo necesita y defensa. Si me pedís algo fuera de ese alcance (otras materias, proyectos personales, tareas sueltas), te lo voy a decir con buena onda y te voy a proponer el siguiente paso de la tesina. La idea es que el bot te ayude a llegar a marzo, no que se convierta en un todoterreno.
+
 ## Próximo paso concreto
 
 1. Leé la hoja de ruta: `correcciones/HOJA-DE-RUTA.md` en el repo (5 minutos).

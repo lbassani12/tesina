@@ -33,8 +33,8 @@
 
 | Fase | Contenido | Responsable | Duración est. | Estado |
 |---|---|---|---|---|
-| **0** | Auditoría REV-002 del estado actual (claims, bibliografía, consistencia, compilación) | Hermes | 2-3 días | 🔶 En curso — anexos terminados, falta ensamble del informe |
-| **1** | Protocolo del experimento del cap. 6 (caso, corpus, template, modelo, evidencia a capturar, criterios) | Hermes propone, Alejandro valida, Lucio opina | 1 semana | Pendiente |
+| **0** | Auditoría REV-002 del estado actual (claims, bibliografía, consistencia, compilación) | Hermes | 2-3 días | ✅ Completa — informe emitido y validado por el director (29-10-2026) |
+| **1** | Protocolo del experimento del cap. 6 (caso, corpus, template, modelo, evidencia a capturar, criterios) | Hermes propone, Alejandro valida, Lucio opina | 1 semana | 🔶 En curso — `PROTOCOLO-CAP6.md` borrado; pendientes DEC-1..DEC-6 |
 | **2** | Ejecución empírica del protocolo ‖ limpieza de deuda técnica vía PRs (TODOs, bibliografía, cardinalidades M/M') | Lucio ‖ Hermes | 2 semanas | Pendiente |
 | **3** | Escritura del cap. 6 (Lucio escribe, Hermes guía y revisa con auditoría de claims) + celdas de la matriz maestra | Lucio + Hermes | 2 semanas | Pendiente |
 | **4** | Cap. 7 Conclusiones (respuesta a OE1-OE4 con evidencia, limitaciones, amenazas a la validez, trabajo futuro) | Lucio + Hermes | 1 semana | Pendiente |
@@ -72,7 +72,7 @@
 
 ## 6. Decisiones pendientes del director
 
-1. **Estrategia cap. 6:** (a) corrida nueva controlada por protocolo — recomendada — vs (b) formalización de estudios existentes (32/59) como referencia comparativa.
+1. **Estrategia cap. 6:** ✅ **Decidida (29-10-2026):** (a) corrida nueva controlada por protocolo; Estudios 32/59 como referencia comparativa. Ver `PROTOCOLO-CAP6.md`.
 2. **Permiso de push:** invitar a `wsf` como colaborador de `lbassani12/tesina` (o definir workflow fork+PR).
 3. **Alcance del experimento:** un caso simple vs dos templates/casos comparativos (aprovechando el buffer).
 

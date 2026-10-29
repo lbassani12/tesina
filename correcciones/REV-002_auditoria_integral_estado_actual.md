@@ -9,7 +9,7 @@
 | **Archivos revisados** | `main.tex` (1897 líneas, ~295 KB), `refs.bib` (75 entradas), diagramas PNG/PUML, `.latexmkrc`, `correcciones/` |
 | **Anexos** | `REV-002-anexo-bibliografico-borrador.md` (75 entradas verificadas una por una contra fuentes externas) · `REV-002-anexo-consistencia-borrador.md` (5 chequeos cruzados caps. 3-4-5-Apéndice) |
 | **Alcance** | Documento completo, con foco en el delta desde REV-001 (09-07-2026) |
-| **Autor de la revisión** | Hermes (agente) — pendiente de validación del director |
+| **Autor de la revisión** | Hermes (agente) — **validada por el director** (Alejandro Sartorio, 29-10-2026). Estrategia cap. 6 aprobada: corrida nueva controlada por protocolo (opción a); ver `PROTOCOLO-CAP6.md` |
 
 ---
 

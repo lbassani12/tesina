@@ -1,0 +1,105 @@
+% =====================================================================
+%  Variante del diagrama de arquitectura para el paper CoNaIISI 2026.
+%  Derivada de ../diagrama_arquitectura.tex (source of truth de la tesina).
+%  Diferencias: sin leyenda ni tabla de referencia de puertos (el caption del
+%  paper cubre la leyenda y el texto no usa los números de puerto), sin
+%  numeración de puertos, cajas de filtro más anchas y fuentes un escalón
+%  más grandes, para que sea legible impreso a ancho de página.
+%  Compilar: lualatex diagrama_paper.tex  ->  diagrama_paper.pdf (vectorial).
+% =====================================================================
+\documentclass[tikz,border=5pt]{standalone}
+\usepackage{fontspec}
+% Times New Roman real desde las fuentes de Windows (WSL); respaldo: TeX Gyre Termes.
+\setmainfont{Times New Roman}[Path=/mnt/c/Windows/Fonts/, Extension=.ttf,
+  UprightFont=times, BoldFont=timesbd, ItalicFont=timesi, BoldItalicFont=timesbi]
+\usepackage[spanish,es-tabla,es-noindentfirst]{babel}
+\usetikzlibrary{shapes.geometric,positioning,arrows.meta,calc,fit,backgrounds}
+
+\begin{document}
+\begin{tikzpicture}[
+  font=\normalsize,
+  filtro/.style={draw, thick, rectangle, rounded corners=2pt,
+    minimum width=2.5cm, minimum height=1.6cm, align=center},
+  exterior/.style={draw, thick, cylinder, shape border rotate=90, aspect=0.25,
+    minimum width=2.2cm, minimum height=1.5cm, align=center, font=\normalsize\itshape},
+  repos/.style={draw, line width=2pt, rectangle, rounded corners=3pt, align=center, fill=black!4},
+  puerto/.style={fill=black, draw=black, rectangle, minimum size=5pt, inner sep=0pt},
+  tubo/.style={thick},
+  conexion/.style={thick, dash pattern=on 4pt off 3pt},
+  sint/.style={{Circle[length=2.2mm]}-{Latex[length=2.8mm,width=2.2mm]}, thick},
+  memoria/.style={{Latex[length=3.4mm,width=3mm]}-{Latex[length=3.4mm,width=3mm]}, line width=1.9pt},
+  sintbox/.style={draw, thick, rectangle, rounded corners=2pt, align=center,
+    font=\footnotesize, fill=black!3, minimum height=0.9cm, text width=2.8cm, inner sep=3pt},
+  compuesto/.style={draw, thick, dash pattern=on 3pt off 2pt, rounded corners=6pt},
+  resp/.style={text=red, font=\small\bfseries, inner sep=1pt},
+]
+
+% ---------- Filtros (banda media, y=4.5; paso 3.1 cm) ----------
+\node[filtro] (extr)  at (3,4.5)    {Extracción};
+\node[filtro] (enriq) at (6.1,4.5)  {Enriquecimiento\\semántico};
+\node[filtro] (comp)  at (9.2,4.5)  {Composición\\de contexto};
+\node[filtro] (invoc) at (12.3,4.5) {Invocación\\generativa};
+\node[filtro] (deco)  at (15.4,4.5) {Decodificación};
+\node[filtro] (verif) at (18.5,4.5) {Verificación};
+\node[filtro] (norm)  at (21.6,4.5) {Normalización};
+
+% ---------- Fuente y sumidero ----------
+\node[exterior] (portales) at (0.0,4.5) {Portales\\digitales};
+\node[exterior] (presenta) at (24.6,4.5) {Capa de\\presentación\\\footnotesize(tableros, reportes)};
+
+% ---------- Puertos (cuadraditos en bordes O/E) ----------
+\foreach \f in {extr,enriq,comp,invoc,deco,verif,norm}{
+  \node[puerto] (\f-in)  at (\f.west) {};
+  \node[puerto] (\f-out) at (\f.east) {};
+}
+
+% ---------- Tubos tipados entre filtros ----------
+\draw[tubo] (extr-out)  -- (enriq-in);
+\draw[tubo, draw=black!45] (enriq-out) -- (comp-in);
+\draw[tubo] (comp-out)  -- (invoc-in);
+\draw[tubo] (invoc-out) -- (deco-in);
+\draw[tubo] (deco-out)  -- (verif-in);
+\draw[tubo] (verif-out) -- (norm-in);
+
+% ---------- Conexiones al entorno ----------
+\draw[conexion] (portales.east) -- (extr-in);
+\draw[conexion] (norm-out) -- (presenta.west);
+
+% ---------- Sintonizadores ----------
+\node[sintbox] (sint-extr)  at (3,7.4)    {Selección de portales,\\reglas y prioridad};
+\node[sintbox] (sint-comp)  at (9.2,7.4)  {Template, variables\\y parámetros de recuperación};
+\node[sintbox] (sint-verif) at (18.5,7.4) {Criterio de validez\\y ejecutor};
+\node[sintbox] (sint-norm)  at (21.6,7.4) {Criterios de\\consolidación};
+\draw[sint] (sint-extr.south)  -- (extr.north);
+\draw[sint] (sint-comp.south)  -- (comp.north);
+\draw[sint] (sint-verif.south) -- (verif.north);
+\draw[sint] (sint-norm.south)  -- (norm.north);
+
+% ---------- Filtro compuesto: Recuperación aumentada ----------
+\begin{scope}[on background layer]
+  \node[compuesto, fit=(enriq)(comp), inner xsep=7pt, inner ysep=12pt] (rag) {};
+\end{scope}
+\node[font=\normalsize\itshape, anchor=south west] at (rag.north west) {Recuperación aumentada};
+\node[puerto, fill=black!40, draw=black!40] at (enriq.east) {};
+\node[puerto, fill=black!40, draw=black!40] at (comp.west) {};
+
+% ---------- Repositorio común ----------
+\node[repos, minimum width=21.1cm, minimum height=1.2cm] (repo) at (12.3,0.3)
+  {Repositorio común --- PostgreSQL / ORM de Odoo};
+\foreach \f in {extr,enriq,comp,invoc,deco,verif,norm}{
+  \draw[memoria] (\f.south) -- (\f.south |- repo.north);
+}
+
+% ---------- Marcadores de responsabilidades [A]--[F] ----------
+\node[resp, anchor=west] at ($(extr.south)  +(0.12,-0.74)$) {[A]\,[F]};
+\node[resp, anchor=west] at ($(enriq.south) +(0.12,-0.74)$) {[C]};
+\node[resp, anchor=west] at ($(comp.south)  +(0.12,-0.74)$) {[A]\,[B]};
+\node[resp, anchor=west] at ($(invoc.south) +(0.12,-0.74)$) {[C]};
+\node[resp, anchor=west] at ($(deco.south)  +(0.12,-0.74)$) {[B]\,[C]};
+\node[resp, anchor=west] at ($(verif.south) +(0.12,-0.74)$) {[A]\,[B]\,[D]};
+\node[resp, anchor=west] at ($(norm.south)  +(0.12,-0.74)$) {[A]\,[B]\,[D]};
+\node[resp, anchor=north] at ($(portales.south)+(0,-0.1)$) {[F]};
+\node[resp, anchor=east]  at ($(repo.east)+(-0.25,0)$) {[E]};
+
+\end{tikzpicture}
+\end{document}

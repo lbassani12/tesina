@@ -80,10 +80,10 @@
 % ---- calle del experto ----
 \node[evt] (ini) at (1.5,\rA) {};
 \node[actN] (E1)  at (3.85,\rA) {\textbf{01.01, 01.03} Formular la pregunta; crear el estudio};
-\node[act]  (E3)  at (\xE,\rB)  {\textbf{02.01} Sintonizar la Extracción: portales y reglas};
+\node[act]  (E3)  at (\xE,\rB)  {\textbf{02.01} Configurar la Extracción: portales y reglas};
 \node[act]  (E4)  at (\xE,\rC)  {\textbf{02.03} Seleccionar y confirmar el corpus};
 \node[act]  (E5)  at (\xE,\rD)  {\textbf{03.01} Crear o editar el \textit{template}};
-\node[act]  (E6)  at (\xE,\rE)  {\textbf{03.02--03.04} Sintonizar Composición, Verificación y Normalización};
+\node[act]  (E6)  at (\xE,\rE)  {\textbf{03.02--03.04} Configurar Composición, Verificación y Normalización};
 \node[act]  (E8)  at (\xE,\rF)  {\textbf{04.01} Ejecutar el pipeline};
 \node[act]  (E9)  at (\xE,\rJ)  {\textbf{04.07} Emitir veredictos (revisor humano)};
 \node[act]  (E10) at (\xE,\rL)  {\textbf{05.02} Leer el resultado; auditar la procedencia};
@@ -134,7 +134,7 @@
   node[etiq, rotate=90, pos=0.5] {};
 \node[etiq, rotate=90] at (1.1,-9.35) {estudio derivado};
 % ---- asociaciones (configuración y datos) ----
-\draw[asoc] (E3) -- (S0) node[etiq, midway, above] {sintonía};
+\draw[asoc] (E3) -- (S0) node[etiq, midway, above] {configura};
 \draw[asoc] (S0.south) |- (E4.east) node[etiq, pos=0.72, above] {lo ya extraído};
 \draw[asoc] (I1.south) |- (S1.east);
 \node[etiq, rotate=90] at (\xI,-4.55) {copiada al estudio al iniciar};

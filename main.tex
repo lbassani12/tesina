@@ -720,7 +720,7 @@ Esta caracterización no es exclusiva del catálogo: tiene un precedente directo
 
 En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio ---y son, por ello, los puntos donde se realiza la responsabilidad de intervención del experto, \resp{A}---: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador, al margen de todo sintonizador (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable.
 
-El más elaborado es el de Composición de contexto, que se realiza sobre dos superficies de configuración distintas. La primera es un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Partir de una plantilla y no de un \textit{prompt} en blanco responde, además, a una dificultad documentada: \citet{zamfirescu2023} observan que los usuarios sin formación en inteligencia artificial diseñan sus \textit{prompts} de manera oportunista antes que sistemática, y derivan de ello la necesidad de herramientas que estructuren ese diseño. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}. La segunda es el formulario de sintonía del estudio, donde el experto selecciona la plantilla, liga valores a las variables que ésta declara, agrega las aclaraciones de texto libre y fija los parámetros de recuperación y del modelo generativo. La partición responde a que ambas configuraciones tienen ciclos de vida distintos: el \textit{template} es una entidad persistente del repositorio común, reutilizable entre estudios y ajena a la monotonía del flujo (Apéndice~\ref{anexo:tipo-template}), mientras que los valores sintonizados pertenecen a una corrida y quedan fijados con ella; editar la plantilla dentro del estudio obligaría a bifurcar una copia por corrida y disolvería la reutilización que el panel persigue. Que la sintonía se reparta en dos formularios no la aleja del estilo: el sintonizador se define por lo que parametriza y por el momento en que el filtro lo lee ---una única vez, al invocarse---, no por la descomposición que adopte la capa de presentación; es, precisamente, el desacople entre el procesamiento y la interfaz de usuario que \citet{garlanshaw:1994} señalan como virtud de la interfaz de control. La práctica corriente de la ingeniería de \textit{prompts} converge con esa separación: se recomienda declarar variables en la plantilla y ligar sus valores por fuera, conservar el \textit{prompt} en un artefacto separado del código, y documentar cada intento contra una plantilla nombrada y versionada, registrando por corrida el modelo, la temperatura, la longitud de salida y los parámetros de recuperación \citep{prompt-eng:2024}. Su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
+El más elaborado es el de Composición de contexto, que se realiza sobre dos superficies de configuración distintas. La primera es un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Partir de una plantilla y no de un \textit{prompt} en blanco responde, además, a una dificultad documentada: \citet{zamfirescu2023} observan que los usuarios sin formación en inteligencia artificial diseñan sus \textit{prompts} de manera oportunista antes que sistemática, y derivan de ello la necesidad de herramientas que estructuren ese diseño. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}. La segunda es el formulario de configuración del estudio, donde el experto selecciona la plantilla, liga valores a las variables que ésta declara, agrega las aclaraciones de texto libre y fija los parámetros de recuperación y del modelo generativo. La partición responde a que ambas configuraciones tienen ciclos de vida distintos: el \textit{template} es una entidad persistente del repositorio común, reutilizable entre estudios y ajena a la monotonía del flujo (Apéndice~\ref{anexo:tipo-template}), mientras que los valores sintonizados pertenecen a una corrida y quedan fijados con ella; editar la plantilla dentro del estudio obligaría a bifurcar una copia por corrida y disolvería la reutilización que el panel persigue. Que la configuración se reparta en dos formularios no la aleja del estilo: el sintonizador se define por lo que parametriza y por el momento en que el filtro lo lee ---una única vez, al invocarse---, no por la descomposición que adopte la capa de presentación; es, precisamente, el desacople entre el procesamiento y la interfaz de usuario que \citet{garlanshaw:1994} señalan como virtud de la interfaz de control. La práctica corriente de la ingeniería de \textit{prompts} converge con esa separación: se recomienda declarar variables en la plantilla y ligar sus valores por fuera, conservar el \textit{prompt} en un artefacto separado del código, y documentar cada intento contra una plantilla nombrada y versionada, registrando por corrida el modelo, la temperatura, la longitud de salida y los parámetros de recuperación \citep{prompt-eng:2024}. Su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
 
 Que la intervención del experto se canalice por sintonizadores ---y no por el flujo de datos--- es lo que la mantiene compatible con el estilo: el sintonizador ajusta \textit{cómo} transforma un filtro, sin alterar la red de tubos ni agregar un puerto al pipeline. La configuración así incorporada es un parámetro del filtro, no un dato que circule por la arquitectura.
 
@@ -815,7 +815,7 @@ La Tabla~\ref{tab:registro-responsabilidades} consolida el registro maestro de l
       \resp{A} & Intervención del experto
       & Sintonizadores de Extracción, Composición, Verificación y Normalización (\S~\ref{sec:arq-car-sintonizadores}); invocados sólo desde la capa de presentación; \textit{template} como configuración editada.
       & Solapas \textit{Corpus}, \textit{Composición}, \textit{Verificación} y \textit{Normalización} del estudio y panel de \textit{templates}, para el grupo de analistas; cada solapa pasa a sólo lectura al ejecutarse su filtro (\S~\ref{sec:impl-mat-estudio}); formulario del revisor humano (\S~\ref{sec:impl-mat-verificacion}).
-      & Actividades del experto: 01.01 y 01.03, 02.01 y 02.03, 03.01--03.04, 04.07, 06.01--06.02 (Tabla~\ref{tab:proc-correspondencia}).
+      & Actividades del experto: 01.01 y 01.03, 02.01 y 02.03, 03.01--03.04, 04.07, 06.01--06.02 (Sección~\ref{sec:proc-ciclo}).
       & \textit{(por completar)} % TODO Cap. 6: configuración inicial y template
       \\
       \addlinespace
@@ -1428,7 +1428,7 @@ Con ello el capítulo responde a la pregunta que lo abrió ---si el módulo real
 
 Los dos capítulos anteriores respondieron, para cada filtro del pipeline, qué transforma y cómo lo realiza el módulo. Ninguno de los dos respondió en qué orden ocurre todo eso a lo largo de un estudio completo, quién actúa en cada punto y dónde se decide volver a empezar. Esa es la vista que este capítulo agrega, en cumplimiento del objetivo específico OE2: el ciclo de análisis modelado como un mapa de procesos, con sus actores, sus entradas y salidas, y su correspondencia con los filtros del Capítulo~\ref{cap:arquitectura} y con las superficies del Capítulo~\ref{cap:implementacion}.
 
-El capítulo es deliberadamente breve y no repite lo que las otras dos vistas ya fijaron. Los contratos de datos, los sintonizadores y las decisiones de implementación se citan por referencia; lo que aquí se describe es exclusivamente el orden, el reparto de las actividades entre los actores y las condiciones que permiten pasar de un proceso al siguiente. Se compone de un único diagrama, la Figura~\ref{fig:proc-ciclo}, que presenta el ciclo completo de un estudio en tres calles; de la descripción de los siete procesos que ese diagrama recorre (Sección~\ref{sec:proc-ciclo}); y de una tabla de correspondencia que ubica cada actividad frente al elemento de la arquitectura y a la realización que le corresponden (Sección~\ref{sec:proc-correspondencia}). La síntesis final completa la columna de este capítulo en el registro maestro de responsabilidades.
+El capítulo es deliberadamente breve y no repite lo que las otras dos vistas ya fijaron. Los contratos de datos, los sintonizadores y las decisiones de implementación se citan por referencia; lo que aquí se describe es exclusivamente el orden, el reparto de las actividades entre los actores y las condiciones que permiten pasar de un proceso al siguiente. Se compone de un único diagrama, la Figura~\ref{fig:proc-ciclo}, que presenta el ciclo completo de un estudio en tres calles; de la descripción de los siete procesos que ese diagrama recorre (Sección~\ref{sec:proc-ciclo}); y de una tabla de correspondencia que ubica cada filtro frente a las actividades que lo ejecutan y lo configuran (Sección~\ref{sec:proc-correspondencia}). La síntesis final completa la columna de este capítulo en el registro maestro de responsabilidades.
 
 \section{Notación y actores}
 \label{sec:proc-notacion}
@@ -1445,11 +1445,11 @@ Los procesos se numeran del 01 al 07 y las actividades con el número de su proc
 \begin{figure}[p]
   \centering
   \includegraphics[width=\textwidth,height=0.9\textheight,keepaspectratio]{Diagrama-Procesos.png}
-  \caption{Mapa de procesos del ciclo de un estudio, en notación inspirada en BPMN. Las columnas son las calles de los tres actores; las bandas horizontales, numeradas a la izquierda, son los siete procesos: 01 definición del estudio, 02 constitución del corpus, 03 definición del contexto, 04 procesamiento generativo, 05 lectura del resultado, 06 refinamiento iterativo y 07 presentación de resultados. Las flechas continuas son flujo de secuencia y las discontinuas, asociaciones de configuración o de datos. Las actividades del sistema en el proceso 04 son los filtros del pipeline de la Figura~\ref{fig:arq-pipeline}, con el tipo del tubo que cada uno emite. La compuerta del proceso 06 pregunta si el resultado responde a la pregunta del estudio; de no ser así, un estudio derivado reingresa en la actividad 02.03.}
+  \caption{Mapa de procesos del ciclo de un estudio, en notación inspirada en BPMN: tres calles (columnas) y siete procesos (bandas).}
   \label{fig:proc-ciclo}
 \end{figure}
 
-La Figura~\ref{fig:proc-ciclo} se lee de arriba hacia abajo. Las bandas horizontales son los siete procesos y las tres columnas, las calles de los actores. El ciclo tiene un único evento de inicio ---la pregunta del experto--- y un único evento de fin ---la presentación de los resultados---, y entre ambos un solo ciclo de control: la compuerta del proceso 06, que devuelve el flujo a la constitución del corpus a través de un estudio derivado. La espera de la verificación humana en el proceso 04 no es un ciclo sino una detención: el flujo sale del sistema hacia el experto y regresa por la misma actividad. Dos rasgos de la figura conviene señalar antes de recorrerla. La calle del sistema queda vacía hasta el proceso 04 con una sola excepción, la Extracción, que corre de manera continua y desacoplada del ciclo (Subsección~\ref{sec:impl-pre-extraccion}): el experto no la dispara, sino que selecciona sobre lo que ella ya depositó. Y la calle del experto queda vacía durante el proceso 04 salvo cuando él mismo es el revisor: el procesamiento generativo es, por diseño, la parte del ciclo en la que el experto no interviene, porque toda su intervención quedó canalizada por los sintonizadores antes de ejecutarlo (Subsección~\ref{sec:arq-car-sintonizadores}).
+La Figura~\ref{fig:proc-ciclo} se lee de arriba hacia abajo. Las bandas horizontales, numeradas a la izquierda, son los siete procesos ---01 definición del estudio, 02 constitución del corpus, 03 definición del contexto, 04 procesamiento generativo, 05 lectura del resultado, 06 refinamiento iterativo y 07 presentación de resultados--- y las tres columnas, las calles de los actores. El ciclo tiene un único evento de inicio ---la pregunta del experto--- y un único evento de fin ---la presentación de los resultados---, y entre ambos un solo ciclo de control: la compuerta del proceso 06, en la que el experto juzga si el resultado responde a la pregunta del estudio y que, de no ser así, devuelve el flujo a la constitución del corpus a través de un estudio derivado. La espera de la verificación humana en el proceso 04 no es un ciclo sino una detención: el flujo sale del sistema hacia el experto y regresa por la misma actividad. Dos rasgos de la figura conviene señalar antes de recorrerla. La calle del sistema queda vacía hasta el proceso 04 con una sola excepción, la Extracción, que corre de manera continua y desacoplada del ciclo (Subsección~\ref{sec:impl-pre-extraccion}): el experto no la dispara, sino que selecciona sobre lo que ella ya depositó. Y la calle del experto queda vacía durante el proceso 04 salvo cuando él mismo es el revisor: el procesamiento generativo es, por diseño, la parte del ciclo en la que el experto no interviene, porque toda su intervención quedó canalizada por los sintonizadores antes de ejecutarlo (Subsección~\ref{sec:arq-car-sintonizadores}).
 
 Cada proceso se describe a continuación con su propósito, su entrada y su salida, y la lista de sus actividades con el actor que las ejecuta. Las referencias a filtros, sintonizadores y superficies remiten a los capítulos anteriores y no se repiten aquí.
 
@@ -1470,7 +1470,7 @@ Fija qué se va a estudiar y asegura que el entorno técnico esté en condicione
 Reúne en el estudio las noticias sobre las que se va a trabajar. \textit{Entrada:} los portales y las reglas que el experto considera pertinentes, y el repositorio con lo que la Extracción ya depositó. \textit{Salida:} el \textit{recordset} \texttt{Noticia[N]} confirmado como corpus del estudio, en estado \textit{corpus seleccionado}.
 
 \begin{itemize}
-  \item \textbf{02.01 Sintonía de la Extracción} (experto). Desde los formularios de portales, reglas y términos del \textit{addon} institucional, registra los portales con su prioridad de monitoreo y define las reglas por disyunción, conjunción y negación de términos. Es la primera superficie del sintonizador de Extracción y precede en el tiempo al estudio, a veces por semanas: como la Extracción sólo vigila el presente de los portales (Subsección~\ref{sec:impl-pre-extraccion}), el corpus posible de un estudio es lo que se extrajo mientras las reglas pertinentes estuvieron activas.
+  \item \textbf{02.01 Configuración de la Extracción} (experto). Desde los formularios de portales, reglas y términos del \textit{addon} institucional, registra los portales con su prioridad de monitoreo y define las reglas por disyunción, conjunción y negación de términos. Es la primera superficie del sintonizador de Extracción y precede en el tiempo al estudio, a veces por semanas: como la Extracción sólo vigila el presente de los portales (Subsección~\ref{sec:impl-pre-extraccion}), el corpus posible de un estudio es lo que se extrajo mientras las reglas pertinentes estuvieron activas.
   \item \textbf{02.02 Extracción} (sistema). Una acción planificada de la plataforma recorre cada ochenta minutos los portales activos de una prioridad, aplica las reglas y persiste cada publicación que las satisface como un registro \texttt{Noticia}. Es continua y no la dispara el experto; en el mapa aparece como actividad del sistema sin flujo de secuencia entrante.
   \item \textbf{02.03 Selección y confirmación del corpus} (experto). En la solapa \textit{Corpus} del estudio fija los criterios ---rango de fechas, sobre la fecha de registro o la de publicación; portales; reglas que motivaron el ingreso; exclusión de las publicaciones que un operador archivó; límite de cantidad---, obtiene una vista previa, quita o agrega noticias a mano y confirma. La confirmación congela la tabla como \texttt{Noticia[N]}, registra la fecha y guarda aparte las noticias excluidas a mano, y deja los criterios de sólo lectura. Es la segunda superficie del sintonizador de Extracción (Subsección~\ref{sec:impl-mat-estudio}).
 \end{itemize}
@@ -1480,14 +1480,16 @@ Reúne en el estudio las noticias sobre las que se va a trabajar. \textit{Entrad
 
 Declara el estudio como dato: qué se le pide al modelo generativo sobre cada unidad de análisis, con qué criterio se juzga lo que responde y cómo se consolidan los juicios. \textit{Entrada:} el estudio con su corpus confirmado y la biblioteca de \textit{templates}. \textit{Salida:} los tres sintonizadores del estudio fijados; el estudio queda listo para ejecutarse.
 
+
+
 \begin{itemize}
   \item \textbf{03.01 Creación o edición del \textit{template}} (experto). En el panel de \textit{templates} crea o ajusta una plantilla: nombre, objetivo del análisis, instrucciones con variables de contexto, variables con su valor por defecto, esquema de la respuesta esperada ---validado al guardar--- y previsualización del \textit{prompt} resultante. El \textit{template} es reutilizable entre estudios y se archiva en lugar de eliminarse. La actividad se omite cuando ya existe una plantilla adecuada.
-  \item \textbf{03.02 Sintonía de la Composición} (experto). En la solapa \textit{Composición} selecciona el \textit{template}, liga un valor a cada variable, agrega las aclaraciones de texto libre y fija la estrategia de composición, la cantidad de noticias y el umbral de similitud de la recuperación, y la temperatura y la longitud de salida del modelo generativo.
-  \item \textbf{03.03 Sintonía de la Verificación} (experto). En la solapa \textit{Verificación} redacta el criterio de validez ---por defecto, que cada afirmación del análisis esté sostenida por fragmentos literales de las noticias--- y elige el ejecutor: el juez generativo o un revisor humano.
-  \item \textbf{03.04 Sintonía de la Normalización} (experto). En la solapa \textit{Normalización} fija la política sobre los análisis observados, la agrupación ---una clave de procedencia del corpus o una variable propia, cuya tabla puede poblarse desde el corpus y completarse a mano---, una condición de inclusión opcional y las claves del esquema que se consolidan.
+  \item \textbf{03.02 Configuración de la Composición} (experto). En la solapa \textit{Composición} selecciona el \textit{template}, liga un valor a cada variable, agrega las aclaraciones de texto libre y fija la estrategia de composición, la cantidad de noticias y el umbral de similitud de la recuperación, y la temperatura y la longitud de salida del modelo generativo.
+  \item \textbf{03.03 Configuración de la Verificación} (experto). En la solapa \textit{Verificación} redacta el criterio de validez ---por defecto, que cada afirmación del análisis esté sostenida por fragmentos literales de las noticias--- y elige el ejecutor: el juez generativo o un revisor humano.
+  \item \textbf{03.04 Configuración de la Normalización} (experto). En la solapa \textit{Normalización} fija la política sobre los análisis observados, la agrupación ---una clave de procedencia del corpus o una variable propia, cuya tabla puede poblarse desde el corpus y completarse a mano---, una condición de inclusión opcional y las claves del esquema que se consolidan.
 \end{itemize}
 
-Las dos últimas sintonías admiten fijarse más tarde, hasta el momento en que su filtro se ejecuta ---la solapa pasa a sólo lectura recién entonces---; el mapa las ubica aquí porque es donde el experto declara el estudio completo antes de correrlo, y porque así el proceso 04 queda libre de decisiones de dominio.
+Las dos últimas configuraciones admiten fijarse más tarde, hasta el momento en que su filtro se ejecuta ---la solapa pasa a sólo lectura recién entonces---; el mapa las ubica aquí porque es donde el experto declara el estudio completo antes de correrlo, y porque así el proceso 04 queda libre de decisiones de dominio.
 
 \subsection{Proceso 04: procesamiento generativo}
 \label{sec:proc-iag}
@@ -1538,99 +1540,40 @@ Comunica el producto del estudio. \textit{Entrada:} un estudio consolidado cuyo 
   \item \textbf{07.01 Presentación de los resultados} (experto). El material es el tablero, con las vistas de tabla dinámica y gráfico de la plataforma; el formulario del resultado; y la ficha del estudio como documentación de la corrida. Los operadores del \textit{addon} institucional tienen permiso de lectura sobre estudios, resultados y veredictos. Lo que el framework no hace, por la decisión documentada en la Subsección~\ref{sec:impl-mat-normalizacion}, es redactar una narrativa: la interpretación de las tablas es del experto, con el juicio de fidelidad y la evidencia a la vista.
 \end{itemize}
 
-\section{Correspondencia entre procesos, filtros y realización}
+\section{Correspondencia entre procesos y filtros}
 \label{sec:proc-correspondencia}
 
-La Tabla~\ref{tab:proc-correspondencia} ubica cada actividad del mapa frente al elemento de la arquitectura y a la realización del módulo que le corresponden, y consigna las responsabilidades transversales que esa actividad realiza. Es la tercera columna del hilo que la Tabla~\ref{tab:impl-correspondencia} inició entre la arquitectura y el módulo.
+La Tabla~\ref{tab:proc-correspondencia} ubica cada filtro de la arquitectura frente a la actividad que lo ejecuta y a las que lo configuran. La realización de cada filtro en el módulo se consigna en la Tabla~\ref{tab:impl-correspondencia}, y las responsabilidades que realiza cada actividad, en el registro maestro (Tabla~\ref{tab:registro-responsabilidades}).
 
-{
-\footnotesize
-\setlength{\tabcolsep}{3pt}
-\begin{xltabular}{\textwidth}{@{}l >{\raggedright\arraybackslash}p{2.75cm} >{\raggedright\arraybackslash}p{1.55cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\centering\arraybackslash}p{0.75cm}@{}}
-  \caption{Correspondencia entre las actividades del mapa de procesos, los elementos de la arquitectura (Capítulo~\ref{cap:arquitectura}) y su realización en el módulo (Capítulo~\ref{cap:implementacion}). \respleyenda}
-  \label{tab:proc-correspondencia} \\
-  \toprule
-  \textbf{Act.} & \textbf{Actividad} & \textbf{Actor} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Realización (Cap.~\ref{cap:implementacion})} & \textbf{Resp.} \\
-  \midrule
-  \endfirsthead
-  \multicolumn{6}{@{}l}{\footnotesize\textit{Tabla~\ref{tab:proc-correspondencia} (continuación)}} \\
-  \toprule
-  \textbf{Act.} & \textbf{Actividad} & \textbf{Actor} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Realización (Cap.~\ref{cap:implementacion})} & \textbf{Resp.} \\
-  \midrule
-  \endhead
-  \midrule
-  \multicolumn{6}{r@{}}{\footnotesize\textit{continúa en la página siguiente}} \\
-  \endfoot
-  \bottomrule
-  \endlastfoot
-  \multicolumn{6}{@{}l}{\textit{01 Definición del estudio}} \\
-  \addlinespace[2pt]
-  01.01 & Formulación de la pregunta y los criterios & Experto & Fuera del pipeline; lo decidido ingresa como dato por los sintonizadores. & Sin correlato en el módulo. & \resp{A}\par\resp{B} \\
-  \addlinespace
-  01.02 & Configuración técnica & Implementador & Configuración técnica de Enriquecimiento, Invocación y Decodificación, al margen de todo sintonizador (\S~\ref{sec:arq-car-sintonizadores}). & Menú \textit{Configuración}; parámetros del sistema copiados en cada estudio (\S~\ref{sec:impl-mat-estudio}). & \resp{C} \\
-  \addlinespace
-  01.03 & Creación del estudio & Experto & Instancia de la red de tubos. & Formulario de \texttt{iag.estudio}, estado borrador (\S~\ref{sec:impl-mat-estudio}). & \resp{A} \\
-  \addlinespace[4pt]
-  \multicolumn{6}{@{}l}{\textit{02 Constitución del corpus}} \\
-  \addlinespace[2pt]
-  02.01 & Sintonía de la Extracción & Experto & Sintonizador de Extracción, primera superficie. & Formularios de portales, reglas y términos de \texttt{wsfnoticias} (\S~\ref{sec:impl-pre-extraccion}). & \resp{A}\par\resp{F} \\
-  \addlinespace
-  02.02 & Extracción & Sistema & Filtro Extracción, puertos 1$\to$2, \texttt{Noticia[N]}. & Acción planificada del \textit{addon} institucional (\S~\ref{sec:impl-pre-extraccion}). & \resp{F} \\
-  \addlinespace
-  02.03 & Selección y confirmación del corpus & Experto & Sintonizador de Extracción, segunda superficie; llena el tubo 2$\to$3. & Solapa \textit{Corpus}; botones \textit{Buscar} y \textit{Confirmar corpus} (\S~\ref{sec:impl-mat-estudio}). & \resp{A}\par\resp{E} \\
-  \addlinespace[4pt]
-  \multicolumn{6}{@{}l}{\textit{03 Definición del contexto}} \\
-  \addlinespace[2pt]
-  03.01 & Creación o edición del \textit{template} & Experto & \texttt{Template} (Apéndice~\ref{anexo:tipo-template}); primera superficie del sintonizador de Composición. & Panel de \textit{templates}, \texttt{iag.template} (\S~\ref{sec:impl-mat-composicion}). & \resp{A}\par\resp{B} \\
-  \addlinespace
-  03.02 & Sintonía de la Composición & Experto & Sintonizador de Composición, segunda superficie. & Solapa \textit{Composición} del estudio. & \resp{A}\par\resp{B} \\
-  \addlinespace
-  03.03 & Sintonía de la Verificación & Experto & Sintonizador de Verificación. & Solapa \textit{Verificación} del estudio. & \resp{A}\par\resp{B}\par\resp{D} \\
-  \addlinespace
-  03.04 & Sintonía de la Normalización & Experto & Sintonizador de Normalización. & Solapa \textit{Normalización}; botón \textit{Poblar desde el corpus}. & \resp{A}\par\resp{B}\par\resp{D} \\
-  \addlinespace[4pt]
-  \multicolumn{6}{@{}l}{\textit{04 Procesamiento generativo}} \\
-  \addlinespace[2pt]
-  04.01 & Ejecución del pipeline & Experto & Activación de la red de tubos. & Botones \textit{Ejecutar siguiente filtro} y \textit{Ejecutar todo}; \textit{runner} y tabla de etapas (\S~\ref{sec:impl-mat-estudio}). & \resp{E} \\
-  \addlinespace
-  04.02 & Enriquecimiento semántico & Sistema & Filtro, puertos 3$\to$4, \texttt{Embedding[N]}. & \texttt{iag.filtro.}\allowbreak\texttt{enriquecimiento}. & \resp{C} \\
-  \addlinespace
-  04.03 & Composición de contexto & Sistema & Filtro, puertos 5$\to$6, \texttt{Prompt[M]}. & \texttt{iag.filtro.}\allowbreak\texttt{composicion}. & \resp{B} \\
-  \addlinespace
-  04.04 & Invocación generativa & Sistema & Filtro, puertos 7$\to$8, \texttt{RespuestaIAG[M]}. & \texttt{iag.filtro.}\allowbreak\texttt{invocacion}; servicio \texttt{iag.proveedor}. & \resp{C} \\
-  \addlinespace
-  04.05 & Decodificación & Sistema & Filtro, puertos 9$\to$10, \texttt{Análisis[M']}; compuerta. & \texttt{iag.filtro.}\allowbreak\texttt{decodificacion}. & \resp{B}\par\resp{C} \\
-  \addlinespace
-  04.06 & Verificación & Sistema & Filtro, puertos 11$\to$12, \texttt{Veredicto[M']}; compuerta blanda. & \texttt{iag.filtro.}\allowbreak\texttt{verificacion} con el juez; estado \textit{en verificación} con el revisor. & \resp{D} \\
-  \addlinespace
-  04.07 & Revisión humana & Experto & Ejecutor humano de Verificación. & Formulario de veredicto; botón \textit{Continuar (veredictos emitidos)} (\S~\ref{sec:impl-mat-verificacion}). & \resp{A}\par\resp{D} \\
-  \addlinespace
-  04.08 & Normalización & Sistema & Filtro, puertos 13$\to$14, \texttt{Resultado}. & \texttt{iag.filtro.}\allowbreak\texttt{normalizacion}. & \resp{D}\par\resp{E} \\
-  \addlinespace[4pt]
-  \multicolumn{6}{@{}l}{\textit{05 Lectura del resultado}} \\
-  \addlinespace[2pt]
-  05.01 & Proyección del resultado & Sistema & Sumidero: capa de presentación. & Formulario del resultado; tablero sobre \texttt{iag.resultado.fila}; ficha del estudio. & \resp{D}\par\resp{E} \\
-  \addlinespace
-  05.02 & Lectura y auditoría & Experto & Consulta de ancestros sobre el grafo de procedencia (Apéndice~\ref{anexo:tipos-procedencia}). & Solapas \textit{Resultado}, \textit{Corrida} y \textit{Ficha}; botones por tubo; menú de auditoría. & \resp{D}\par\resp{E} \\
-  \addlinespace[4pt]
-  \multicolumn{6}{@{}l}{\textit{06 Refinamiento iterativo}} \\
-  \addlinespace[2pt]
-  06.01 & Decisión & Experto & Fuera del pipeline: la iteración es proceso de uso (\S~\ref{sec:arq-car-conjunto}). & Sin correlato en el módulo. & \resp{A} \\
-  \addlinespace
-  06.02 & Nueva iteración & Experto & Nueva instancia de la red de tubos. & Botón \textit{Nueva iteración}: estudio enlazado que hereda criterios y sintonizadores (\S~\ref{sec:impl-mat-estudio}). & \resp{A}\par\resp{E} \\
-  \addlinespace[4pt]
-  \multicolumn{6}{@{}l}{\textit{07 Presentación de resultados}} \\
-  \addlinespace[2pt]
-  07.01 & Presentación de los resultados & Experto & Sumidero. & Tablero y ficha del estudio; lectura por los operadores. & \resp{D} \\
-\end{xltabular}
-}
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \caption{Correspondencia entre los filtros de la arquitectura (Capítulo~\ref{cap:arquitectura}) y las actividades del mapa de procesos. La columna \textit{Sintonizador} reúne las actividades del experto y \textit{Config.\ técnica}, la del implementador; 04.07 es la contraparte humana de 04.06.}
+  \label{tab:proc-correspondencia}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X c l l l c@{}}
+    \toprule
+    \textbf{Filtro}           & \textbf{Puertos} & \textbf{Salida}          & \textbf{Actividad} & \textbf{Sintonizador} & \shortstack{\textbf{Config.}\\\textbf{técnica}} \\
+    \midrule
+    Extracción                & 1$\to$2          & \texttt{Noticia[N]}      & 02.02              & 02.01, 02.03          & ---                       \\
+    Enriquecimiento semántico & 3$\to$4          & \texttt{Embedding[N]}    & 04.02              & ---                   & 01.02                     \\
+    Composición de contexto   & 5$\to$6          & \texttt{Prompt[M]}       & 04.03              & 03.01, 03.02          & ---                       \\
+    Invocación generativa     & 7$\to$8          & \texttt{RespuestaIAG[M]} & 04.04              & ---                   & 01.02                     \\
+    Decodificación            & 9$\to$10         & \texttt{Análisis[M']}    & 04.05              & ---                   & 01.02                     \\
+    Verificación              & 11$\to$12        & \texttt{Veredicto[M']}   & 04.06, 04.07       & 03.03                 & ---                       \\
+    Normalización             & 13$\to$14        & \texttt{Resultado}       & 04.08              & 03.04                 & ---                       \\
+    \midrule
+    \textit{Sumidero}         & 14               & ---                      & 05.01              & ---                   & ---                       \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
-La tabla permite verificar la correspondencia que el objetivo específico OE2 exige, y lo hace en dos sentidos. Del lado del sistema, los siete filtros del Capítulo~\ref{cap:arquitectura} aparecen cada uno exactamente una vez ---02.02 y 04.02 a 04.08, con 04.07 como la contraparte humana de un mismo filtro--- y ninguna actividad del sistema queda sin filtro: entre los filtros del pipeline y las actividades del sistema hay una correspondencia uno a uno. Del lado del experto, los cuatro sintonizadores aparecen como actividades propias ---02.01 y 02.03 para Extracción y 03.01 y 03.02 para Composición, los dos sintonizadores de dos superficies; 03.03 y 03.04 para los dos restantes---, y la configuración técnica como la única actividad del implementador. Las actividades que no tienen contraparte en la arquitectura son 01.01, 01.03, 04.01, 05.02, 06.01, 06.02 y 07.01, y no deberían tenerla: son el proceso de uso que el Capítulo~\ref{cap:arquitectura} dejó fuera del pipeline por decisión explícita, al declarar acíclico el flujo de datos y relegar la iteración del experto a lo que ocurre entre corridas. El mapa agrega exactamente eso ---el orden, los actores y la iteración--- y nada más; es la verificación de que las tres vistas describen el mismo sistema.
+La tabla permite verificar la correspondencia que el objetivo específico OE2 exige, y lo hace en dos sentidos. Del lado del sistema, los siete filtros del Capítulo~\ref{cap:arquitectura} aparecen cada uno exactamente una vez ---02.02 y 04.02 a 04.08, con 04.07 como la contraparte humana de un mismo filtro--- y la única actividad del sistema sin filtro es 05.01, que proyecta el resultado en el sumidero: entre los filtros del pipeline y las actividades del sistema que los ejecutan hay una correspondencia uno a uno. Del lado del experto, los cuatro sintonizadores aparecen como actividades propias ---02.01 y 02.03 para Extracción y 03.01 y 03.02 para Composición, los dos sintonizadores de dos superficies; 03.03 y 03.04 para los dos restantes---, y la configuración técnica como la única actividad del implementador. Las actividades que no tienen contraparte en la arquitectura son 01.01, 01.03, 04.01, 05.02, 06.01, 06.02 y 07.01, y no deberían tenerla: son el proceso de uso que el Capítulo~\ref{cap:arquitectura} dejó fuera del pipeline por decisión explícita, al declarar acíclico el flujo de datos y relegar la iteración del experto a lo que ocurre entre corridas. El mapa agrega exactamente eso ---el orden, los actores y la iteración--- y nada más; es la verificación de que las tres vistas describen el mismo sistema.
 
 \section{Síntesis del capítulo}
 \label{sec:proc-sintesis}
 
-El capítulo modeló el ciclo de análisis como un mapa de siete procesos y veintitrés actividades repartidas en tres calles, y lo hizo sobre un único diagrama y una única tabla. La vista procedimental respondió lo que las otras dos no responden: que el experto interviene antes del procesamiento generativo y después de él, pero no durante, salvo como revisor; que el implementador interviene una vez, por fuera de todo estudio; que la Extracción corre por su cuenta y el estudio selecciona sobre lo que ella depositó; y que la iteración es un estudio nuevo, enlazado al anterior, y no una vuelta del pipeline. Con ello completa la columna de este capítulo en el registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}): cada marcador se realiza en el mapa como una o varias actividades con actor, y la Tabla~\ref{tab:proc-correspondencia} es la fuente de esa columna. El Capítulo~\ref{cap:ejemplo} recorre este mismo ciclo una vez, sobre un corpus del entorno institucional, y es allí donde cada actividad del mapa se documenta con los valores concretos que tomó.
+El capítulo modeló el ciclo de análisis como un mapa de siete procesos y veintitrés actividades repartidas en tres calles, y lo hizo sobre un único diagrama y una única tabla. La vista procedimental respondió lo que las otras dos no responden: que el experto interviene antes del procesamiento generativo y después de él, pero no durante, salvo como revisor; que el implementador interviene una vez, por fuera de todo estudio; que la Extracción corre por su cuenta y el estudio selecciona sobre lo que ella depositó; y que la iteración es un estudio nuevo, enlazado al anterior, y no una vuelta del pipeline. Con ello completa la columna de este capítulo en el registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}): cada marcador se realiza en el mapa como una o varias actividades con actor. El Capítulo~\ref{cap:ejemplo} recorre este mismo ciclo una vez, sobre un corpus del entorno institucional, y es allí donde cada actividad del mapa se documenta con los valores concretos que tomó.
 
 \chapter{Ejemplo de aplicación}
 \label{cap:ejemplo}

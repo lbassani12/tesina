@@ -594,7 +594,7 @@ Este patrón admite una formulación más precisa, que extiende la notación fun
   f : (T[c],\ \mathit{Rep}) \to (T'[c'],\ \mathit{Rep}')
   \qquad \text{con } \mathit{Rep}' = \mathit{Rep} \cup \Delta_f,
 \]
-donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\Delta_f\) el conjunto de registros que éste persiste. El \textit{recordset} emitido por el puerto de salida es, precisamente, el conjunto de referencias a ese delta ---\(\mathit{refs}(\Delta_f)\)---: el tubo transporta la referencia a la transformación que el repositorio absorbió. Dos consecuencias se siguen de esta formulación. La primera es la \textit{monotonía} del repositorio respecto del flujo de datos: cada filtro únicamente agrega registros ---\(\mathit{Rep} \subseteq \mathit{Rep}'\)---, ninguno modifica ni elimina los que otro produjo, propiedad de la que depende la trazabilidad extremo a extremo del sistema (Apéndice~\ref{anexo:tipos}). La segunda es de método: al admitir el repositorio común, el propio catálogo exige documentar y explicar el conector adicional que la deformación introduce \citep[\S3.13.1]{cristia:2025}, y la firma extendida constituye esa documentación en los mismos términos funcionales con que el catálogo describe el estilo puro. Cabe acotar su alcance: la firma describe la forma de la transformación, no su semántica ---no supone determinismo, pues la invocación generativa es estocástica, ni pureza funcional---. Las siete firmas concretas del pipeline se consignan en el Apéndice~\ref{anexo:tipos}.
+donde \(\mathit{Rep}\) es el estado del repositorio al activarse el filtro y \(\Delta_f\) el conjunto de registros que éste persiste. El \textit{recordset} emitido por el puerto de salida es, precisamente, el conjunto de referencias a ese delta ---\(\mathit{refs}(\Delta_f)\)---: el tubo transporta la referencia a la transformación que el repositorio absorbió. Dos observaciones caben sobre esta formulación. La primera concierne a la unión. Que cada filtro únicamente agregue registros ---\(\mathit{Rep} \subseteq \mathit{Rep}'\)--- y que ninguno modifique ni elimine los que otro produjo no es una exigencia del estilo, sino una restricción que este diseño agrega a la deformación: el catálogo pide que el acceso al repositorio se coordine y que el conector se documente, y admite incluso que los datos compartidos se modifiquen \citep[\S3.13.1]{cristia:2025}. En adelante se la denomina \textit{crecimiento monótono} del repositorio. Corresponde a lo que \citet{helland:2015} caracteriza como cómputo de sólo agregado (\textit{append-only}): lo observado se registra y permanece, y toda corrección es un registro nuevo. La restricción se adopta por dos razones. De ella depende la trazabilidad extremo a extremo del sistema, porque las claves de procedencia son referencias y el recorrido desde un resultado hasta sus noticias sólo es posible si los registros referenciados permanecen y no cambian (Apéndice~\ref{anexo:tipos}). Y preserva el sentido del cuarto invariante del estilo ---que los tubos transmitan los datos sin alterar su contenido (Subsección~\ref{sec:arq-estilo-invariantes})--- cuando lo que circula es una referencia: lo que un tubo entrega sigue siendo lo que el filtro emitió sólo si ningún otro filtro puede modificar los registros referenciados. La segunda observación es de método: al admitir el repositorio común, el propio catálogo exige documentar y explicar el conector adicional que la deformación introduce \citep[\S3.13.1]{cristia:2025}, y la firma extendida constituye esa documentación en los mismos términos funcionales con que el catálogo describe el estilo puro. Cabe acotar su alcance: la firma describe la forma de la transformación, no su semántica ---no supone determinismo, pues la invocación generativa es estocástica, ni pureza funcional---. Las siete firmas concretas del pipeline se consignan en el Apéndice~\ref{anexo:tipos}.
 
 \paragraph{Extracción.} Interfaz:
 \begin{itemize}
@@ -720,7 +720,7 @@ Esta caracterización no es exclusiva del catálogo: tiene un precedente directo
 
 En el framework exponen sintonizador únicamente los cuatro filtros cuyo comportamiento depende de decisiones de dominio ---y son, por ello, los puntos donde se realiza la responsabilidad de intervención del experto, \resp{A}---: Extracción (selección de portales, reglas de extracción y prioridad de monitoreo), Composición de contexto (selección del \textit{template}, variables de contexto, texto libre y parámetros de recuperación y del modelo generativo), Verificación (criterio de validez de los análisis y selección del ejecutor de la verificación) y Normalización (criterios de consolidación y variables de comparación). Los filtros restantes ---Enriquecimiento, Invocación y Decodificación--- no lo hacen: su configuración es de carácter técnico y la fija el implementador, al margen de todo sintonizador (Subsección~\ref{sec:arq-car-filtros}). Todos los sintonizadores se invocan desde la capa de presentación ---nunca desde otro filtro--- y se grafican en la Figura~\ref{fig:arq-pipeline} con la flecha originada en un círculo que apunta a cada filtro configurable.
 
-El más elaborado es el de Composición de contexto, que se realiza sobre dos superficies de configuración distintas. La primera es un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Partir de una plantilla y no de un \textit{prompt} en blanco responde, además, a una dificultad documentada: \citet{zamfirescu2023} observan que los usuarios sin formación en inteligencia artificial diseñan sus \textit{prompts} de manera oportunista antes que sistemática, y derivan de ello la necesidad de herramientas que estructuren ese diseño. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}. La segunda es el formulario de configuración del estudio, donde el experto selecciona la plantilla, liga valores a las variables que ésta declara, agrega las aclaraciones de texto libre y fija los parámetros de recuperación y del modelo generativo. La partición responde a que ambas configuraciones tienen ciclos de vida distintos: el \textit{template} es una entidad persistente del repositorio común, reutilizable entre estudios y ajena a la monotonía del flujo (Apéndice~\ref{anexo:tipo-template}), mientras que los valores sintonizados pertenecen a una corrida y quedan fijados con ella; editar la plantilla dentro del estudio obligaría a bifurcar una copia por corrida y disolvería la reutilización que el panel persigue. Que la configuración se reparta en dos formularios no la aleja del estilo: el sintonizador se define por lo que parametriza y por el momento en que el filtro lo lee ---una única vez, al invocarse---, no por la descomposición que adopte la capa de presentación; es, precisamente, el desacople entre el procesamiento y la interfaz de usuario que \citet{garlanshaw:1994} señalan como virtud de la interfaz de control. La práctica corriente de la ingeniería de \textit{prompts} converge con esa separación: se recomienda declarar variables en la plantilla y ligar sus valores por fuera, conservar el \textit{prompt} en un artefacto separado del código, y documentar cada intento contra una plantilla nombrada y versionada, registrando por corrida el modelo, la temperatura, la longitud de salida y los parámetros de recuperación \citep{prompt-eng:2024}. Su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
+El más elaborado es el de Composición de contexto, que se realiza sobre dos superficies de configuración distintas. La primera es un panel de creación de \textit{templates} de \textit{prompt}: un subsistema gestionado que habilita al experto configurar, parametrizar y reutilizar plantillas en lugar de resolver esa lógica de manera \textit{ad hoc}, como es habitual en las aplicaciones basadas en modelos de lenguaje. Partir de una plantilla y no de un \textit{prompt} en blanco responde, además, a una dificultad documentada: \citet{zamfirescu2023} observan que los usuarios sin formación en inteligencia artificial diseñan sus \textit{prompts} de manera oportunista antes que sistemática, y derivan de ello la necesidad de herramientas que estructuren ese diseño. Cada \textit{template} declara el objetivo del análisis ---alcance, paradigma de análisis, referencias a considerar---, las instrucciones parametrizadas con variables de contexto y el esquema de la respuesta esperada, reificando los datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}; su estructura se especifica en el Apéndice~\ref{anexo:tipos}. La segunda es el formulario de configuración del estudio, donde el experto selecciona la plantilla, liga valores a las variables que ésta declara, agrega las aclaraciones de texto libre y fija los parámetros de recuperación y del modelo generativo. La partición responde a que ambas configuraciones tienen ciclos de vida distintos: el \textit{template} es una entidad persistente del repositorio común, reutilizable entre estudios y no sujeta al crecimiento monótono que rige para los registros del flujo (Apéndice~\ref{anexo:tipo-template}), mientras que los valores sintonizados pertenecen a una corrida y quedan fijados con ella; editar la plantilla dentro del estudio obligaría a bifurcar una copia por corrida y disolvería la reutilización que el panel persigue. Que la configuración se reparta en dos formularios no la aleja del estilo: el sintonizador se define por lo que parametriza y por el momento en que el filtro lo lee ---una única vez, al invocarse---, no por la descomposición que adopte la capa de presentación; es, precisamente, el desacople entre el procesamiento y la interfaz de usuario que \citet{garlanshaw:1994} señalan como virtud de la interfaz de control. La práctica corriente de la ingeniería de \textit{prompts} converge con esa separación: se recomienda declarar variables en la plantilla y ligar sus valores por fuera, conservar el \textit{prompt} en un artefacto separado del código, y documentar cada intento contra una plantilla nombrada y versionada, registrando por corrida el modelo, la temperatura, la longitud de salida y los parámetros de recuperación \citep{prompt-eng:2024}. Su realización concreta en el módulo se retoma en la Sección~\ref{sec:impl-materializacion}.
 
 Que la intervención del experto se canalice por sintonizadores ---y no por el flujo de datos--- es lo que la mantiene compatible con el estilo: el sintonizador ajusta \textit{cómo} transforma un filtro, sin alterar la red de tubos ni agregar un puerto al pipeline. La configuración así incorporada es un parámetro del filtro, no un dato que circule por la arquitectura.
 
@@ -735,7 +735,7 @@ Esta subsección verifica que el diseño resultante ---un \textit{pipeline} de t
 
 \textit{Orden de cómputo (invariante 3).} La corrección del resultado no depende del orden en que cada filtro realiza sus cálculos internos. Las dependencias que la topología establece ---un filtro no puede materializar un contenido que el filtro anterior aún no persistió--- son dependencias de flujo propias del grafo de tubos, no dependencias del \textit{scheduling} interno, según se precisó en la Subsección~\ref{sec:arq-estilo-invariantes}. Disponibles sus entradas, cada filtro produce el mismo resultado con independencia del orden relativo de cómputo.
 
-\textit{Integridad del transporte (invariante 4).} Los tubos transportan recordsets ---referencias--- sin alterarlos; toda transformación del contenido ocurre dentro de los filtros y queda persistida en el repositorio. El conector no realiza conversión ni modificación alguna sobre lo que transmite, en línea con la especialización de tubos tipados adoptada en la Subsección~\ref{sec:arq-car-especializaciones}.
+\textit{Integridad del transporte (invariante 4).} Los tubos transportan recordsets ---referencias--- sin alterarlos; toda transformación del contenido ocurre dentro de los filtros y queda persistida en el repositorio. El conector no realiza conversión ni modificación alguna sobre lo que transmite, en línea con la especialización de tubos tipados adoptada en la Subsección~\ref{sec:arq-car-especializaciones}. El contenido que esas referencias designan tampoco cambia después de emitido, porque el crecimiento monótono del repositorio impide que otro filtro lo modifique (Subsección~\ref{sec:arq-car-filtros}).
 
 \subsection{Ventajas y limitaciones de la elección}
 \label{sec:arq-car-analisis}
@@ -788,15 +788,13 @@ El capítulo caracterizó el framework como un sistema de Tubos y Filtros en su 
 
 La arquitectura fija así qué hace cada etapa y qué garantiza, y deja abierto con qué tecnología se realiza y en qué orden interviene cada actor. Lo primero es materia del Capítulo~\ref{cap:implementacion}, que la materializa como módulo \textit{addon} de Odoo; lo segundo, del Capítulo~\ref{cap:procesos}, que la operativiza como mapa de procesos.
 
-% Las columnas del Capítulo 6 del registro maestro se completan cuando ese capítulo exista.
 La Tabla~\ref{tab:registro-responsabilidades} consolida el registro maestro de las responsabilidades transversales introducidas en la Sección~\ref{sec:intro-responsabilidades}: para cada marcador, la obligación que nombra y los elementos que la realizan en la arquitectura de este capítulo, en el módulo de Odoo (Capítulo~\ref{cap:implementacion}), en el mapa de procesos (Capítulo~\ref{cap:procesos}) y en el caso de aplicación (Capítulo~\ref{cap:ejemplo}). Los marcadores conservan su identidad a través de las vistas mientras cambia su realización: la misma responsabilidad es un sintonizador en la arquitectura, un formulario en el módulo, una actividad con actor en el mapa de procesos y una decisión documentada en el caso. El registro es la fuente única a la que remite cada marcador del documento; su función es hacer inspeccionable la traza desde las garantías comprometidas en el objetivo general hasta el lugar donde cada una se cumple, no acreditar por sí mismo que se cumplan.
 
-  % TODO: cuando se redacte el Capítulo 6, cambiar su columna p{1.9cm} por X.
   {
     \footnotesize
     \setlength{\tabcolsep}{3pt}
-    \begin{xltabular}{\textwidth}{@{}c >{\raggedright\arraybackslash}p{1.7cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}p{1.9cm}@{}}
-      \caption{Registro maestro de responsabilidades transversales: realización de cada marcador en la arquitectura, el módulo, el mapa de procesos y el caso de aplicación. Las celdas marcadas \textit{(por completar)} corresponden a capítulos en redacción.}
+    \begin{xltabular}{\textwidth}{@{}c >{\raggedright\arraybackslash}p{1.7cm} >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X >{\raggedright\arraybackslash}X@{}}
+      \caption{Registro maestro de responsabilidades transversales: realización de cada marcador en la arquitectura, el módulo, el mapa de procesos y el caso de aplicación.}
       \label{tab:registro-responsabilidades} \\
       \toprule
       \textbf{M.} & \textbf{Responsabilidad} & \textbf{Arquitectura (Cap.~\ref{cap:arquitectura})} & \textbf{Módulo Odoo (Cap.~\ref{cap:implementacion})} & \textbf{Procesos (Cap.~\ref{cap:procesos})} & \textbf{Caso (Cap.~\ref{cap:ejemplo})} \\
@@ -816,42 +814,42 @@ La Tabla~\ref{tab:registro-responsabilidades} consolida el registro maestro de l
       & Sintonizadores de Extracción, Composición, Verificación y Normalización (\S~\ref{sec:arq-car-sintonizadores}); invocados sólo desde la capa de presentación; \textit{template} como configuración editada.
       & Solapas \textit{Corpus}, \textit{Composición}, \textit{Verificación} y \textit{Normalización} del estudio y panel de \textit{templates}, para el grupo de analistas; cada solapa pasa a sólo lectura al ejecutarse su filtro (\S~\ref{sec:impl-mat-estudio}); formulario del revisor humano (\S~\ref{sec:impl-mat-verificacion}).
       & Actividades del experto: 01.01 y 01.03, 02.01 y 02.03, 03.01--03.04, 04.07, 06.01--06.02 (Sección~\ref{sec:proc-ciclo}).
-      & \textit{(por completar)} % TODO Cap. 6: configuración inicial y template
+      & \textit{Template} propio del estudio y valores de los cuatro sintonizadores (Tabla~\ref{tab:ej-sintonizadores}); estudio derivado de un piloto (Sección~\ref{sec:ej-discusion}).
       \\
       \addlinespace
       \resp{B} & Independencia del estudio
       & \texttt{Template} (objetivo, esquema de respuesta); Decodificación valida contra el esquema del estudio sin configuración propia; sobre fijo y esquema delegado en \texttt{Análisis}, \texttt{Veredicto.sustento} y \texttt{Resultado} (Apéndice~\ref{anexo:tipos}, criterio~3).
       & \texttt{iag.template} con objetivo, instrucciones, variables y esquema; sintonizadores como campos del estudio, entregados a cada filtro como diccionario; ningún modelo del módulo tiene columnas de dominio; Decodificación alcanza el esquema por la cadena respuesta \(\to\) \textit{prompt} \(\to\) \textit{template} (\S~\ref{sec:impl-mat-decodificacion}).
       & 01.01: lo decidido no se programa; 03.01--03.04: el estudio se declara como \textit{template} y sintonizadores; 04.03 y 04.05 lo consumen sin configuración de dominio.
-      & \textit{(por completar)} % TODO Cap. 6: el caso como instancia; qué declaró el estudio y qué no cambió el framework
+      & El estudio entra como registros: \textit{template}, variables, aclaraciones, criterio de validez, tabla de la variable \textit{tipo de prensa} y condición de inclusión (Sección~\ref{sec:ej-contexto}).
       \\
       \addlinespace
       \resp{C} & Frontera generativa
       & Invocación y Decodificación como filtros propios; Enriquecimiento sustituible; los contratos omiten proveedor y modelo (Apéndice~\ref{anexo:tipos}, criterio~2).
       & Servicio \texttt{iag.proveedor} con adaptadores simulado y compatible con OpenAI (\S~\ref{sec:impl-stack}); adaptador, modelos, credenciales, modo de salida estructurada y política de no conformidad como parámetros del sistema editables sólo por el implementador y copiados, sin credenciales, en cada estudio.
       & 01.02: configuración técnica del implementador, única actividad de su calle; 04.02, 04.04 y 04.05.
-      & \textit{(por completar)} % TODO Cap. 6: proveedor y modelo empleados; costo computacional (OE4)
+      & Servicio de modelos local, con \texttt{qwen2.5:3b} y \texttt{nomic-embed-text} (Tabla~\ref{tab:ej-config-tecnica}); 51 segundos por análisis y 17 horas de corrida (Tabla~\ref{tab:ej-corrida}).
       \\
       \addlinespace
       \resp{D} & Control editorial
       & Verificación como compuerta blanda; \texttt{Veredicto} (estado, confianza, sustento); política de consolidación de los análisis observados en Normalización.
       & \texttt{iag.veredicto} con estado, confianza y sustento por afirmación; juez generativo o formulario del revisor, con degradación a \textit{observado} y confianza cero; política sobre los observados y condición de inclusión en Normalización; el \texttt{Resultado} referencia los \(M'\) veredictos (\S\S~\ref{sec:impl-mat-verificacion}, \ref{sec:impl-mat-normalizacion}).
       & 03.03 criterio y ejecutor; 03.04 política sobre los observados; 04.06--04.07 juez o revisor; 04.08; 05.01--05.02; 07.01.
-      & \textit{(por completar)} % TODO Cap. 6: calidad y fidelidad de los resultados (OE4)
+      & 450 veredictos, 7 válidos y 443 observados; política de incluir los observados; el juez como compuerta severa y poco discriminante (Subsección~\ref{sec:ej-res-fidelidad}).
       \\
       \addlinespace
       \resp{E} & Procedencia
-      & Auditabilidad lineal (\S~\ref{sec:arq-estilo-justificacion}); monotonía del repositorio; claves de referencia y \texttt{fecha\_registro} en los siete tipos; cadena \texttt{Resultado} \(\to\) \texttt{Noticia} (\S~\ref{sec:arq-car-contratos}).
+      & Auditabilidad lineal (\S~\ref{sec:arq-estilo-justificacion}); crecimiento monótono del repositorio; claves de referencia y \texttt{fecha\_registro} en los siete tipos; cadena \texttt{Resultado} \(\to\) \texttt{Noticia} (\S~\ref{sec:arq-car-contratos}).
       & Claves de procedencia obligatorias con restricción de borrado y mixin que impide eliminar; copia de la configuración técnica, tiempos e informes de cada filtro en el estudio; ficha del estudio (\S\S~\ref{sec:impl-mat-patron}, \ref{sec:impl-mat-estudio}).
       & 02.03 confirmación del corpus; 04.01 copia de la configuración técnica; 04.08; 05.01--05.02 ficha y auditoría; 06.02 estudio enlazado.
-      & \textit{(por completar)} % TODO Cap. 6: reconstrucción del resultado hasta las noticias
+      & Del resultado a las 450 noticias por veredicto, análisis, respuesta y \textit{prompt}; un resultado reconstruido (Subsección~\ref{sec:ej-res-procedencia}); ficha del estudio.
       \\
       \addlinespace
       \resp{F} & Infraestructura preexistente
       & Extracción sobre el scraper preexistente; repositorio sobre PostgreSQL y el ORM de Odoo (\S~\ref{sec:arq-car-repositorio}).
       & Dependencia declarada, herencia cosmética de \texttt{wsf\_noticias\_resultados}, menú y grupos reutilizados: cuatro declaraciones son toda la superficie de contacto (\S~\ref{sec:impl-pre-delimitacion}, Figura~\ref{fig:impl-frontera}); extractor reutilizado sin modificación.
       & 02.01--02.02 sobre el \textit{addon} institucional; el operador queda fuera del ciclo (\S~\ref{sec:proc-notacion}).
-      & \textit{(por completar)} % TODO Cap. 6: ejecución del scraping
+      & Corpus de 12.072 noticias extraídas por la instancia institucional; selección sobre lo ya extraído; imprecisión de la regla tratada sin modificar el extractor (Sección~\ref{sec:ej-scraping}).
       \\
     \end{xltabular}
   }
@@ -925,7 +923,7 @@ El capítulo se organiza alrededor de una regla de correspondencia que se enunci
 
 La tabla exhibe una asimetría que conviene explicitar desde el inicio, porque delimita el aporte de la presente tesina frente a lo que reutiliza del entorno institucional (\resp{F}). El módulo se construye como un \textit{addon} nuevo, denominado \texttt{noticias\_iag}, que declara su dependencia del \textit{addon} preexistente \texttt{wsfnoticias} y no lo modifica: el filtro de Extracción y el tipo \texttt{Noticia} son los de la infraestructura preexistente, tal como se caracterizan en la Sección~\ref{sec:impl-preexistente}, y los seis filtros restantes, los seis tipos que producen, el \textit{template}, el estudio y el sumidero son construcción propia. Que la frontera entre ambos coincida exactamente con el primer tubo del pipeline no es casual: es la sustituibilidad del estilo puesta en acto, pues el resto del sistema depende del scraper únicamente a través del contrato \texttt{Noticia}, y podría montarse sobre otro extractor que lo respetara sin modificación alguna. En el mismo espíritu de delimitación, el capítulo distingue en todo momento tres niveles de evidencia: lo \textit{implementado}, que es lo que la tabla consigna y las pruebas de la Sección~\ref{sec:impl-pruebas} ejercitan; lo \textit{previsto con la misma interfaz}, esto es, sustituciones que el diseño admite sin alterar los contratos pero que no se construyeron ---un índice vectorial en la base de datos en lugar del cómputo de similitud en memoria, otros adaptadores de proveedor, la ejecución de los filtros en segundo plano---; y lo que queda \textit{fuera de alcance}. Nada de lo que se describe como implementado carece de correlato en el código.
 
-Un elemento de la tabla no tiene contraparte nominal en el Capítulo~\ref{cap:arquitectura} y merece presentación aparte: el \textit{estudio}. La arquitectura caracteriza el estilo y su pipeline base; el estudio es una \textit{instancia} de esa red ---en el sentido en que \citet{garlanshaw:1994} distinguen el estilo de los sistemas que lo instancian---: fija qué \textit{recordset} ocupa cada tubo, con qué valores de sintonizador se invocó cada filtro configurable, en qué etapa se encuentra la corrida y qué configuración técnica regía al ejecutarla. Es, por lo tanto, la unidad de corrida del framework y el objeto sobre el que el experto opera: crea un estudio, selecciona su corpus, sintoniza los filtros, ejecuta el pipeline y lee el resultado; una nueva iteración es otro estudio, enlazado al anterior, que hereda su configuración y vuelve a recorrer la red. Al igual que el \textit{template}, el estudio no es un tipo del flujo ni circula por tubo alguno: pertenece a la configuración, no a los datos, y queda por ello fuera de la monotonía del repositorio (Apéndice~\ref{anexo:tipos-firmas}). Su papel como realización de la procedencia (\resp{E}) es, sin embargo, central: mientras el grafo de procedencia entre los tipos reconstruye \textit{a partir de qué datos} se produjo un resultado, el estudio conserva \textit{con qué configuración y cuándo}, y documenta la corrida ---cardinalidades por tubo, descartes, tiempos--- en una ficha generada exclusivamente a partir de lo persistido.
+Un elemento de la tabla no tiene contraparte nominal en el Capítulo~\ref{cap:arquitectura} y merece presentación aparte: el \textit{estudio}. La arquitectura caracteriza el estilo y su pipeline base; el estudio es una \textit{instancia} de esa red ---en el sentido en que \citet{garlanshaw:1994} distinguen el estilo de los sistemas que lo instancian---: fija qué \textit{recordset} ocupa cada tubo, con qué valores de sintonizador se invocó cada filtro configurable, en qué etapa se encuentra la corrida y qué configuración técnica regía al ejecutarla. Es, por lo tanto, la unidad de corrida del framework y el objeto sobre el que el experto opera: crea un estudio, selecciona su corpus, sintoniza los filtros, ejecuta el pipeline y lee el resultado; una nueva iteración es otro estudio, enlazado al anterior, que hereda su configuración y vuelve a recorrer la red. Al igual que el \textit{template}, el estudio no es un tipo del flujo ni circula por tubo alguno: pertenece a la configuración, no a los datos, y queda por ello fuera de la restricción de crecimiento monótono del repositorio (Apéndice~\ref{anexo:tipos-firmas}). Su papel como realización de la procedencia (\resp{E}) es, sin embargo, central: mientras el grafo de procedencia entre los tipos reconstruye \textit{a partir de qué datos} se produjo un resultado, el estudio conserva \textit{con qué configuración y cuándo}, y documenta la corrida ---cardinalidades por tubo, descartes, tiempos--- en una ficha generada exclusivamente a partir de lo persistido.
 
 La tabla anticipa también una partición que atraviesa todo el capítulo: la de las dos superficies de configuración. Los sintonizadores del Capítulo~\ref{cap:arquitectura} se realizan como formularios accesibles al experto del dominio ---el panel de \textit{templates} y las solapas del estudio---, y son la vía explícita por la que ingresa toda decisión de dominio (\resp{A}). La configuración técnica ---proveedor, modelos, credenciales, fragmentación, modo de salida estructurada, política ante la no conformidad--- se realiza como parámetros del sistema editables únicamente desde los ajustes de administración de la plataforma, y es potestad del implementador (\resp{C}). Que ambas superficies sean distintas, estén sujetas a permisos distintos y queden registradas por separado en cada estudio es lo que permite afirmar que el experto controla el estudio sin conocer el proveedor, y que el implementador controla el proveedor sin conocer el estudio (\resp{B}).
 
@@ -1025,7 +1023,7 @@ class Noticia(models.Model):
 # security/ir.model.access.csv --- reutiliza los grupos existentes
 access_iag_estudio_analista,...,wsfnoticias.noticias_analista,1,1,1,1
 \end{lstlisting}
-  \caption{Superficie de contacto completa entre el módulo \texttt{noticias\_iag} y el \textit{addon} institucional \texttt{wsfnoticias}: la declaración de dependencia, la herencia del modelo de resultados, el anclaje del menú y la reutilización de los grupos de seguridad. Se abrevia la fila del archivo de permisos: el módulo declara una por cada modelo y grupo, con combinaciones que varían según el modelo ---los tipos del flujo se otorgan al analista con lectura y creación, pero sin escritura ni borrado--- y que la Sección~\ref{sec:impl-invariantes} retoma al verificar la monotonía del repositorio.}
+  \caption{Superficie de contacto completa entre el módulo \texttt{noticias\_iag} y el \textit{addon} institucional \texttt{wsfnoticias}: la declaración de dependencia, la herencia del modelo de resultados, el anclaje del menú y la reutilización de los grupos de seguridad. Se abrevia la fila del archivo de permisos: el módulo declara una por cada modelo y grupo, con combinaciones que varían según el modelo ---los tipos del flujo se otorgan al analista con lectura y creación, pero sin escritura ni borrado--- y que la Sección~\ref{sec:impl-invariantes} retoma al verificar el crecimiento monótono del repositorio.}
   \label{fig:impl-frontera}
 \end{figure}
 
@@ -1052,7 +1050,7 @@ El stack sobre el que se realiza el módulo está determinado en su mayor parte 
 
 Esta sección desarrolla la correspondencia que la Tabla~\ref{tab:impl-correspondencia} enunció. Comienza por lo que todos los filtros comparten ---la interfaz que los define como filtros, el modo en que reciben y emiten \textit{recordsets}, y el mecanismo con que se los sustituye---, sigue con el estudio, que instancia la red de tubos y la recorre, y recién entonces trata cada filtro. Para cada uno se sigue un esqueleto fijo: el contrato que el Capítulo~\ref{cap:arquitectura} le fijó, el modelo o servicio que lo realiza, la superficie desde la que se lo configura y el rol que puede accionarla, y las responsabilidades que esa realización honra. Cierran la sección las dos superficies de configuración tomadas en conjunto y el sumidero.
 
-La Figura~\ref{fig:impl-arbol} presenta la estructura de archivos del módulo anotada contra los elementos de la arquitectura, y funciona como mapa de las subsecciones que siguen: cada filtro, cada tipo del flujo y cada servicio nombrado allí se desarrolla más adelante en el orden del pipeline. La organización obedece a la regla de correspondencia enunciada en la introducción del capítulo, y su asimetría más visible es deliberada: los filtros ocupan un archivo cada uno, mientras que los siete tipos del flujo comparten uno solo. La razón es que el filtro es la unidad sustituible del estilo ---un \textit{addon} tercero hereda \texttt{iag.filtro.invocacion} y reemplaza su operación sin tocar nada más---, en tanto que los tipos no se sustituyen sino que se declaran, y comparten el mixin y las restricciones de monotonía que la Subsección~\ref{sec:impl-mat-patron} describe.
+La Figura~\ref{fig:impl-arbol} presenta la estructura de archivos del módulo anotada contra los elementos de la arquitectura, y funciona como mapa de las subsecciones que siguen: cada filtro, cada tipo del flujo y cada servicio nombrado allí se desarrolla más adelante en el orden del pipeline. La organización obedece a la regla de correspondencia enunciada en la introducción del capítulo, y su asimetría más visible es deliberada: los filtros ocupan un archivo cada uno, mientras que los siete tipos del flujo comparten uno solo. La razón es que el filtro es la unidad sustituible del estilo ---un \textit{addon} tercero hereda \texttt{iag.filtro.invocacion} y reemplaza su operación sin tocar nada más---, en tanto que los tipos no se sustituyen sino que se declaran, y comparten el mixin y las restricciones de crecimiento monótono que la Subsección~\ref{sec:impl-mat-patron} describe.
 
 \begin{figure}[H]
   \centering
@@ -1095,7 +1093,7 @@ Todos los filtros construidos por el módulo realizan una misma interfaz, defini
 
 Esta última propiedad es la que realiza la sustituibilidad de los filtros. El mecanismo de herencia del ORM permite que un \textit{addon} redefina el comportamiento de un modelo existente sin modificar su código fuente: un módulo tercero puede heredar \texttt{iag.filtro.invocacion} y reemplazar su operación \textit{ejecutar} por otra que hable con un servicio distinto, y el resto del sistema ---que alcanza al filtro por su nombre y sólo conoce su interfaz--- no se entera. Es el equivalente, en la plataforma, de reemplazar un filtro por otro que respete sus puertos (Subsección~\ref{sec:arq-estilo-invariantes}), y se apoya en que ningún filtro importa ni invoca a otro: la única pieza del módulo que conoce el nombre de los seis filtros es la tabla de etapas del estudio que se presenta en la subsección siguiente.
 
-Los \textit{recordsets} que la operación recibe y devuelve son los tubos. La realización es literal respecto de la caracterización de la Subsección~\ref{sec:arq-car-repositorio}: el filtro recibe una colección ordenada de referencias a registros de un modelo dado, materializa su contenido contra la base de datos a medida que lo accede, crea los registros del tipo que produce y devuelve las referencias a esos registros. Nada más viaja entre filtros. Los tipos del flujo, por su parte, son modelos persistentes ---uno por contrato del Apéndice~\ref{anexo:tipos}--- que comparten un pequeño mixin, \texttt{iag.tipo.flujo}, con dos aportes: la fecha de registro que todos los contratos declaran, asignada automáticamente al crear y de sólo lectura, y la prohibición de eliminar, que hace fallar cualquier intento de borrar un registro del flujo. Las claves de procedencia de cada tipo se realizan como campos relacionales obligatorios con política de restricción en la base de datos: no se puede eliminar una noticia referenciada por un \textit{prompt}, ni un \textit{prompt} referenciado por una respuesta, y así hasta el resultado. Sobre estos dos mecanismos, y sobre los permisos que se describen más adelante, descansa la monotonía del repositorio que el Apéndice~\ref{anexo:tipos-firmas} afirma; su verificación conjunta se retoma en la síntesis del capítulo (Sección~\ref{sec:impl-invariantes}).
+Los \textit{recordsets} que la operación recibe y devuelve son los tubos. La realización es literal respecto de la caracterización de la Subsección~\ref{sec:arq-car-repositorio}: el filtro recibe una colección ordenada de referencias a registros de un modelo dado, materializa su contenido contra la base de datos a medida que lo accede, crea los registros del tipo que produce y devuelve las referencias a esos registros. Nada más viaja entre filtros. Los tipos del flujo, por su parte, son modelos persistentes ---uno por contrato del Apéndice~\ref{anexo:tipos}--- que comparten un pequeño mixin, \texttt{iag.tipo.flujo}, con dos aportes: la fecha de registro que todos los contratos declaran, asignada automáticamente al crear y de sólo lectura, y la prohibición de eliminar, que hace fallar cualquier intento de borrar un registro del flujo. Las claves de procedencia de cada tipo se realizan como campos relacionales obligatorios con política de restricción en la base de datos: no se puede eliminar una noticia referenciada por un \textit{prompt}, ni un \textit{prompt} referenciado por una respuesta, y así hasta el resultado. Sobre estos dos mecanismos, y sobre los permisos que se describen más adelante, descansa el crecimiento monótono del repositorio que el Apéndice~\ref{anexo:tipos-firmas} afirma; su verificación conjunta se retoma en la síntesis del capítulo (Sección~\ref{sec:impl-invariantes}).
 
 Resta un elemento que la arquitectura no nombra porque no es filtro, tubo ni sintonizador: el servicio de acceso a los modelos, \texttt{iag.proveedor}, presentado en la Sección~\ref{sec:impl-stack}. Cuatro filtros lo invocan ---Enriquecimiento y Composición para embeber, Invocación y Verificación para completar--- y lo hacen a través de la interfaz común, que resuelve qué adaptador está configurado. Que un servicio sea compartido por varios filtros no los acopla entre sí: el servicio no tiene estado propio de una corrida, no transporta datos de un filtro a otro y no conoce qué filtro lo llama, del mismo modo en que el ORM es compartido por todos sin que por ello un filtro observe el estado interno de otro. Es infraestructura, en el mismo sentido en que lo es la base de datos, y su frontera es la que la responsabilidad \resp{C} exige mantener aislada.
 
@@ -1149,7 +1147,7 @@ La tabla muestra también cómo se materializa el filtro compuesto \textit{Recup
 
 \paragraph{Documentación de la corrida.} Al ejecutarse la primera etapa, el estudio toma una copia de la configuración técnica vigente ---adaptador, servicio, modelos, tiempo de espera, modo de salida estructurada, política de no conformidad, límites de longitud--- y la conserva con la corrida, sin las credenciales. A ello se suman el tiempo insumido por cada filtro y los informes que éstos dejaron. Los tres se muestran en una solapa de la corrida y alimentan la ficha del estudio que se describe con el sumidero. Es la realización de la mitad de la procedencia que la cadena de tipos no cubre (\resp{E}): con qué configuración, cuándo y con qué incidencias se produjo cada resultado.
 
-\paragraph{Iteración y reinicio.} La iteración del experto, que el Capítulo~\ref{cap:arquitectura} dejó fuera del pipeline como fenómeno del proceso de uso, se realiza con el botón \textit{Nueva iteración}: crea un estudio nuevo en estado inicial, enlazado al de origen, que hereda los criterios del corpus, la plantilla, los valores de las variables y los tres sintonizadores, pero ninguno de los tubos ni la documentación de la corrida, que se marcan como no copiables. El estudio derivado recorre la red desde el principio y produce su propio resultado; los estudios de una misma línea quedan enlazados en ambas direcciones. El botón \textit{Volver a borrador}, por su parte, desvincula los \textit{recordsets} de todos los tubos y reinicia el estado, pero no elimina ningún registro: las noticias, los \textit{embeddings}, los \textit{prompts} y los demás registros permanecen en el repositorio, referenciables desde otros estudios o desde la auditoría, en aplicación estricta de la monotonía.
+\paragraph{Iteración y reinicio.} La iteración del experto, que el Capítulo~\ref{cap:arquitectura} dejó fuera del pipeline como fenómeno del proceso de uso, se realiza con el botón \textit{Nueva iteración}: crea un estudio nuevo en estado inicial, enlazado al de origen, que hereda los criterios del corpus, la plantilla, los valores de las variables y los tres sintonizadores, pero ninguno de los tubos ni la documentación de la corrida, que se marcan como no copiables. El estudio derivado recorre la red desde el principio y produce su propio resultado; los estudios de una misma línea quedan enlazados en ambas direcciones. El botón \textit{Volver a borrador}, por su parte, desvincula los \textit{recordsets} de todos los tubos y reinicia el estado, pero no elimina ningún registro: las noticias, los \textit{embeddings}, los \textit{prompts} y los demás registros permanecen en el repositorio, referenciables desde otros estudios o desde la auditoría, en aplicación estricta del crecimiento monótono del repositorio.
 
 \paragraph{Superficie y rol.} El estudio es el objeto principal con que opera el experto del dominio, miembro del grupo de analistas del \textit{addon} institucional, que tiene sobre él permiso completo; los operadores sólo lo leen. Su formulario reúne, en la cabecera, la barra de estados y los cinco botones ---ejecutar siguiente, ejecutar todo, continuar tras la verificación humana, nueva iteración y volver a borrador---; en la caja de accesos, un botón por tubo que abre el \textit{recordset} correspondiente con su cardinalidad, más el resultado y el tablero; y en las solapas, el corpus, los tres sintonizadores, el resultado, la corrida, la ficha y las notas del experto. Es la superficie donde se realizan la intervención del experto (\resp{A}) y la procedencia de la configuración (\resp{E}), y donde el estudio ---tema, plantilla, criterios--- entra al sistema como dato y no como código (\resp{B}).
 
@@ -1416,10 +1414,10 @@ El capítulo abrió con la Tabla~\ref{tab:impl-correspondencia}, que prometía u
 
 \paragraph{Las invariantes en la implementación.}
 \label{sec:impl-invariantes}
-Las cuatro invariantes que el Capítulo~\ref{cap:arquitectura} verificó sobre el diseño (Subsección~\ref{sec:arq-car-verificacion}) se sostienen en el código en los siguientes puntos. \textit{Identidad:} ningún filtro importa ni invoca a otro; la única pieza que conoce los seis nombres es la tabla de etapas del estudio, que resuelve cada filtro por su nombre en el registro de modelos y le entrega únicamente el \textit{recordset} de entrada y las claves de su sintonizador. \textit{Estado interno:} los filtros no tienen tabla ni estado entre ejecuciones, el servicio de modelos no conserva estado de corrida, y el estado de la corrida ---tubos, etapa, tiempos e informes--- vive en el estudio, que ningún filtro recibe. \textit{Orden de cómputo:} el \textit{runner} ejecuta cada filtro sobre la totalidad de su entrada y persiste su delta antes de avanzar, de modo que la única dependencia entre filtros es la de flujo, que la máquina de estados hace explícita; disponible su entrada, cada filtro produce el mismo delta cualquiera sea el orden interno de sus cálculos. \textit{Transporte:} el \textit{runner} copia el \textit{recordset} emitido al tubo de salida sin alterarlo, y toda transformación del contenido ocurre dentro de un filtro y queda en el repositorio. A ellas se suma la monotonía que el Apéndice~\ref{anexo:tipos-firmas} afirma: el mixin del flujo impide eliminar, las claves de procedencia son obligatorias y con restricción de borrado, los analistas crean y leen pero no modifican ni borran, y volver un estudio a borrador desvincula sin eliminar.
+Las cuatro invariantes que el Capítulo~\ref{cap:arquitectura} verificó sobre el diseño (Subsección~\ref{sec:arq-car-verificacion}) se sostienen en el código en los siguientes puntos. \textit{Identidad:} ningún filtro importa ni invoca a otro; la única pieza que conoce los seis nombres es la tabla de etapas del estudio, que resuelve cada filtro por su nombre en el registro de modelos y le entrega únicamente el \textit{recordset} de entrada y las claves de su sintonizador. \textit{Estado interno:} los filtros no tienen tabla ni estado entre ejecuciones, el servicio de modelos no conserva estado de corrida, y el estado de la corrida ---tubos, etapa, tiempos e informes--- vive en el estudio, que ningún filtro recibe. \textit{Orden de cómputo:} el \textit{runner} ejecuta cada filtro sobre la totalidad de su entrada y persiste su delta antes de avanzar, de modo que la única dependencia entre filtros es la de flujo, que la máquina de estados hace explícita; disponible su entrada, cada filtro produce el mismo delta cualquiera sea el orden interno de sus cálculos. \textit{Transporte:} el \textit{runner} copia el \textit{recordset} emitido al tubo de salida sin alterarlo, y toda transformación del contenido ocurre dentro de un filtro y queda en el repositorio. A ellas se suma el crecimiento monótono del repositorio que el Apéndice~\ref{anexo:tipos-firmas} afirma: el mixin del flujo impide eliminar, las claves de procedencia son obligatorias y con restricción de borrado, los analistas crean y leen pero no modifican ni borran, y volver un estudio a borrador desvincula sin eliminar.
 
 \label{sec:impl-pruebas}
-Las veintisiete pruebas automatizadas del módulo, que corren con el adaptador simulado y sin servicio externo (Sección~\ref{sec:impl-stack}), ejercitan esas garantías: cuatro sobre el \textit{template} y la validación de su esquema; cinco sobre la selección del corpus y los sintonizadores; tres sobre las cardinalidades y las estrategias de composición; cinco sobre las compuertas, la reparación y la tolerancia a fallas del servicio de modelos; dos sobre la verificación humana; cuatro sobre procedencia, monotonía e iteración; y cuatro sobre la consolidación, los cruces y el sumidero.
+Las veintisiete pruebas automatizadas del módulo, que corren con el adaptador simulado y sin servicio externo (Sección~\ref{sec:impl-stack}), ejercitan esas garantías: cuatro sobre el \textit{template} y la validación de su esquema; cinco sobre la selección del corpus y los sintonizadores; tres sobre las cardinalidades y las estrategias de composición; cinco sobre las compuertas, la reparación y la tolerancia a fallas del servicio de modelos; dos sobre la verificación humana; cuatro sobre procedencia, crecimiento monótono e iteración; y cuatro sobre la consolidación, los cruces y el sumidero.
 
 Con ello el capítulo responde a la pregunta que lo abrió ---si el módulo realiza la arquitectura--- y completa la columna del módulo en el registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}). Lo que no responde, deliberadamente, es qué produce el módulo sobre un corpus real. El Capítulo~\ref{cap:procesos} establece quién hace qué y cuándo con las superficies aquí descriptas; el Capítulo~\ref{cap:ejemplo} corre el módulo sobre un corpus del entorno institucional y es allí, y no aquí, donde se presentan y discuten los resultados de esa corrida.
 
@@ -1480,8 +1478,6 @@ Reúne en el estudio las noticias sobre las que se va a trabajar. \textit{Entrad
 
 Declara el estudio como dato: qué se le pide al modelo generativo sobre cada unidad de análisis, con qué criterio se juzga lo que responde y cómo se consolidan los juicios. \textit{Entrada:} el estudio con su corpus confirmado y la biblioteca de \textit{templates}. \textit{Salida:} los tres sintonizadores del estudio fijados; el estudio queda listo para ejecutarse.
 
-
-
 \begin{itemize}
   \item \textbf{03.01 Creación o edición del \textit{template}} (experto). En el panel de \textit{templates} crea o ajusta una plantilla: nombre, objetivo del análisis, instrucciones con variables de contexto, variables con su valor por defecto, esquema de la respuesta esperada ---validado al guardar--- y previsualización del \textit{prompt} resultante. El \textit{template} es reutilizable entre estudios y se archiva en lugar de eliminarse. La actividad se omite cuando ya existe una plantilla adecuada.
   \item \textbf{03.02 Configuración de la Composición} (experto). En la solapa \textit{Composición} selecciona el \textit{template}, liga un valor a cada variable, agrega las aclaraciones de texto libre y fija la estrategia de composición, la cantidad de noticias y el umbral de similitud de la recuperación, y la temperatura y la longitud de salida del modelo generativo.
@@ -1506,6 +1502,8 @@ Recorre la red de tubos desde \texttt{Noticia[N]} hasta \texttt{Resultado}. \tex
   \item \textbf{04.07 Revisión humana} (experto, sólo con ejecutor humano). Desde el formulario de veredicto, encadenado análisis por análisis, emite para cada uno un estado, una confianza y un sustento. El botón \textit{Continuar (veredictos emitidos)} exige un veredicto por análisis, llena el tubo con el último de cada uno y devuelve el flujo al sistema.
   \item \textbf{04.08 Normalización} (sistema). Emite el \texttt{Resultado} y lleva el estudio al estado \textit{consolidado}.
 \end{itemize}
+
+
 
 El orden de las actividades del sistema es el de la tabla de etapas del estudio (Subsección~\ref{sec:impl-mat-estudio}), y por eso el mapa no lo documenta por su cuenta: es el pipeline de la Figura~\ref{fig:arq-pipeline} recorrido en el tiempo. Lo que el mapa agrega es la detención de 04.06 y la actividad 04.07, que la arquitectura modela como un ejecutor alternativo de un mismo filtro y que en la vista procedimental son una salida del sistema hacia el experto y un retorno.
 
@@ -1553,17 +1551,17 @@ La Tabla~\ref{tab:proc-correspondencia} ubica cada filtro de la arquitectura fre
   \label{tab:proc-correspondencia}
   \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X c l l l c@{}}
     \toprule
-    \textbf{Filtro}           & \textbf{Puertos} & \textbf{Salida}          & \textbf{Actividad} & \textbf{Sintonizador} & \shortstack{\textbf{Config.}\\\textbf{técnica}} \\
+    \textbf{Filtro}           & \textbf{Puertos} & \textbf{Salida}          & \textbf{Actividad} & \textbf{Sintonizador} & \shortstack{\textbf{Config.} \\\textbf{técnica}} \\
     \midrule
-    Extracción                & 1$\to$2          & \texttt{Noticia[N]}      & 02.02              & 02.01, 02.03          & ---                       \\
-    Enriquecimiento semántico & 3$\to$4          & \texttt{Embedding[N]}    & 04.02              & ---                   & 01.02                     \\
-    Composición de contexto   & 5$\to$6          & \texttt{Prompt[M]}       & 04.03              & 03.01, 03.02          & ---                       \\
-    Invocación generativa     & 7$\to$8          & \texttt{RespuestaIAG[M]} & 04.04              & ---                   & 01.02                     \\
-    Decodificación            & 9$\to$10         & \texttt{Análisis[M']}    & 04.05              & ---                   & 01.02                     \\
-    Verificación              & 11$\to$12        & \texttt{Veredicto[M']}   & 04.06, 04.07       & 03.03                 & ---                       \\
-    Normalización             & 13$\to$14        & \texttt{Resultado}       & 04.08              & 03.04                 & ---                       \\
+    Extracción                & 1$\to$2          & \texttt{Noticia[N]}      & 02.02              & 02.01, 02.03          & ---                          \\
+    Enriquecimiento semántico & 3$\to$4          & \texttt{Embedding[N]}    & 04.02              & ---                   & 01.02                        \\
+    Composición de contexto   & 5$\to$6          & \texttt{Prompt[M]}       & 04.03              & 03.01, 03.02          & ---                          \\
+    Invocación generativa     & 7$\to$8          & \texttt{RespuestaIAG[M]} & 04.04              & ---                   & 01.02                        \\
+    Decodificación            & 9$\to$10         & \texttt{Análisis[M']}    & 04.05              & ---                   & 01.02                        \\
+    Verificación              & 11$\to$12        & \texttt{Veredicto[M']}   & 04.06, 04.07       & 03.03                 & ---                          \\
+    Normalización             & 13$\to$14        & \texttt{Resultado}       & 04.08              & 03.04                 & ---                          \\
     \midrule
-    \textit{Sumidero}         & 14               & ---                      & 05.01              & ---                   & ---                       \\
+    \textit{Sumidero}         & 14               & ---                      & 05.01              & ---                   & ---                          \\
     \bottomrule
   \end{tabularx}
 \end{table}
@@ -1575,29 +1573,352 @@ La tabla permite verificar la correspondencia que el objetivo específico OE2 ex
 
 El capítulo modeló el ciclo de análisis como un mapa de siete procesos y veintitrés actividades repartidas en tres calles, y lo hizo sobre un único diagrama y una única tabla. La vista procedimental respondió lo que las otras dos no responden: que el experto interviene antes del procesamiento generativo y después de él, pero no durante, salvo como revisor; que el implementador interviene una vez, por fuera de todo estudio; que la Extracción corre por su cuenta y el estudio selecciona sobre lo que ella depositó; y que la iteración es un estudio nuevo, enlazado al anterior, y no una vuelta del pipeline. Con ello completa la columna de este capítulo en el registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}): cada marcador se realiza en el mapa como una o varias actividades con actor. El Capítulo~\ref{cap:ejemplo} recorre este mismo ciclo una vez, sobre un corpus del entorno institucional, y es allí donde cada actividad del mapa se documenta con los valores concretos que tomó.
 
-\chapter{Ejemplo de aplicación}
+\chapter{Caso de aplicación}
 \label{cap:ejemplo}
+
+Los tres capítulos anteriores describieron el framework sin ponerlo a trabajar: qué transforma cada filtro, cómo lo realiza el módulo y en qué orden interviene cada actor. Este capítulo lo aplica a un corpus real, en cumplimiento del objetivo específico OE4. Recorre una sola vez el ciclo de la Figura~\ref{fig:proc-ciclo}, desde la pregunta del experto hasta la lectura del resultado, y en cada actividad consigna qué se decidió, en qué superficie del módulo quedó asentada la decisión y qué produjo el sistema. El caso es un único estudio: la cobertura de la cuestión narco en la prensa de alcance nacional, la de Rosario y la del interior de la provincia de Santa Fe durante la primera quincena de abril de 2024, sobre noticias extraídas por la instancia institucional del \textit{addon} que el Capítulo~\ref{cap:implementacion} caracterizó.
+
+El capítulo sigue el orden del mapa de procesos. La Sección~\ref{sec:ej-caso} presenta el corpus y la pregunta (actividad 01.01); la Sección~\ref{sec:ej-configuracion}, la configuración técnica y el alta del estudio (01.02 y 01.03); la Sección~\ref{sec:ej-scraping}, la constitución del corpus (proceso 02); la Sección~\ref{sec:ej-contexto}, el \textit{template} y los sintonizadores (proceso 03); la Sección~\ref{sec:ej-resultados}, la corrida y la lectura de su resultado (procesos 04 y 05); y la Sección~\ref{sec:ej-discusion}, la iteración y las limitaciones que el objetivo específico compromete a discutir (procesos 06 y 07). Las figuras son pantallas del módulo con el estudio tal como quedó persistido, y las cifras provienen de sus registros o, donde se indica, de cálculos hechos sobre ellos.
+
+Conviene fijar de antemano qué se valida. El caso pone a prueba el framework ---que el ciclo se completa sobre un corpus real, que cada decisión del experto entra como dato, que el resultado llega con su juicio de fidelidad y puede reconstruirse hasta las noticias---, no una hipótesis sobre la prensa. Los resultados sustantivos se presentan porque son el producto que el experto recibe, y se leen con las reservas que la Sección~\ref{sec:ej-discusion} explicita.
 
 \section{Selección del caso}
 \label{sec:ej-caso}
 
+\paragraph{El corpus.} El material empírico es una exportación del modelo de resultados de la instancia institucional (Sección~\ref{sec:impl-preexistente}), facilitada por la dirección de esta tesina: las publicaciones que la Extracción registró entre el 29 de marzo y el 30 de mayo de 2024. Son 12.072 noticias de 64 portales, ingresadas por cinco reglas ---Narco (6.911 noticias), Pullaro (3.015), Inseguridad (2.762), Lavado (1.044) y Corrupción (849)---, de las que una misma noticia puede satisfacer más de una. La exportación se incorporó sin modificaciones a la instancia en la que corre el módulo, y sus registros cumplen el contrato \texttt{Noticia} en los términos de la Subsección~\ref{sec:impl-pre-noticia}: todos tienen enlace, y ninguno repetido, portal, adscripción geográfica, fecha de registro y las reglas que motivaron su ingreso. Las claves opcionales están incompletas, como el contrato admite: 5.048 noticias no tienen fecha de publicación, 4.317 no tienen copete y 51 llegaron sin cuerpo.
+
+\paragraph{La pregunta.} El estudio pregunta con qué atributos cubren una misma cuestión tres tipos de prensa: los portales de alcance nacional, los de Rosario y los del interior de la provincia. Es una pregunta por el segundo nivel de la agenda ---no qué temas se cubren, sino con qué rasgos se presenta un tema ya dado \citep{mccombs:1997}--- y se formula sobre los contenidos publicados: nada se infiere sobre las audiencias ni sobre los efectos de esa cobertura. Los atributos que el experto decidió observar son seis: en qué lugar sitúa la noticia el problema; de qué clase de hecho trata; si relata un episodio o presenta un contexto, que es la distinción entre encuadre episódico y temático (\textit{episodic} y \textit{thematic framing}) que \citet{iyengar:1991} propuso para las noticias de televisión; cuáles cumple de las cuatro funciones del encuadre que distingue \citet{entman:1993} ---definir un problema, atribuirle causas, evaluarlo moralmente y recomendar un tratamiento---; a qué actores nombra; y con qué tono presenta la gestión de seguridad del gobierno provincial. La Sección~\ref{sec:ej-contexto} muestra cómo esas decisiones se vuelven un \textit{template}.
+
+\paragraph{El recorte.} De las cinco reglas, la que apunta al objeto es Narco, y su comportamiento a lo largo del período decide la ventana. La Tabla~\ref{tab:ej-regla-semanal} muestra, semana por semana, cuántas noticias ingresaron por esa regla y cuántas contienen la cadena ``narco'' en el título, el copete o el cuerpo. Hasta el 14 de abril la regla es precisa: cuatro de cada cinco noticias contienen la cadena. En la semana del 15 de abril el volumen se multiplica por más de cuatro sin que crezca la cantidad de noticias que la contienen, y la proporción cae al 15~\%, nivel en torno del cual se mantiene hasta el final del período: desde entonces la regla captura un conjunto mucho más amplio que el objeto del estudio. La definición de los términos de cada regla pertenece a la configuración de la instancia institucional y no integra la exportación, de modo que la causa no puede establecerse desde el corpus; aquí se consigna su efecto. El estudio toma, en consecuencia, la quincena del 1 al 14 de abril de 2024, y deja para el propio pipeline el tratamiento de la imprecisión que resta dentro de ella.
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{Noticias ingresadas por la regla Narco en cada semana del período y cuántas de ellas contienen la cadena ``narco'' en el título, el copete o el cuerpo. La primera semana y la última son parciales; las fechas de registro se cuentan en tiempo universal.}
+  \label{tab:ej-regla-semanal}
+  \begin{tabular}{@{}l r r r@{}}
+    \toprule
+    \textbf{Semana (2024)}   & \textbf{Noticias} & \textbf{Con la cadena} & \textbf{Proporción} \\
+    \midrule
+    29 al 31 de marzo        & 230               & 192                    & 83~\%               \\
+    1 al 7 de abril          & 374               & 300                    & 80~\%               \\
+    8 al 14 de abril         & 354               & 288                    & 81~\%               \\
+    15 al 21 de abril        & 1.608             & 243                    & 15~\%               \\
+    22 al 28 de abril        & 712               & 128                    & 18~\%               \\
+    29 de abril al 5 de mayo & 832               & 145                    & 17~\%               \\
+    6 al 12 de mayo          & 751               & 100                    & 13~\%               \\
+    13 al 19 de mayo         & 725               & 127                    & 18~\%               \\
+    20 al 26 de mayo         & 831               & 105                    & 13~\%               \\
+    27 al 30 de mayo         & 494               & 69                     & 14~\%               \\
+    \midrule
+    Total                    & 6.911             & 1.697                  & 25~\%               \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
 \section{Configuración inicial}
 \label{sec:ej-configuracion}
 
-\section{Ejecución del scraping}
+La configuración técnica es la única actividad del implementador en todo el ciclo (actividad 01.02) y no pertenece a ningún estudio en particular: se fija una vez para la instalación, desde un menú al que sólo accede el administrador de la plataforma, y cada estudio toma una copia al iniciar su corrida. La Tabla~\ref{tab:ej-config-tecnica} consigna la que estuvo vigente para el caso, tal como el estudio la conserva en su solapa \textit{Corrida} (Figura~\ref{fig:ej-corrida}), junto con el entorno en que se ejecutó. Con ella se cumple lo que la Sección~\ref{sec:impl-stack} dejó pendiente: decir qué modelos concretos se emplearon.
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{Configuración técnica vigente durante la corrida del caso, según la copia que conserva el estudio, y entorno de ejecución.}
+  \label{tab:ej-config-tecnica}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{4.6cm} >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Parámetro}                & \textbf{Valor}                                                                                                                                     \\
+    \midrule
+    Adaptador del servicio de modelos & Compatible con la interfaz de OpenAI                                                                                                               \\
+    Servicio de modelos               & Ollama 0.33.3 \citep{ollama:2026}, en un contenedor del mismo equipo, sin aceleración por GPU                                                      \\
+    Modelo generativo                 & \texttt{qwen2.5:3b} \citep{qwen:2024}: 3.100 millones de parámetros, cuantización \texttt{Q4\_K\_M}, ventana de contexto de 16.384 \textit{tokens} \\
+    Modelo de \textit{embedding}      & \texttt{nomic-embed-text} \citep{nussbaum:2025}: vectores de 768 dimensiones                                                                       \\
+    Salida estructurada               & Restringida por el esquema de respuesta del \textit{template}                                                                                      \\
+    Política ante la no conformidad   & Reparar                                                                                                                                            \\
+    Tiempo de espera por invocación   & 900 segundos                                                                                                                                       \\
+    Largos máximos por noticia        & 4.000 caracteres en el \textit{prompt}; 8.000 en el texto que se codifica como \textit{embedding}                                                  \\
+    \midrule
+    Plataforma                        & Odoo Community 16, PostgreSQL 15, Python 3.9                                                                                                       \\
+    Equipo                            & Computadora portátil con procesador AMD Ryzen 9 PRO 6950H, de 8 núcleos y 16 hilos, y 15 GB de memoria asignados al entorno de ejecución           \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-01-corrida.png}
+  \caption{Solapa \textit{Corrida} del estudio: la copia de la configuración técnica que el estudio tomó al iniciar su corrida y el tiempo, en segundos, que insumió cada filtro.}
+  \label{fig:ej-corrida}
+\end{figure}
+
+Dos precisiones. La primera es de alcance: la configuración no se modificó entre el piloto y la corrida que el capítulo documenta, de modo que todo lo que sigue son decisiones del experto del dominio. La segunda es de roles: en este caso el implementador y el experto fueron la misma persona, el autor de la tesina. La distinción entre ambos se conserva en la exposición porque no depende de quién ocupe el rol sino de qué superficie y qué permiso emplea: la configuración técnica se edita desde un menú reservado al administrador, y el estudio, desde las solapas que el grupo de analistas tiene a su cargo (Sección~\ref{sec:proc-notacion}).
+
+El estudio se dio de alta (actividad 01.03) con un nombre que enuncia su pregunta, ``S4 \textperiodcentered{} La cuestión narco en la prensa nacional, rosarina y del interior santafesino, 1 al 14 de abril de 2024'', donde la sigla inicial lo identifica dentro de la serie de estudios hechos sobre el corpus, y como estudio derivado de un piloto previo, relación sobre la que vuelve la Sección~\ref{sec:ej-discusion}.
+
+\section{Constitución del corpus}
 \label{sec:ej-scraping}
 
-\section{Definición de contexto y template utilizado}
+En el caso no se ejecutó ninguna extracción. Las actividades 02.01 y 02.02 del mapa ---la configuración de portales y reglas, y la Extracción misma--- ocurrieron en la instancia institucional durante 2024, con el \textit{addon} que esta tesina reutiliza sin modificar (\resp{F}). Lo que el estudio hace es la actividad 02.03: seleccionar, sobre lo que la Extracción depositó, las noticias que serán su corpus. Es la situación que el mapa prevé como regular y no una excepción: el pipeline no dispara la extracción, sino que encuentra en el repositorio lo que ella ya dejó (Subsección~\ref{sec:impl-pre-extraccion}).
+
+Los criterios se fijan en la solapa \textit{Corpus} del estudio (Figura~\ref{fig:ej-corpus}) y son todos claves de procedencia del contrato \texttt{Noticia}: la regla Narco; la fecha de registro, entre el 1 y el 14 de abril de 2024; 39 portales; la exclusión de las publicaciones archivadas; y un límite de 5.000 noticias, que no llegó a operar. La ventana está expresada en tiempo universal, que es como la plataforma almacena las fechas; el formulario la muestra en la hora local, tres horas antes, y por eso en la figura corre de las 21 del 31 de marzo a las 21 del 14 de abril. En esa quincena ingresaron por la regla 728 noticias de 44 portales. Los 39 del estudio son los que el experto pudo adscribir a uno de los tres tipos de prensa que la pregunta compara: 12 de alcance nacional, 6 de Rosario y 21 del interior de la provincia, grupo que incluye a la ciudad de Santa Fe. Las cinco fuentes restantes, con 122 noticias, quedaron fuera porque no son portales de un tipo determinado: dos agregadores de búsqueda, un boletín que reproduce columnas de terceros, el sitio oficial del gobierno provincial y un medio de alcance nacional registrado bajo dos adscripciones geográficas. Confirmado el corpus, el estudio quedó con \(N = 606\) noticias: 328 de portales nacionales, 154 de portales de Rosario y 124 del interior.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-02-corpus.png}
+  \caption{Solapa \textit{Corpus} del estudio: criterios de selección sobre lo que la Extracción depositó y tabla de las noticias confirmadas.}
+  \label{fig:ej-corpus}
+\end{figure}
+
+La imprecisión de la regla persiste, atenuada, dentro de la ventana. De las 606 noticias, 483 contienen la cadena ``narco'' y 123 ingresaron sin contenerla. Y contener la cadena tampoco asegura la pertinencia, porque la comparación del extractor es por inclusión de subcadena (Subsección~\ref{sec:impl-pre-extraccion}): 36 de las 606 noticias contienen ``anarcocapitalista'' o sus derivados, palabras que la incluyen. Las primeras filas de la tabla de la Figura~\ref{fig:ej-corpus} lo ilustran: una nota sobre un ataque a Israel y otra sobre la presidencia de la Región Centro figuran entre las que ingresaron por la regla. El framework no corrige la regla ni interviene sobre el extractor. Toma el corpus como llega y trata su imprecisión aguas abajo, con dos recursos propios que la sección siguiente configura: la recuperación por similitud de la Composición y una clave del esquema que pregunta al modelo generativo si la noticia trata efectivamente del objeto.
+
+\section{Definición del contexto}
 \label{sec:ej-contexto}
 
-\section{Resultados del análisis generativo}
+El proceso 03 declara el estudio como dato. En el caso comprendió las cuatro actividades del mapa: un \textit{template} nuevo y la configuración de los tres sintonizadores que el estudio lleva en sus solapas. La Tabla~\ref{tab:ej-sintonizadores} reúne el valor que tomó cada ajuste, incluidos los de la selección del corpus de la sección anterior; los párrafos que siguen dan sus razones.
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{Valores de los cuatro sintonizadores en el estudio del caso, con la actividad del mapa de procesos en la que se fijó cada uno.}
+  \label{tab:ej-sintonizadores}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}p{2.9cm} >{\raggedright\arraybackslash}p{3.6cm} >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    \textbf{Sintonizador}      & \textbf{Ajuste}               & \textbf{Valor}                                                                                           \\
+    \midrule
+    Extracción (02.03)         & Regla                         & Narco                                                                                                    \\
+                               & Fecha de registro             & 1 al 14 de abril de 2024                                                                                 \\
+                               & Portales                      & 39                                                                                                       \\
+                               & Publicaciones archivadas      & Excluidas                                                                                                \\
+                               & Límite                        & 5.000 noticias                                                                                           \\
+    \addlinespace
+    Composición (03.01, 03.02) & \textit{Template}             & Cuestión narco: atributos y encuadre (por noticia)                                                       \\
+                               & Variable \texttt{estudio}     & la cuestión narco en la prensa nacional, rosarina y del interior santafesino, 1 al 14 de abril de 2024   \\
+                               & Variable \texttt{ambito}      & Rosario, la ciudad de Santa Fe y las localidades del interior de la provincia de Santa Fe                \\
+                               & Aclaraciones                  & Descripción del objeto en el lenguaje de las noticias                                                    \\
+                               & Estrategia                    & Por noticia                                                                                              \\
+                               & Umbral de similitud           & 0,6171                                                                                                   \\
+                               & Cantidad máxima de noticias   & 450                                                                                                      \\
+                               & Temperatura                   & 0,2                                                                                                      \\
+                               & Longitud de salida            & 1.024 \textit{tokens}                                                                                    \\
+    \addlinespace
+    Verificación (03.03)       & Ejecutor                      & Juez generativo                                                                                          \\
+                               & Criterio de validez           & Redactado por el experto                                                                                 \\
+    \addlinespace
+    Normalización (03.04)      & Política sobre los observados & Incluir todos los análisis                                                                               \\
+                               & Agrupación                    & Variable del experto \textit{tipo de prensa}, según el portal: nacional (12), rosario (6), interior (21) \\
+                               & Condición de inclusión        & \texttt{es\_sobre\_narco} verdadero                                                                      \\
+                               & Claves consolidadas           & Diez                                                                                                     \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\paragraph{El \textit{template} (03.01).} Los \textit{templates} que el módulo trae cargados responden a preguntas generales sobre la agenda; para este estudio se definió uno propio, ``Cuestión narco: atributos y encuadre (por noticia)'' (Figura~\ref{fig:ej-template}). Su objetivo describe el objeto en el lenguaje de las noticias ---balaceras, allanamientos, secuestros de droga, juicios, fuerzas federales--- y no sólo en el de la teoría, por una razón operativa: el objetivo integra la consulta con que la Composición recupera las noticias (Subsección~\ref{sec:impl-mat-composicion}). Sus instrucciones definen cada categoría y emplean dos variables, el nombre del estudio y el ámbito geográfico de referencia. Su esquema de respuesta tiene trece claves, todas obligatorias, que son los atributos de la Sección~\ref{sec:ej-caso} vueltos tipos: \texttt{es\_sobre\_narco}, de sí o no, que pregunta si el narcotráfico es el eje de la noticia o una mención al pasar; \texttt{subtema}, con nueve opciones; \texttt{ambito\_geografico}, con cinco; \texttt{enfoque}, episódico o temático; las cuatro funciones del encuadre como cuatro claves de sí o no independientes, de modo que una noticia pueda cumplir varias o ninguna; \texttt{actores}, una lista de nombres propios; \texttt{tono}; \texttt{tono\_hacia\_gestion\_provincial}, con una opción para la noticia que no menciona esa gestión; un \texttt{resumen} de una oración; y \texttt{afirmaciones}, de una a tres, cada una con el fragmento textual de la noticia que la sustenta. Nada de esto se programó: el \textit{template} es un registro, y ningún modelo del módulo tiene campos propios del tema (\resp{B}).
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-03a-template.png}
+  \caption{Panel de \textit{templates}: el \textit{template} del estudio, con su objetivo y el esquema de respuesta que el modelo generativo debe conformar.}
+  \label{fig:ej-template}
+\end{figure}
+
+\paragraph{Composición (03.02).} La estrategia es por noticia: un \textit{prompt} y un análisis por cada noticia recuperada, que luego se consolidan por tipo de prensa (Figura~\ref{fig:ej-composicion}). La recuperación cumple aquí una función que excede la de acotar el contexto, porque es el primer tratamiento de la imprecisión de la regla. Las aclaraciones de texto libre enumeran las formas en que el objeto aparece en los tres tipos de prensa ---hechos de violencia, operativos, causas judiciales, medidas de gobierno---, para que la consulta no favorezca a ninguno. El umbral de similitud se fijó en 0,6171, que es la similitud de la noticia que ocupa el lugar 450 en el orden de recuperación: el tope de 450 análisis lo impuso el tiempo de cómputo disponible para la corrida, y el umbral se declara como lo que es, una decisión de presupuesto y no un valor con fundamento teórico. El formulario lo muestra redondeado a dos decimales; el valor completo figura en la ficha del estudio. Con él entran 450 noticias y quedan fuera 156. Entre las 483 que contienen la cadena ``narco'' entra el 80,7~\%; entre las 36 que contienen ``anarcocapitalista'' o sus derivados, sólo 9. La temperatura es baja, 0,2, porque la tarea es de codificación y no de redacción.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-04-composicion.png}
+  \caption{Solapa \textit{Composición} del estudio: \textit{template}, valores de sus variables, aclaraciones, estrategia y parámetros de la recuperación y del modelo generativo.}
+  \label{fig:ej-composicion}
+\end{figure}
+
+\paragraph{Verificación (03.03).} El ejecutor elegido es el juez generativo, porque la revisión humana de 450 análisis excedía los recursos del caso. El criterio de validez se redactó de manera explícita, en lugar de aceptar el que el módulo propone por defecto: una afirmación está respaldada si su contenido aparece en la noticia aunque la redacción difiera; la contradice sólo si la noticia afirma lo contrario; carece de evidencia si nada en la noticia la sostiene; y el análisis es válido si todas sus afirmaciones están respaldadas y las categorías asignadas son compatibles con el contenido de la noticia.
+
+\paragraph{Normalización (03.04).} Aquí se ubican las dos decisiones que dan forma al resultado (Figura~\ref{fig:ej-normalizacion}). La primera es la variable de comparación. El corpus trae, para cada portal, una adscripción geográfica, pero ésta no distingue los tipos de prensa que la pregunta compara: es el departamento bajo el que la instancia registra al portal, reúne bajo un mismo valor a los seis portales rosarinos y a dos de alcance nacional, y reparte a los del interior en ocho. Por eso el experto define una variable propia, \textit{tipo de prensa}, con una tabla que asigna a cada uno de los 39 portales uno de tres valores: nacional, rosario o interior. La tabla es dato del estudio y no del portal, porque otro estudio puede agrupar los mismos portales de otro modo (\resp{B}). La segunda decisión es una condición de inclusión: se consolidan sólo los análisis cuya clave \texttt{es\_sobre\_narco} es verdadera. Es el segundo tratamiento de la imprecisión de la regla, y el más exigente, porque no pregunta si la noticia se parece al objeto sino si trata de él. La condición no suprime nada: el resultado sigue referenciando los 450 veredictos y registra, para cada análisis, si entró en la consolidación y, si no entró, por qué. La política sobre los análisis observados es incluirlos, decisión cuyo fundamento se verá con los veredictos. Se consolidan diez claves: las de opciones cerradas, las de sí o no y la lista de actores. Quedan fuera el resumen y las afirmaciones, que son texto libre, y la propia clave de la condición, que es constante entre los análisis incluidos.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-06-normalizacion.png}
+  \caption{Solapa \textit{Normalización} del estudio: política sobre los observados, condición de inclusión y variable del experto, con su tabla de asignación de portales a tipos de prensa.}
+  \label{fig:ej-normalizacion}
+\end{figure}
+
+\section{Resultados}
 \label{sec:ej-resultados}
+
+\subsection{La corrida}
+\label{sec:ej-res-corrida}
+
+El estudio recorrió los seis tubos y alcanzó el estado consolidado (Figura~\ref{fig:ej-estudio}). La Tabla~\ref{tab:ej-corrida} da la cardinalidad de cada tubo y el tiempo que insumió el filtro que lo llenó, tal como constan en la ficha del estudio. La cardinalidad se reduce una sola vez, en la Composición, por efecto del umbral. Ningún otro filtro pierde unidades: las 450 respuestas del modelo generativo conformaron el esquema del \textit{template}, y la Decodificación no registró descartes ni reparaciones. El costo se concentra en los dos filtros que invocan al modelo generativo: la Invocación insumió 23.069 segundos, a razón de 51 por noticia, y la Verificación, 38.112. La corrida completa llevó algo más de 17 horas, de las que el resto del pipeline explica unos diez minutos.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-07-estudio.png}
+  \caption{Formulario del estudio consolidado: barra de estados y accesos a los tubos, con la cardinalidad de cada uno.}
+  \label{fig:ej-estudio}
+\end{figure}
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{La corrida del caso: cardinalidad de cada tubo y tiempo insumido por el filtro que lo llena, según la ficha del estudio.}
+  \label{tab:ej-corrida}
+  \begin{tabular}{@{}l l r r@{}}
+    \toprule
+    \textbf{Filtro}           & \textbf{Tubo de salida}  & \textbf{Registros} & \textbf{Tiempo (s)} \\
+    \midrule
+    Selección del corpus      & \texttt{Noticia[N]}      & 606                & ---                 \\
+    Enriquecimiento semántico & \texttt{Embedding[N]}    & 606                & 589                 \\
+    Composición de contexto   & \texttt{Prompt[M]}       & 450                & 1                   \\
+    Invocación generativa     & \texttt{RespuestaIAG[M]} & 450                & 23.069              \\
+    Decodificación            & \texttt{Análisis[M']}    & 450                & 1                   \\
+    Verificación              & \texttt{Veredicto[M']}   & 450                & 38.112              \\
+    Normalización             & \texttt{Resultado}       & 1                  & menos de 1          \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\subsection{El resultado}
+\label{sec:ej-res-resultado}
+
+El resultado se lee en tres superficies: su formulario, que el estudio muestra en la solapa \textit{Resultado}; el tablero, que ofrece la tabla dinámica y el gráfico de la plataforma sobre la proyección del resultado; y la ficha del estudio. La primera parte del formulario documenta qué se consolidó. De los 450 análisis, 242 cumplen la condición de inclusión y 208 quedan excluidos por ella; ninguno, por la política sobre los observados. La proporción de análisis que el modelo generativo considera centrados en el objeto difiere entre los tipos de prensa: 92 de 206 en la nacional (45~\%), 75 de 128 en la de Rosario (59~\%) y 75 de 116 en la del interior (65~\%). Leída junto con las cifras de las secciones anteriores, la secuencia muestra tres delimitaciones sucesivas del mismo objeto, cada una más estricta que la anterior: 606 noticias por la regla de extracción, 450 por la similitud con la consulta y 242 por el juicio del modelo generativo sobre su contenido.
+
+Sobre los 242 análisis consolidados, el formulario presenta una tabla de contingencia por clave (Figura~\ref{fig:ej-resultado}), y el tablero permite recorrerlas (Figura~\ref{fig:ej-tablero}). La Tabla~\ref{tab:ej-cruces} resume las claves que distinguen a los tres tipos de prensa. La prensa nacional sitúa la noticia en Rosario en el 60,9~\% de los casos, contra el 41,3~\% de la rosarina y el 37,3~\% de la del interior, que la ubican con más frecuencia en la provincia en general. En el subtema, la prensa nacional y la rosarina tratan sobre todo hechos de violencia (47,8~\% y 48,0~\%), mientras la del interior trata operativos policiales (45,3~\%) y dedica a la política de seguridad provincial una proporción cercana al triple de la de las otras dos (12,0~\% contra 4,3~\% y 4,0~\%). El tono hacia la gestión provincial de seguridad no se aplica a más de la mitad de las noticias de cada grupo, porque no la mencionan; entre las restantes, son desfavorables 12 de la prensa nacional, 5 de la rosarina y ninguna de la del interior. En cuanto a los actores, el nombre más mencionado en la prensa nacional es el de Patricia Bullrich, ministra de Seguridad de la Nación, con 33 menciones; en la del interior, el de Maximiliano Pullaro, gobernador de la provincia, con 15; y en la rosarina ambos aparecen casi a la par, con 14 y 13. El módulo cuenta cada nombre tal como figura en el análisis y no unifica sus variantes. Leídas en conjunto, y con las reservas de la Sección~\ref{sec:ej-discusion}, las tablas describen tres coberturas de una misma cuestión: la prensa nacional la presenta como hechos de violencia situados en Rosario; la del interior, como operativos y gestión de la seguridad situados en la provincia; y la rosarina comparte el subtema con la primera y la localización con la segunda.
+
+\begin{table}[H]
+  \centering
+  \footnotesize
+  \caption{Síntesis del resultado del caso por tipo de prensa. Los porcentajes se calculan sobre los análisis consolidados de cada grupo; la V de Cramér resume cuánto difiere la distribución de la clave entre los grupos.}
+  \label{tab:ej-cruces}
+  \begin{tabularx}{\textwidth}{@{}>{\raggedright\arraybackslash}X r r r@{}}
+    \toprule
+                                                                & \textbf{Nacional} & \textbf{Rosario} & \textbf{Interior} \\
+    \midrule
+    Análisis con veredicto                                      & 206               & 128              & 116               \\
+    Análisis consolidados (\texttt{es\_sobre\_narco} verdadero) & 92                & 75               & 75                \\
+    \addlinespace
+    Ámbito: Rosario                                             & 60,9~\%           & 41,3~\%          & 37,3~\%           \\
+    Ámbito: la provincia en general                             & 30,4~\%           & 45,3~\%          & 48,0~\%           \\
+    Ámbito: otra localidad santafesina                          & 3,3~\%            & 13,3~\%          & 14,7~\%           \\
+    \multicolumn{4}{@{}l}{\textit{V de Cramér del ámbito geográfico: 0,22}}                                                \\
+    \addlinespace
+    Subtema: hecho violento                                     & 47,8~\%           & 48,0~\%          & 26,7~\%           \\
+    Subtema: operativo policial                                 & 27,2~\%           & 29,3~\%          & 45,3~\%           \\
+    Subtema: proceso judicial                                   & 12,0~\%           & 16,0~\%          & 12,0~\%           \\
+    Subtema: política de seguridad provincial                   & 4,3~\%            & 4,0~\%           & 12,0~\%           \\
+    \multicolumn{4}{@{}l}{\textit{V de Cramér del subtema: 0,20}}                                                          \\
+    \addlinespace
+    Define el problema                                          & 57,6~\%           & 61,3~\%          & 46,7~\%           \\
+    Tono hacia la gestión provincial: no aplica                 & 55,4~\%           & 57,3~\%          & 57,3~\%           \\
+    Tono hacia la gestión provincial: desfavorable              & 12                & 5                & 0                 \\
+    Menciones del actor más nombrado                            & 33                & 14               & 15                \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-08b-resultado-cruces.png}
+  \caption{Solapa \textit{Resultado} del estudio: tablas de contingencia del subtema y del ámbito geográfico por tipo de prensa, con cantidad y porcentaje por celda, categoría dominante y V de Cramér.}
+  \label{fig:ej-resultado}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-09a-tablero-pivot.png}
+  \caption{Tablero del estudio: tabla dinámica de la plataforma sobre los análisis consolidados, con la clave del ámbito geográfico cruzada por tipo de prensa.}
+  \label{fig:ej-tablero}
+\end{figure}
+
+El formulario marca como poco informativas cinco de las diez claves, que se reportan y no se interpretan: el enfoque, episódico en el 97,9~\% de los análisis; tres de las cuatro funciones del encuadre ---atribuir causas, evaluar moralmente y recomendar un tratamiento, esta última sin un solo caso---; y el tono general, negativo en el 76,4~\%. De las cuatro funciones sólo la de definir el problema muestra variación, y los intervalos de sus tres proporciones se superponen. Que una clave concentre casi todos los análisis en una categoría puede deberse a que la cobertura es así o a que el modelo generativo no reconoce la categoría alternativa, y el resultado no permite distinguir entre ambas explicaciones; la marca existe para que el experto no lea una diferencia donde no hay señal.
+
+\subsection{La fidelidad}
+\label{sec:ej-res-fidelidad}
+
+Cada uno de los 450 análisis llegó a la Normalización con su veredicto (\resp{D}). El juez generativo declaró válidos 7 y observados 443, con una confianza media de 0,65; ninguno fue declarado no sustentado. Sobre las 1.322 afirmaciones que juzgó, consideró respaldadas 620 (47~\%), contradichas 330 (25~\%) y sin evidencia 372 (28~\%).
+
+Un dictamen tan uniforme obliga a preguntarse qué mide. Para responderlo se hizo, sobre los registros del estudio, una comprobación que no depende de ningún modelo generativo: buscar cada fragmento citado por un análisis en el texto de su noticia, igualando mayúsculas, acentos, comillas y espacios. De los 1.343 fragmentos, 1.035 (77,1~\%) aparecen textualmente; 196 (14,6~\%) coinciden de manera parcial, con al menos el 60~\% de sus secuencias de seis palabras presentes en la noticia; y 112 (8,3~\%) no se encuentran. La comparación de ambas medidas es desfavorable al juez. La proporción de afirmaciones que respalda en un análisis no guarda relación con la proporción de citas textuales de ese análisis (coeficiente de correlación de \(-0{,}06\)); de los 245 análisis cuyas citas son todas textuales declaró válidos sólo 7, y ninguno fuera de ellos. El juez de este caso ---el mismo modelo generativo que produjo los análisis, con temperatura cero--- es una compuerta severa y poco discriminante. De ahí la política de incluir los observados: excluirlos habría reducido el resultado a 7 análisis por una señal que no distingue entre los demás.
+
+Lo que la etapa entrega, aun con ese juez, es lo que el contrato compromete. Cada veredicto lista, afirmación por afirmación, la relación que el juez le asignó, el fragmento en que se apoya y el enlace a la noticia, de modo que el experto puede revisar cualquier juicio en lugar de aceptarlo.
+
+Una segunda comprobación atañe a la estabilidad de la codificación. Un estudio de calibración de diez noticias, hecho con otro \textit{template} sobre otra regla del mismo corpus, se repitió con los mismos sintonizadores y una única diferencia técnica, la ventana de contexto del modelo generativo. Sobre las nueve noticias con análisis en ambas corridas, el acuerdo fue del 89~\% en el tema, del 100~\% en el tono y del 78~\% en el encuadre; el coeficiente kappa, que descuenta de ese acuerdo el que cabría esperar por azar \citep{cohen:1960}, fue de 0,76, 1,00 y 0,68. Es una indicación, sobre pocas unidades y con otras claves, de que el modelo generativo repite sus categorías con temperatura 0,2; no es una medida de la fiabilidad del \textit{template} de este estudio.
+
+\subsection{La reconstrucción de un resultado}
+\label{sec:ej-res-procedencia}
+
+Toda cifra del resultado puede recorrerse hacia atrás hasta las noticias que la sustentan (\resp{E}). Sirva de ejemplo una celda de la tabla de subtemas: los 34 análisis de la prensa del interior clasificados como operativo policial. En la vista de lista del tablero, cada fila de esa celda trae su análisis y su noticia. Una de ellas corresponde a una nota del portal Sur 24, de Venado Tuerto, sobre un operativo que desarticuló una banda internacional de narcotráfico. La Figura~\ref{fig:ej-procedencia} muestra su veredicto: declara válido el análisis, con confianza 1, y lista sus tres afirmaciones ---que se realizaron 27 allanamientos en todo el país, que 24 personas fueron detenidas y que miembros de la banda dirigían la logística desde la prisión---, cada una con la relación de respaldo, el fragmento de la noticia en que se apoya y su enlace. El análisis conserva la respuesta del modelo generativo de la que fue decodificado; la respuesta, el \textit{prompt} que la originó, con el texto completo que el modelo generativo recibió; y el \textit{prompt}, la noticia, con el enlace a su publicación original.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{capturas/cap6-10a-veredicto.png}
+  \caption{Formulario de un veredicto del estudio: criterio de validez, estado, confianza y sustento, con la relación, el fragmento y el enlace de cada afirmación del análisis. La marca [\ldots] indica una parte del formulario que se omite.}
+  \label{fig:ej-procedencia}
+\end{figure}
+
+Son cinco pasos ---del resultado al veredicto, de éste al análisis, a la respuesta, al \textit{prompt} y a la noticia---, y los 450 análisis del estudio los completan: todas las noticias alcanzadas tienen enlace y cuerpo. Es la consulta de ancestros sobre el grafo de procedencia (Apéndice~\ref{anexo:tipos-procedencia}), hecha a mano sobre la interfaz.
 
 \section{Discusión}
 \label{sec:ej-discusion}
 
+\paragraph{La iteración.} El estudio documentado no es el primero de su línea. Lo precedió un piloto sobre el mismo corpus y con el mismo \textit{template}, limitado a las veinte noticias más similares a la consulta. El piloto cumplió su función en dos sentidos. Mostró un defecto del \textit{template}: la clave de las afirmaciones no era obligatoria, y el modelo generativo, restringido por el esquema, la omitió en los veinte análisis, de modo que no había nada que verificar; la corrección consistió en volverla obligatoria, es decir, en editar un dato. Y dio la medida del costo por análisis con la que se fijó el tope de la recuperación. El estudio del capítulo es el estudio derivado de ese piloto (actividad 06.02): hereda sus criterios de corpus y su \textit{template}, ajusta la recuperación, queda enlazado con él y recorre la red de tubos desde el principio. El motivo de la iteración es de la clase que el mapa prevé, un \textit{template} que no produce lo que la etapa siguiente necesita, y quedó a la vista en los registros del piloto, que permanecen en el repositorio.
+
+\paragraph{Fidelidad documental.} El resultado es una codificación hecha por un modelo generativo pequeño que no fue contrastada con la de codificadores humanos: las cifras de la Sección~\ref{sec:ej-resultados} son, en rigor, lo que el modelo generativo codificó, no lo que las noticias dicen. Dos indicios acotan esa reserva sin levantarla: tres de cada cuatro citas son textuales, y el propio formulario señala que la mitad de las claves no discrimina. El juez, por su parte, no distingue entre los análisis. Que sea el mismo modelo generativo que los produjo lo expone además al sesgo por el que un juez generativo tiende a favorecer las respuestas que él mismo produjo ---\textit{self-enhancement bias} \citep{zheng:2023}---, aunque lo que aquí se observa no es indulgencia sino severidad. La limitación es de la configuración del caso y no del diseño: el ejecutor de la Verificación es un sintonizador, el revisor humano está implementado y un juez con otro modelo generativo está previsto con la misma interfaz (Subsección~\ref{sec:impl-mat-verificacion}). La Sección~\ref{sec:conc-futuro} retoma ambas posibilidades.
+
+\paragraph{Costo computacional.} El caso se ejecutó con un modelo generativo de 3.100 millones de parámetros en una computadora portátil sin aceleración: no tuvo costo de servicio y ninguna noticia salió del equipo, a cambio de tiempo. Cada noticia insumió 51 segundos de Invocación y, en promedio, 85 de Verificación, de modo que juzgar un análisis costó más que producirlo. El costo de un servicio de modelos externo no se midió.
+
+\paragraph{Escalabilidad.} El tiempo crece linealmente con la cantidad de noticias, porque la estrategia es por noticia y las invocaciones son sucesivas. Las 17 horas de la corrida corresponden a 450 noticias, y fue ese costo el que impuso el tope de la recuperación. A ese ritmo, analizar las 606 noticias del corpus del estudio habría requerido unas 23 horas, y las 6.911 de la regla en todo el período, del orden de once días. Ese límite es del equipo y del modelo generativo, no de la arquitectura: el servicio de modelos se sustituye por configuración (\resp{C}), y los estados intermedios del estudio son puntos de control desde los que una corrida larga se reanuda (Subsección~\ref{sec:impl-mat-estudio}). Lo que el módulo sí fija es que la recuperación recorre los \textit{embeddings} uno por uno (Subsección~\ref{sec:impl-mat-composicion}), lo que alcanza para corpus de este tamaño y no para corpus de otro orden.
+
+\paragraph{Otras reservas.} El umbral de la recuperación define la población analizada y se fijó por presupuesto. La ventana es una sola quincena: lo observado describe esa quincena y no se generaliza a los tipos de prensa. Las unidades no son independientes, porque una misma nota aparece en más de un portal: 85 de las 606 noticias (14~\%) tienen otra casi idéntica en un portal distinto ---una similitud de 0,95 o más entre sus \textit{embeddings}---, y la proporción llega al 34~\% entre las del interior; por eso las medidas de asociación se reportan como descripción y no como prueba. El \textit{prompt} muestra al modelo generativo el portal y la fecha de cada noticia, de modo que la codificación no es ciega a la fuente. Y las decisiones de dominio fueron tomadas por el autor, sin la intervención de un especialista ajeno al desarrollo.
+
+\paragraph{Lo que el caso establece.} Dentro de esos límites, el caso muestra que el ciclo del Capítulo~\ref{cap:procesos} se completa sobre un corpus real con un servicio de modelos local; que la imprecisión de la Extracción preexistente se trata sin modificarla, con dos delimitaciones sucesivas que el experto configura; que el estudio entero ---\textit{template}, variables, criterio, variable de comparación y condición--- entra como dato; y que el resultado llega con el veredicto de cada análisis y puede reconstruirse hasta la noticia. Con ello se completa la última columna del registro maestro de responsabilidades (Tabla~\ref{tab:registro-responsabilidades}): cada marcador se realiza en el caso como una decisión documentada o como una cifra de la corrida.
+
 \chapter{Conclusiones y Trabajo a Futuro}
 \label{cap:conclusiones}
+
+\section{Síntesis de lo realizado}
+\label{sec:conc-sintesis}
+
+El objetivo general comprometía el diseño y la implementación de un framework basado en el estilo de Tubos y Filtros que automatizara el análisis de noticias de portales digitales mediante inteligencia artificial generativa, con trazabilidad del flujo de datos, control editorial del experto del dominio y reproducibilidad del proceso analítico (Sección~\ref{sec:intro-objetivos}). Los cuatro objetivos específicos lo descomponen, y cada uno se cumplió en un capítulo.
+
+La arquitectura (OE3, Capítulo~\ref{cap:arquitectura}) caracteriza el framework como un pipeline de siete filtros conectados por tubos tipados que transportan referencias a un repositorio común. Sobre esa estructura se definieron los sintonizadores, por los que las decisiones del experto entran al sistema sin alterar el flujo de datos; dos compuertas, una que descarta lo que no conforma el esquema y otra que juzga y señala sin suprimir; y los tipos de datos del pipeline, cuyas claves de procedencia forman el grafo que permite reconstruir un resultado hasta sus noticias (Apéndice~\ref{anexo:tipos}). Las cuatro invariantes esenciales del estilo se verificaron sobre ese diseño (Subsección~\ref{sec:arq-car-verificacion}).
+
+El módulo (OE1, Capítulo~\ref{cap:implementacion}) realiza esa arquitectura como \textit{addon} de Odoo Community sobre la infraestructura del entorno institucional, de la que reutiliza la plataforma y el filtro de Extracción y con la que tiene una superficie de contacto de cuatro declaraciones (Subsección~\ref{sec:impl-pre-delimitacion}). La correspondencia entre la arquitectura y el código se enunció filtro por filtro (Tabla~\ref{tab:impl-correspondencia}); las cuatro invariantes y el crecimiento monótono del repositorio se sostienen en puntos identificados del código (Sección~\ref{sec:impl-invariantes}); y veintisiete pruebas automatizadas las ejercitan sin servicio externo (Sección~\ref{sec:impl-pruebas}). El panel de \textit{templates} hace del \textit{prompt} un registro que el experto define, previsualiza y reutiliza (Subsección~\ref{sec:impl-mat-composicion}).
+
+El mapa de procesos (OE2, Capítulo~\ref{cap:procesos}) ordena el uso del módulo en siete procesos y veintitrés actividades repartidas entre el experto del dominio, el implementador y el sistema, y establece la correspondencia entre los filtros de la arquitectura y las actividades que los ejecutan y los configuran (Tabla~\ref{tab:proc-correspondencia}).
+
+El caso de aplicación (OE4, Capítulo~\ref{cap:ejemplo}) recorre ese ciclo una vez, con un estudio configurado y ejecutado de punta a punta sobre un corpus real de la instancia institucional; analiza la calidad de lo obtenido y discute las limitaciones en los tres términos que el objetivo nombra (Sección~\ref{sec:ej-discusion}). Con él se completó el registro maestro (Tabla~\ref{tab:registro-responsabilidades}), que sigue cada una de las seis responsabilidades transversales a través de las cuatro vistas. Las cinco brechas que la revisión sistemática identificó se abordan con mecanismos que esas vistas recorren: los esquemas declarados por el \textit{template}, la sustituibilidad de la Extracción, el grafo de procedencia, el veredicto con confianza explícita y la compuerta blanda junto con la intervención del experto (Tabla~\ref{tab:trazabilidad-brechas-objetivos}).
+
+\section{Alcance de lo establecido}
+\label{sec:conc-alcance}
+
+No todo lo anterior quedó establecido con la misma clase de evidencia, y conviene distinguirlas. Hay propiedades verificadas sobre el diseño, por argumento; propiedades sostenidas en el código y cubiertas por pruebas automatizadas; y propiedades ejercidas en una corrida real. Las tres garantías del objetivo general se apoyan en las tres.
+
+\paragraph{Trazabilidad.} El diseño la funda en las claves de procedencia de los tipos de datos y en el crecimiento monótono del repositorio (Subsección~\ref{sec:arq-car-contratos}; Apéndice~\ref{anexo:tipos-procedencia}). El módulo la sostiene con claves obligatorias y con restricción de borrado, y con la copia de la configuración técnica, los tiempos y los informes de cada corrida (Subsecciones~\ref{sec:impl-mat-patron} y~\ref{sec:impl-mat-estudio}). El caso la ejerció: los análisis del estudio se recorren hasta su noticia, y un resultado se reconstruyó paso por paso (Subsección~\ref{sec:ej-res-procedencia}).
+
+\paragraph{Control editorial.} El framework lo realiza con tres mecanismos: los sintonizadores, por los que el experto declara el estudio como dato (\resp{A}); la compuerta blanda de la Verificación, que no suprime ningún análisis y entrega para cada uno un veredicto con estado, confianza y sustento (\resp{D}); y la política de consolidación, que decide qué se hace con los análisis observados (Subsecciones~\ref{sec:arq-car-sintonizadores}, \ref{sec:impl-mat-verificacion} y~\ref{sec:impl-mat-normalizacion}). Lo establecido es que el control está en manos del experto y que ningún análisis llega al resultado sin su juicio. La calidad del juicio de un ejecutor determinado no es una propiedad del framework sino de la configuración de cada estudio, y se examina en cada estudio, como el caso hizo con el suyo (Subsección~\ref{sec:ej-res-fidelidad}).
+
+\paragraph{Reproducibilidad del proceso.} Un estudio es un registro: su \textit{template}, sus criterios y sus sintonizadores son datos, la configuración técnica con que corrió queda copiada en él y los registros que produjo permanecen en el repositorio (Subsección~\ref{sec:impl-mat-estudio}). La iteración crea un estudio nuevo, enlazado al anterior, que hereda esa configuración (Subsección~\ref{sec:proc-refinamiento}). Lo que se garantiza es que el proceso puede repetirse y auditarse ---qué se hizo, con qué configuración y sobre qué registros---; la tesina no afirma que un modelo generativo devuelva la misma salida en dos corridas.
+
+\paragraph{Lo que el framework admite.} El estudio del caso es uno entre los que el framework admite. Que el tema, la pregunta, el esquema de respuesta, el criterio de validez y las variables de comparación sean datos y no código es la responsabilidad \resp{B}, establecida en el diseño y en el módulo, donde ningún modelo tiene columnas de dominio (Tabla~\ref{tab:registro-responsabilidades}). Otro estudio ---otro tema, otro marco de lectura, otra comparación--- se declara con las mismas superficies. Esa generalidad está verificada como propiedad de la arquitectura y de su implementación; la tesina la ejerció con un estudio.
+
+\paragraph{Lo que establece la corrida.} El caso es una prueba de factibilidad. Muestra que el ciclo se completa sobre un corpus real con un servicio de modelos local, que el estudio entero entra como dato y que el resultado llega con el veredicto de cada análisis y puede reconstruirse (Sección~\ref{sec:ej-discusion}). No establece la calidad analítica de los resultados, que el propio capítulo califica; ni el comportamiento del framework con corpus de otro orden de magnitud; ni su uso por expertos del dominio distintos del autor. Tampoco ejerce todo lo que el módulo implementa: el revisor humano y la estrategia de composición agregada están implementados y cubiertos por pruebas (Sección~\ref{sec:impl-pruebas}), y la sustitución del filtro de Extracción quedó establecida en el diseño (Subsección~\ref{sec:arq-estilo-justificacion}), pero el caso no los empleó.
+
+\section{Trabajo futuro}
+\label{sec:conc-futuro}
+
+La tesina entrega un instrumento y lo ejerció una vez, con el propósito de mostrar que el ciclo funciona y que existe una implementación que satisface las invariantes del estilo. Lo que queda por delante es usarlo. Los sintonizadores y la configuración técnica definen un espacio de estudios posibles del que aquí se recorrió un punto, y el trabajo futuro consiste en explorar ese espacio desde el lugar del experto del dominio: con otras preguntas, sobre otros corpus y con otras decisiones en cada uno de los puntos donde el framework las admite. Las líneas que siguen se ordenan por esos puntos, y ninguna requiere modificar la arquitectura.
+
+\begin{itemize}
+  \item \textbf{El ejecutor y el criterio de la Verificación.} Es la línea más inmediata. El módulo implementa dos ejecutores, el juez generativo y el revisor humano, y prevé como cambio sin efecto sobre los puertos un juez que sea otro modelo generativo, o agentes que confronten sus juicios (Subsección~\ref{sec:impl-mat-verificacion}). Emplear como juez un modelo generativo distinto del que produce los análisis evita que un mismo modelo generativo se evalúe a sí mismo, con el sesgo que la Sección~\ref{sec:ej-discusion} señala. Y el contraste, sobre unos mismos análisis, entre los veredictos de un revisor humano y los de un juez generativo permitiría medir cuánto coinciden y ajustar, con esa medida, el criterio de validez y la política sobre los análisis observados.
+  \item \textbf{El \textit{template}.} El panel de \textit{templates} admite otras preguntas y otros marcos de lectura sin que cambie nada más: cada \textit{template} es un estudio posible. La formulación de las claves, que es donde el experto traduce sus categorías en distinciones que el modelo generativo pueda realizar, es materia de iteración entre estudios enlazados (Subsección~\ref{sec:proc-refinamiento}).
+  \item \textbf{La recuperación.} La estrategia de composición ---un análisis por noticia o uno agregado---, la cantidad de noticias y el umbral de similitud son decisiones del experto cuyo efecto sobre el resultado no se estudió.
+  \item \textbf{La consolidación.} Las variables de comparación, la condición de inclusión y la política sobre los observados dan lecturas distintas de unos mismos análisis, sin intervención del modelo generativo.
+  \item \textbf{El corpus.} Otras reglas, otros portales y ventanas más largas, seleccionados sobre lo que la Extracción deposita. La sustitución del extractor por otro que cumpla el contrato \texttt{Noticia} está prevista en el diseño y no se ejerció.
+  \item \textbf{El servicio de modelos.} No es una decisión del experto sino del implementador, pero condiciona a todas las anteriores. Otro modelo generativo u otro servicio compatible se elige por configuración, y un servicio con otra interfaz es un adaptador nuevo que no toca los filtros (Subsección~\ref{sec:impl-mat-invocacion}; \resp{C}). El caso empleó un modelo generativo pequeño en un equipo sin aceleración; el efecto de modelos generativos mayores o de un servicio externo sobre la calidad, el tiempo y el costo no se midió.
+\end{itemize}
+
+Una línea más no pasa por ningún sintonizador: la escala. La recuperación recorre los \textit{embeddings} uno por uno, y el módulo contempla un índice vectorial como cambio que no altera lo que circula por los tubos (Subsección~\ref{sec:impl-mat-composicion}).
+
+Por último, el framework fue usado hasta aquí por quien lo construyó. Que lo empleen expertos del dominio en sus propias investigaciones, que son los destinatarios para los que se diseñaron los sintonizadores, es la validación que resta.
 
 
 
@@ -1792,7 +2113,7 @@ Template {
 \end{lstlisting}
 \end{minipage}
 
-El tipo reifica los tres datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}: los datos empíricos ingresan por la recuperación semántica en Composición de contexto; los objetivos requeridos para el análisis ---alcance, paradigma de análisis, referencias a tener en cuenta--- se declaran en la clave \texttt{objetivo}; y el tipo de salida o representación se fija en \texttt{esquema\_respuesta}, el esquema contra el cual valida Decodificación. La clave \texttt{objetivo} merece énfasis: el pipeline no transporta únicamente datos empíricos transformados, sino también la intención analítica que les da sentido ---bajo qué paradigma, con qué alcance y contra qué referencias se analiza---, que viaja por referencia con cada \texttt{Prompt} y cada \texttt{Análisis}, del mismo modo que todo contenido del sistema. Por tratarse de configuración editada por sintonizador, los registros \texttt{Template} quedan fuera del alcance de la monotonía del flujo (Sección~\ref{anexo:tipos-firmas}); la referencia ancla la identidad de la plantilla, y la composición íntegra efectivamente enviada al modelo queda materializada en el texto de cada \texttt{Prompt} (Sección~\ref{anexo:tipo-prompt}), lo que preserva la auditabilidad de lo ejecutado aun si la plantilla es editada con posterioridad.
+El tipo reifica los tres datos de entrada para la construcción de \textit{prompts} anticipados en el Capítulo~\ref{cap:intro}: los datos empíricos ingresan por la recuperación semántica en Composición de contexto; los objetivos requeridos para el análisis ---alcance, paradigma de análisis, referencias a tener en cuenta--- se declaran en la clave \texttt{objetivo}; y el tipo de salida o representación se fija en \texttt{esquema\_respuesta}, el esquema contra el cual valida Decodificación. La clave \texttt{objetivo} merece énfasis: el pipeline no transporta únicamente datos empíricos transformados, sino también la intención analítica que les da sentido ---bajo qué paradigma, con qué alcance y contra qué referencias se analiza---, que viaja por referencia con cada \texttt{Prompt} y cada \texttt{Análisis}, del mismo modo que todo contenido del sistema. Por tratarse de configuración editada por sintonizador, los registros \texttt{Template} quedan fuera del alcance del crecimiento monótono del repositorio (Sección~\ref{anexo:tipos-firmas}); la referencia ancla la identidad de la plantilla, y la composición íntegra efectivamente enviada al modelo queda materializada en el texto de cada \texttt{Prompt} (Sección~\ref{anexo:tipo-prompt}), lo que preserva la auditabilidad de lo ejecutado aun si la plantilla es editada con posterioridad.
 
 \section{Los filtros como transformaciones de estado}
 \label{anexo:tipos-firmas}
@@ -1811,7 +2132,7 @@ Definidos los tipos, las especificaciones funcionales del Capítulo~\ref{cap:arq
   \end{tabular}
 \end{center}
 
-con \(\mathit{Rep}_i = \mathit{Rep}_{i-1} \cup \Delta_i\), donde cada \(\Delta_i\) es el conjunto de registros del tipo correspondiente que la etapa persiste: los \(N\) registros \texttt{Noticia}, los \(N\) \texttt{Embedding}, los \(M\) \texttt{Prompt}, las \(M\) \texttt{RespuestaIAG}, los \(M'\) \texttt{Análisis}, los \(M'\) \texttt{Veredicto} y el \texttt{Resultado}. El encadenamiento de los subíndices exhibe el enhebrado del repositorio a través del pipeline: cada filtro recibe el estado que dejó el anterior. La monotonía ---\(\mathit{Rep}_0 \subseteq \mathit{Rep}_1 \subseteq \dots \subseteq \mathit{Rep}_7\)--- se afirma sobre los registros del flujo de datos: los sintonizadores editan configuración (\textit{templates}, reglas de extracción, criterios de validez y de consolidación), pero esa configuración no pertenece al flujo ni es modificada por ningún filtro. El estado final \(\mathit{Rep}_7\) contiene, por lo tanto, la historia completa del estudio: el corpus, sus representaciones semánticas, los \textit{prompts} compuestos, las respuestas crudas, los análisis decodificados, los veredictos de verificación y el resultado consolidado.
+con \(\mathit{Rep}_i = \mathit{Rep}_{i-1} \cup \Delta_i\), donde cada \(\Delta_i\) es el conjunto de registros del tipo correspondiente que la etapa persiste: los \(N\) registros \texttt{Noticia}, los \(N\) \texttt{Embedding}, los \(M\) \texttt{Prompt}, las \(M\) \texttt{RespuestaIAG}, los \(M'\) \texttt{Análisis}, los \(M'\) \texttt{Veredicto} y el \texttt{Resultado}. El encadenamiento de los subíndices exhibe el enhebrado del repositorio a través del pipeline: cada filtro recibe el estado que dejó el anterior. El crecimiento monótono ---\(\mathit{Rep}_0 \subseteq \mathit{Rep}_1 \subseteq \dots \subseteq \mathit{Rep}_7\)--- se afirma sobre los registros del flujo de datos: los sintonizadores editan configuración (\textit{templates}, reglas de extracción, criterios de validez y de consolidación), pero esa configuración no pertenece al flujo ni es modificada por ningún filtro. El estado final \(\mathit{Rep}_7\) contiene, por lo tanto, la historia completa del estudio: el corpus, sus representaciones semánticas, los \textit{prompts} compuestos, las respuestas crudas, los análisis decodificados, los veredictos de verificación y el resultado consolidado.
 
 Por el cierre composicional del estilo (Subsección~\ref{sec:arq-estilo-componentes}), la composición de las siete firmas es a su vez un filtro en el sentido extendido: el sistema completo realiza la transformación \((\text{flujo del portal},\ \mathit{Rep}_0) \to (\texttt{Resultado},\ \mathit{Rep}_7)\), que convierte el flujo de los portales digitales en un producto analítico consolidado y deja persistida en el repositorio la historia íntegra de esa conversión. Sobre esa historia se construye el grafo de procedencia que se describe a continuación.
 
